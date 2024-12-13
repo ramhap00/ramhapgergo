@@ -10,10 +10,10 @@ document.getElementById("nativ-button-container").appendChild(btn);
 
 const gomb = React.createElement("button",{
     onclick:function(){
-        alert("ez egy nativ kod")
+        alert("ez egy react kod")
     },
 },
-"React gomb"
+"React"
 )
 
 
