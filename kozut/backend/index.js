@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mysql = require("mysql");
-//const bodyParser = require("'body-parser");
+//const bodyParser = require("body-parser");
 //app.use(body.Parser.json());
 app.use(cors());
 
@@ -47,6 +47,14 @@ app.post("/ujregio", (req, res) =>{
             return res.status(500).json({error: "Adatbázis hiba történt"})
         }
         return res.status(200).json({message: "Sikeres beszúrás!", result})
+    })
+})
+
+app.delete("/torles/:id", (req, res) => {
+    const sql = "DELETE FROM regiok WHERE `regiok`.`Rid` = ?"
+    db.query(sql, [req.params.id], (err,result)=>{
+        if (err) return res.json(err)
+        return res.json(result)
     })
 })
  
