@@ -1,53 +1,62 @@
-const express = require("express");
-const mysql = require("mysql2");
-const cors = require("cors");
-const bcrypt = require("bcrypt");
-require("dotenv").config();
- 
+const express = require('express');
 const app = express();
-app.use(express.json());
-app.use(cors());
- 
-// **MySQL adatbázis kapcsolat**
+const bodyParser = require('body-parser');
+const mysql = require('mysql');
+const cors = require('cors'); // CORS csomag importálása
+
+// Adatbázis kapcsolódás
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root", // MySQL felhasználónév
-  password: "", // MySQL jelszó (ha van)
-  port: "3306",
-  database: "sos_munka",
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'sos_munka'
 });
- 
-db.connect((err) => {
-  if (err) {
-    console.error("🔴 MySQL hiba:", err);
-  } else {
-    console.log("✅ MySQL kapcsolódva!");
-  }
-});
- 
- 
- 
- 
-// **Felhasználók lekérdezése**
-// URL: "http://localhost:5000/users"
-app.get("/users", (req, res) => {
-    db.query("SELECT * FROM latogatok", (err, results) => {
-      if (err) {
-        console.error("🔴 Hiba:", err);
-        return res.status(500).json({ error: "Adatbázis hiba" });
-      }
-      res.json(results);
+
+// Middleware
+app.use(cors({ origin: 'http://localhost:5173' }));  // A frontend URL-je
+app.use(bodyParser.json());
+
+// Regisztrációs végpont
+app.post('/register', (req, res) => {
+  const {
+    vezeteknev,
+    keresztnev,
+    felhasznalonev,
+    jelszo,
+    email,
+    telefonszam,
+    telepules,
+    munkaltato
+  } = req.body;
+
+  // Ha munkáltató, akkor munkasreg = 1, egyébként 0
+  const munkasreg = munkaltato ? 1 : 0;
+
+  // Aktuális dátum
+  const letrehozasDatum = new Date().toISOString().slice(0, 19).replace('T', ' ');  // YYYY-MM-DD HH:MM:SS formátum
+
+  // SQL lekérdezés a felhasználó adatainak beszúrására
+  const query = `
+    INSERT INTO felhasznaloi_adatok (vezeteknev, keresztnev, felhasznalonev, jelszo, emailcim, telefonszam, telepules, munkasreg, letrehozasDatum)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  
+  db.query(query, [vezeteknev, keresztnev, felhasznalonev, jelszo, email, telefonszam, telepules, munkasreg, letrehozasDatum], (err, result) => {
+    if (err) {
+      console.error('Hiba történt:', err);
+      return res.status(500).json({ success: false, message: 'Hiba történt a regisztráció során' });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Regisztráció sikeres!',
+      userID: result.insertId
     });
   });
- 
- 
- 
- 
- 
- 
- 
-// **Szerver indítása**
+});
+
+// Szerver indítása
 const PORT = 5020;
 app.listen(PORT, () => {
-  console.log(`🚀 Szerver fut az ${PORT}-es porton`);
+  console.log(`Server running on port ${PORT}`);
 });

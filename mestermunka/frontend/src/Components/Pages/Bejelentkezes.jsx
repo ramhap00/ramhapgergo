@@ -1,5 +1,5 @@
 import React from "react";
-
+import "../Stilusok/Bejelentkezes.css"
 const Bejelentkezes = (()=>{
 
     return(

@@ -1,41 +1,51 @@
 import React, { useState } from "react";
+import Axios from "axios";
 import "../Stilusok/Regisztracio.css";
 
 const Regisztracio = () => {
-  const [formData, setFormData] = useState({
-    vezeteknev: "",
-    keresztnev: "",
-    felhasznalonev: "",
-    email: "",
-    telefonszam: "",
-    telepules: ""
-  });
+  const [vezeteknevReg, setVezeteknevReg] = useState('');
+  const [keresztnevReg, setKeresztnevReg] = useState('');
+  const [felhasznalonevReg, setFelhasznalonevReg] = useState('');
+  const [jelszoReg, setJelszoReg] = useState('');
+  const [emailReg, setEmailReg] = useState('');
+  const [telefonszamReg, setTelefonszamReg] = useState('');
+  const [telepulesReg, setTelepulesReg] = useState('');
+  const [munkaltatoReg, setMunkaltatoReg] = useState(false);  // checkbox állapota
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Regisztrációs adatok:", formData);
-  };
+  const register = () => {
+    Axios.post("http://localhost:5020/register", {
+      vezeteknev: vezeteknevReg,
+      keresztnev: keresztnevReg,
+      felhasznalonev: felhasznalonevReg,
+      jelszo: jelszoReg,
+      email: emailReg,
+      telefonszam: telefonszamReg,
+      telepules: telepulesReg,
+      munkaltato: munkaltatoReg,  // checkbox értékének továbbítása
+    }).then((response) => {
+      console.log(response);
+      if (response.data.success) {
+        alert("Regisztráció sikeres!");
+      } else {
+        alert("Valami hiba történt. Kérjük próbáld újra.");
+      }
+    }).catch((error) => {
+      console.error("Hiba történt:", error);
+      alert("Hiba történt a kérés küldése közben.");
+    });
+  }
 
   return (
     <div className="regisztracio-container">
       <h2>Regisztráció</h2>
-      <form onSubmit={handleSubmit} className="regisztracio-form">
+      <div className="regisztracio-form">
         <div className="form-group">
           <label htmlFor="vezeteknev">Vezetéknév:</label>
           <input
             type="text"
             id="vezeteknev"
-            name="vezeteknev"
-            value={formData.vezeteknev}
-            onChange={handleChange}
+            value={vezeteknevReg}
+            onChange={(e) => setVezeteknevReg(e.target.value)}
             required
           />
         </div>
@@ -44,9 +54,8 @@ const Regisztracio = () => {
           <input
             type="text"
             id="keresztnev"
-            name="keresztnev"
-            value={formData.keresztnev}
-            onChange={handleChange}
+            value={keresztnevReg}
+            onChange={(e) => setKeresztnevReg(e.target.value)}
             required
           />
         </div>
@@ -55,9 +64,18 @@ const Regisztracio = () => {
           <input
             type="text"
             id="felhasznalonev"
-            name="felhasznalonev"
-            value={formData.felhasznalonev}
-            onChange={handleChange}
+            value={felhasznalonevReg}
+            onChange={(e) => setFelhasznalonevReg(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="jelszo">Jelszó:</label>
+          <input
+            type="password"
+            id="jelszo"
+            value={jelszoReg}
+            onChange={(e) => setJelszoReg(e.target.value)}
             required
           />
         </div>
@@ -66,9 +84,8 @@ const Regisztracio = () => {
           <input
             type="email"
             id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
+            value={emailReg}
+            onChange={(e) => setEmailReg(e.target.value)}
             required
           />
         </div>
@@ -77,9 +94,8 @@ const Regisztracio = () => {
           <input
             type="tel"
             id="telefonszam"
-            name="telefonszam"
-            value={formData.telefonszam}
-            onChange={handleChange}
+            value={telefonszamReg}
+            onChange={(e) => setTelefonszamReg(e.target.value)}
             required
           />
         </div>
@@ -88,14 +104,22 @@ const Regisztracio = () => {
           <input
             type="text"
             id="telepules"
-            name="telepules"
-            value={formData.telepules}
-            onChange={handleChange}
+            value={telepulesReg}
+            onChange={(e) => setTelepulesReg(e.target.value)}
             required
           />
         </div>
-        <button type="submit">Regisztrálok</button>
-      </form>
+        <div className="form-group">
+          <label htmlFor="munkaltato">Munkáltató fiókot szeretnék:</label>
+          <input
+            type="checkbox"
+            id="munkaltato"
+            checked={munkaltatoReg}
+            onChange={(e) => setMunkaltatoReg(e.target.checked)}  // checkbox állapot kezelése
+          />
+        </div>
+        <button onClick={register} type="submit">Regisztrálok</button>
+      </div>
     </div>
   );
 };

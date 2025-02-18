@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min.js'
 import 'tachyons'
 import Navbar from './Components/Navbar'
+import Axios from 'axios'
 
 
 function App() {
