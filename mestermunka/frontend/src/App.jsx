@@ -1,3 +1,4 @@
+
 import React from "react"
 import Home from "./Components/Pages/Home"
 import Bejelentkezes from "./Components/Pages/Bejelentkezes"
@@ -23,6 +24,7 @@ function App() {
       
       <Navbar></Navbar>
       <Routes>
+
         <Route path="/" element= {<Home/>}/>
         <Route path="/bejelentkezes" element= {<Bejelentkezes/>}/>
         <Route path="/fiok" element= {<Fiok/>}/>
@@ -40,3 +42,4 @@ function App() {
 }
 
 export default App
+

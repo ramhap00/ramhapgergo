@@ -1,0 +1,60 @@
+/* Alapstílusok */
+.bejelentkezes-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .bejelentkezes-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .bejelentkezes-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .bejelentkezes-form .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .bejelentkezes-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .bejelentkezes-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .bejelentkezes-form button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .bejelentkezes-form button:hover {
+    background-color: #45a049;
+  }
+  
+  .bejelentkezes-form input:focus, .bejelentkezes-form button:focus {
+    outline: none;
+  }
+  
+  .bejelentkezes-form input[type="text"], 
+  .bejelentkezes-form input[type="password"] {
+    margin-bottom: 10px;
+  }

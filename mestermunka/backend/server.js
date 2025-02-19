@@ -2,14 +2,17 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
-const cors = require('cors'); // CORS csomag importálása
+const cors = require('cors'); 
 
+const bcrypt = require('bcrypt')
+const saltRounds = 10
 // Adatbázis kapcsolódás
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'sos_munka'
+  database: 'sos_munka',
+  port : '3307',
 });
 
 // Middleware
@@ -40,8 +43,12 @@ app.post('/register', (req, res) => {
     INSERT INTO felhasznaloi_adatok (vezeteknev, keresztnev, felhasznalonev, jelszo, emailcim, telefonszam, telepules, munkasreg, letrehozasDatum)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
-  
-  db.query(query, [vezeteknev, keresztnev, felhasznalonev, jelszo, email, telefonszam, telepules, munkasreg, letrehozasDatum], (err, result) => {
+  bcrypt.hash(jelszo,saltRounds, (err, hash) =>{
+
+    if(err){
+      console.log(err)
+    }
+    db.query(query, [vezeteknev, keresztnev, felhasznalonev, hash, email, telefonszam, telepules, munkasreg, letrehozasDatum], (err, result) => {
     if (err) {
       console.error('Hiba történt:', err);
       return res.status(500).json({ success: false, message: 'Hiba történt a regisztráció során' });
@@ -53,6 +60,34 @@ app.post('/register', (req, res) => {
       userID: result.insertId
     });
   });
+  })
+  
+  app.post("/login", (req,res)=>{
+    const felhasznalonev = req.body.felhasznalonev;
+    const jelszo = req.body.jelszo;
+  db.query(
+    "SELECT * FROM felhasznaloi_adatok WHERE felhasznalonev = ?;",
+    felhasznalonev,
+    (err, result) =>{
+      if(err){
+        res.send({err:err});
+      }
+  
+      if (result.length > 0){
+        bcrypt.compare(jelszo,result[0].jelszo,(error,response)=>{
+          if (response){
+            res.send(result);
+          } else{
+            res.send({message: "Hibás a felhasznlónév vagy a jelszó!"});
+          }
+        })
+      } else{
+        res.send({message: "A felhasználó nem létezik!"});
+      }
+    }
+  );
+});
+    
 });
 
 // Szerver indítása
