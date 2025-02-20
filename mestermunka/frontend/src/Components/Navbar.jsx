@@ -4,7 +4,7 @@ import Axios from "axios";
 import { UserContext } from "../UserContext";
 import "./Stilusok/Navbar.css";
 import logo from "../assets/sosmunkalogo.png";
-import fioklogo from "../assets/fiok.png";
+import fioklogo from "../assets/profile-blank.png";
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(UserContext);
@@ -45,16 +45,21 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/">
-          <img src={logo} alt="Company Logo" className="logo-img" />
+          <img src={logo} alt="Company Logo" className="logo-img2" />
         </Link>
-
+      
         <ul className="nav-menu-left">
-          <li>
-            <NavLink className="nav-link" to="/posztok">
-              Posztok
-            </NavLink>
-          </li>
-        </ul>
+  <li>
+    <NavLink
+      className="nav-link"
+      to="/posztok"
+      style= {{  fontWeight: '700', fontSize: '24px' }}  // Inline stílus a vastagabb betűkhöz
+    >
+      Posztok
+    </NavLink>
+  </li>
+</ul>
+
 
         <div className="navbar-text">S.O.S. Munka</div>
 
