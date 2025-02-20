@@ -1,25 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Axios from "axios";
-import { useNavigate } from "react-router-dom";  // Az átirányításhoz
-import "../Stilusok/Bejelentkezes.css";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../UserContext"; // Importáljuk a context-et
+import "../Stilusok/Bejelentkezes.css"
 
 const Bejelentkezes = () => {
+  const { loginUser } = useContext(UserContext);
   const [felhasznalonev, setFelhasznalonev] = useState("");
   const [jelszo, setJelszo] = useState("");
-  const navigate = useNavigate(); // Az átirányításhoz szükséges hook
+  const navigate = useNavigate();
 
   const login = () => {
-    Axios.post("http://localhost:5020/login", {
-      felhasznalonev: felhasznalonev,
-      jelszo: jelszo,
-    })
+    Axios.post(
+      "http://localhost:5020/login",
+      { felhasznalonev, jelszo },
+      { withCredentials: true } // Szükséges a sütik használatához
+    )
       .then((response) => {
-        console.log(response);
         if (response.data.success) {
+          loginUser(response.data.user);  // Felhasználói adatokat mentjük a context-be
           alert("Sikeres bejelentkezés!");
-          navigate("/fooldal");  // Itt átirányítunk a főoldalra
+          navigate(0); // Oldal frissítése, hogy a navbar is frissüljön
         } else {
-          alert("Hibás felhasználónév vagy jelszó.");
+          alert(response.data.message);
         }
       })
       .catch((error) => {
@@ -29,31 +32,21 @@ const Bejelentkezes = () => {
   };
 
   return (
-    <div className="bejelentkezes-container">
+    <div>
       <h2>Bejelentkezés</h2>
-      <div className="bejelentkezes-form">
-        <div className="form-group">
-          <label htmlFor="felhasznalonev">Felhasználónév:</label>
-          <input
-            type="text"
-            id="felhasznalonev"
-            value={felhasznalonev}
-            onChange={(e) => setFelhasznalonev(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="jelszo">Jelszó:</label>
-          <input
-            type="password"
-            id="jelszo"
-            value={jelszo}
-            onChange={(e) => setJelszo(e.target.value)}
-            required
-          />
-        </div>
-        <button onClick={login} type="submit">Bejelentkezés</button>
-      </div>
+      <input
+        type="text"
+        value={felhasznalonev}
+        onChange={(e) => setFelhasznalonev(e.target.value)}
+        placeholder="Felhasználónév"
+      />
+      <input
+        type="password"
+        value={jelszo}
+        onChange={(e) => setJelszo(e.target.value)}
+        placeholder="Jelszó"
+      />
+      <button onClick={login}>Bejelentkezés</button>
     </div>
   );
 };

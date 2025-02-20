@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import "../Stilusok/Home.css"; 
-import workersBg from "/src/assets/workers-bg.jpg";
+import workersBg from "/src/assets/workers-bg-resized.png";
 
 
 
