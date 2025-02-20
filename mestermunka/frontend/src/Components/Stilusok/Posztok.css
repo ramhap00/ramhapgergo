@@ -1,0 +1,38 @@
+.filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #08e2c5;
+    width: 350px;
+    height: 100vh;
+  }
+ 
+  .filter-container h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+ 
+  .filter-container label {
+    font-weight: bold;
+  }
+ 
+  .filter-container select,
+  .filter-container input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+ 
+  .filter-container input[type="number"] {
+    width: 100%;
+  }
+ 
+  .filter-container div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+ 
