@@ -1,9 +1,9 @@
-/* Alapstílusok */
+
 .bejelentkezes-container {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
@@ -37,8 +37,9 @@
   }
   
   .bejelentkezes-form button {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #08e2c5
+    ;
+    color:black;
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
@@ -47,7 +48,8 @@
   }
   
   .bejelentkezes-form button:hover {
-    background-color: #45a049;
+    background-color: #08e2c5
+    ;
   }
   
   .bejelentkezes-form input:focus, .bejelentkezes-form button:focus {
@@ -56,5 +58,14 @@
   
   .bejelentkezes-form input[type="text"], 
   .bejelentkezes-form input[type="password"] {
+    margin-bottom: 10px;
+  }
+  .success-message {
+    color: green;
+    margin-bottom: 10px;
+  }
+  
+  .error-message {
+    color: red;
     margin-bottom: 10px;
   }

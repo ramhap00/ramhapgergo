@@ -8,15 +8,18 @@ export const UserProvider = ({ children }) => {
 
   // Ellenőrizzük, hogy van-e aktív bejelentkezett user a szerveren
   useEffect(() => {
-    Axios.get("http://localhost:5020/user", { withCredentials: true })
-      .then((response) => {
+    const fetchUser = async () => {
+      try {
+        const response = await Axios.get("http://localhost:5020/user", { withCredentials: true });
         if (response.data.success) {
           setUser(response.data.user);
         }
-      })
-      .catch((error) => {
-        console.error("Nem sikerült lekérni a felhasználói adatokat:", error);
-      });
+      } catch (error) {
+        console.error("Nem sikerült lekérni a felhasználói adatokat:", error.response || error);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const loginUser = (userData) => {
@@ -26,15 +29,15 @@ export const UserProvider = ({ children }) => {
   const logoutUser = () => {
     Axios.post("http://localhost:5020/logout", {}, { withCredentials: true })
       .then(() => {
-        setUser(null);
+        setUser(null); // Bejelentkezés törlése
       })
       .catch((error) => {
-        console.error("Hiba történt a kijelentkezés során:", error);
+        console.error("Hiba történt a kijelentkezés során:", error.response || error);
       });
   };
 
   return (
-    <UserContext.Provider value={{ user, loginUser, logoutUser }}>
+    <UserContext.Provider value={{ user, setUser, loginUser, logoutUser }}>
       {children}
     </UserContext.Provider>
   );

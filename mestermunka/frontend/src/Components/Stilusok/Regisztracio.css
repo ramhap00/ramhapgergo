@@ -37,8 +37,9 @@
 }
 
 .regisztracio-form button {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #08e2c5
+  ;
+  color: black;
   padding: 10px 15px;
   border: none;
   border-radius: 4px;
@@ -47,7 +48,8 @@
 }
 
 .regisztracio-form button:hover {
-  background-color: #45a049;
+  background-color: #08e2c5
+  ;
 }
 
 .regisztracio-form input:focus, .regisztracio-form button:focus {
@@ -58,4 +60,29 @@
 .regisztracio-form input[type="email"], 
 .regisztracio-form input[type="tel"] {
   margin-bottom: 10px;
+}
+.success-message {
+  color: green;
+  margin-bottom: 10px;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}
+.regisztracio-link {
+  margin-top: 10px;
+  text-align: center;
+  white-space: nowrap; /* A szöveg egy sorban marad */
+  overflow: hidden; /* Túlcsorduló szöveg elrejtése */
+  text-overflow: ellipsis; /* Túlcsorduló szöveg helyett "..." megjelenítése */
+}
+
+.regisztracio-link a {
+  color: #007bff; /* Kék szín a linkhez */
+  text-decoration: none; /* Aláhúzás eltávolítása */
+}
+
+.regisztracio-link a:hover {
+  text-decoration: underline; /* Aláhúzás hover esetén */
 }

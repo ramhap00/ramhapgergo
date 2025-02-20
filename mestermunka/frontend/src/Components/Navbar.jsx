@@ -1,28 +1,45 @@
-import React, { useState, useContext } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom"; // useNavigate hozzáadva
-import Axios from "axios"; // Axios importálása
-import { UserContext } from "../UserContext"; // Importáljuk a UserContext-et
+import React, { useState, useContext, useEffect, useRef } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import Axios from "axios";
+import { UserContext } from "../UserContext";
 import "./Stilusok/Navbar.css";
-import logo from "../assets/sosmunkalogo.png"; // Logó importálása
+import logo from "../assets/sosmunkalogo.png";
 import fioklogo from "../assets/fiok.png";
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(UserContext);
-  const [dropdown, setDropdown] = useState(false);
   const [accountDropdown, setAccountDropdown] = useState(false);
-  const navigate = useNavigate(); // Navigáció beállítása
+  const navigate = useNavigate();
+  const dropdownRef = useRef(null); // Referencia a dropdownhoz
 
   // Kijelentkezés kezelése
   const handleLogout = () => {
-    Axios.post("http://localhost:5020/logout", {}, { withCredentials: true }) // Sütik törlése
+    Axios.post("http://localhost:5020/logout", {}, { withCredentials: true })
       .then(() => {
         logoutUser();
-        navigate(0); // Oldal frissítése
+        navigate("/Home"); // Főoldalra navigálás
       })
       .catch((error) => {
         console.error("Hiba a kijelentkezés során:", error);
       });
   };
+
+  // Dropdown bezárása, ha kattintunk a dropdownon kívül
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setAccountDropdown(false); // Bezárjuk a dropdownot
+      }
+    };
+
+    // Eseményfigyelő hozzáadása
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Eseményfigyelő eltávolítása a komponens unmountolásakor
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <nav className="navbar">
@@ -32,7 +49,11 @@ const Navbar = () => {
         </Link>
 
         <ul className="nav-menu-left">
-          <li><NavLink className="nav-link" to="/posztok">Posztok</NavLink></li>
+          <li>
+            <NavLink className="nav-link" to="/posztok">
+              Posztok
+            </NavLink>
+          </li>
         </ul>
 
         <div className="navbar-text">S.O.S. Munka</div>
@@ -40,15 +61,8 @@ const Navbar = () => {
         <ul className="nav-menu-right">
           <li
             className="dropdown"
-            onMouseEnter={() => setDropdown(true)}
-            onMouseLeave={() => setDropdown(false)}
-          >
-          </li>
-
-          <li
-            className="dropdown"
-            onMouseEnter={() => setAccountDropdown(true)}
-            onMouseLeave={() => setAccountDropdown(false)}
+            ref={dropdownRef} // Referencia hozzáadva
+            onClick={() => setAccountDropdown(!accountDropdown)} // Csak kattintásra vált
           >
             <NavLink className="dropbtn" to="#">
               <img src={fioklogo} alt="Fiók Logo" className="logo-img" />
@@ -56,14 +70,32 @@ const Navbar = () => {
             {accountDropdown && (
               <ul className="dropdown-content">
                 {user ? (
+                  // Ha a felhasználó be van jelentkezve
                   <>
-                    <li><NavLink to="/fiok">Fiók Beállítások</NavLink></li>
-                    <li><button onClick={handleLogout}>Kijelentkezés</button></li>
+                    <li>
+                      <NavLink to="/fiok">Fiók Beállítások</NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/kedvenceim">Kedvenceim</NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/posztjaim">Posztjaim</NavLink>
+                    </li>
+                    <li>
+                      <button className="logout-btn" onClick={handleLogout}>
+                        Kijelentkezés
+                      </button>
+                    </li>
                   </>
                 ) : (
+                  // Ha a felhasználó nincs bejelentkezve
                   <>
-                    <li><NavLink to="/regisztracio">Regisztrálok</NavLink></li>
-                    <li><NavLink to="/bejelentkezes">Bejelentkezem</NavLink></li>
+                    <li>
+                      <NavLink to="/regisztracio">Regisztrálok</NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/bejelentkezes">Bejelentkezem</NavLink>
+                    </li>
                   </>
                 )}
               </ul>

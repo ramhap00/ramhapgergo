@@ -1,44 +1,60 @@
 import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom"; // Link importálása
 import Axios from "axios";
 import "../Stilusok/Regisztracio.css";
 
 const Regisztracio = () => {
-  const [vezeteknevReg, setVezeteknevReg] = useState('');
-  const [keresztnevReg, setKeresztnevReg] = useState('');
-  const [felhasznalonevReg, setFelhasznalonevReg] = useState('');
-  const [jelszoReg, setJelszoReg] = useState('');
-  const [emailReg, setEmailReg] = useState('');
-  const [telefonszamReg, setTelefonszamReg] = useState('');
-  const [telepulesReg, setTelepulesReg] = useState('');
-  const [munkaltatoReg, setMunkaltatoReg] = useState(false);  // checkbox állapota
+  const [vezeteknevReg, setVezeteknevReg] = useState("");
+  const [keresztnevReg, setKeresztnevReg] = useState("");
+  const [felhasznalonevReg, setFelhasznalonevReg] = useState("");
+  const [jelszoReg, setJelszoReg] = useState("");
+  const [emailReg, setEmailReg] = useState("");
+  const [telefonszamReg, setTelefonszamReg] = useState("");
+  const [telepulesReg, setTelepulesReg] = useState("");
+  const [munkaltatoReg, setMunkaltatoReg] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState(""); // Sikeres regisztráció üzenet
+  const navigate = useNavigate();
 
   const register = () => {
-    Axios.post("http://localhost:5020/register", {
-      vezeteknev: vezeteknevReg,
-      keresztnev: keresztnevReg,
-      felhasznalonev: felhasznalonevReg,
-      jelszo: jelszoReg,
-      email: emailReg,
-      telefonszam: telefonszamReg,
-      telepules: telepulesReg,
-      munkaltato: munkaltatoReg,  // checkbox értékének továbbítása
-    }).then((response) => {
-      console.log(response);
-      if (response.data.success) {
-        alert("Regisztráció sikeres!");
-      } else {
-        alert("Valami hiba történt. Kérjük próbáld újra.");
-      }
-    }).catch((error) => {
-      console.error("Hiba történt:", error);
-      alert("Hiba történt a kérés küldése közben.");
-    });
-  }
+    Axios.post(
+      "http://localhost:5020/register",
+      {
+        vezeteknev: vezeteknevReg,
+        keresztnev: keresztnevReg,
+        felhasznalonev: felhasznalonevReg,
+        jelszo: jelszoReg,
+        email: emailReg,
+        telefonszam: telefonszamReg,
+        telepules: telepulesReg,
+        munkaltato: munkaltatoReg,
+      },
+      { withCredentials: true }
+    )
+      .then((response) => {
+        if (response.data.success) {
+          setSuccessMessage("Sikeres regisztráció! Átirányítás a bejelentkezéshez..."); // Sikeres üzenet megjelenítése
+
+          // 2 másodperc késleltetés után átirányítás a bejelentkezési oldalra
+          setTimeout(() => {
+            navigate("/bejelentkezes"); // Bejelentkezési oldalra navigálás
+          }, 2000); // 2000 ms = 2 másodperc
+        } else {
+          setError(response.data.message || "Valami hiba történt. Kérjük próbáld újra.");
+        }
+      })
+      .catch((error) => {
+        console.error("Hiba történt:", error.response ? error.response.data : error.message);
+        setError("Hiba történt a regisztráció során.");
+      });
+  };
 
   return (
     <div className="regisztracio-container">
       <h2>Regisztráció</h2>
       <div className="regisztracio-form">
+        {error && <div className="error-message">{error}</div>}
+        {successMessage && <div className="success-message">{successMessage}</div>} {/* Sikeres üzenet megjelenítése */}
         <div className="form-group">
           <label htmlFor="vezeteknev">Vezetéknév:</label>
           <input
@@ -115,10 +131,20 @@ const Regisztracio = () => {
             type="checkbox"
             id="munkaltato"
             checked={munkaltatoReg}
-            onChange={(e) => setMunkaltatoReg(e.target.checked)}  // checkbox állapot kezelése
+            onChange={(e) => setMunkaltatoReg(e.target.checked)}
           />
         </div>
-        <button onClick={register} type="submit">Regisztrálok</button>
+        <button onClick={register} type="submit">
+          Regisztrálok
+        </button>
+
+        {/* Üzenet a bejelentkezéshez */}
+        <div className="bejelentkezes-link">
+          <p>
+            Van már S.O.S. fiókod?{" "}
+            <Link to="/bejelentkezes">Akkor jelentkezz be itt!</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
