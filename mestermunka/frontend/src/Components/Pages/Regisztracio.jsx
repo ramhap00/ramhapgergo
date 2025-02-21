@@ -33,7 +33,7 @@ const Regisztracio = () => {
     )
       .then((response) => {
         if (response.data.success) {
-          setSuccessMessage("Sikeres regisztráció! Átirányítás a bejelentkezéshez..."); // Sikeres üzenet megjelenítése
+          setSuccessMessage("Sikeres regisztráció! Átirányítunk a bejelentkezéshez."); // Sikeres üzenet megjelenítése
 
           // 2 másodperc késleltetés után átirányítás a bejelentkezési oldalra
           setTimeout(() => {

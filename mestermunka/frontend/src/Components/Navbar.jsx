@@ -81,10 +81,10 @@ const Navbar = () => {
                       <NavLink to="/fiok">Fiók Beállítások</NavLink>
                     </li>
                     <li>
-                      <NavLink to="/kedvenceim">Kedvenceim</NavLink>
+                      <NavLink to="/kedvencek">Kedvenceim</NavLink>
                     </li>
                     <li>
-                      <NavLink to="/posztjaim">Posztjaim</NavLink>
+                      <NavLink to="/sajatposztok">Posztjaim</NavLink>
                     </li>
                     <li>
                       <button className="logout-btn" onClick={handleLogout}>

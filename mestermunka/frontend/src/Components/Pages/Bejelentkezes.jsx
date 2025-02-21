@@ -21,7 +21,7 @@ const Bejelentkezes = () => {
       .then((response) => {
         if (response.data.success) {
           setUser(response.data.user);
-          setSuccessMessage("Sikeres bejelentkezés! Átirányítás...");
+          setSuccessMessage("Sikeres bejelentkezés!");
           setTimeout(() => {
             navigate("/Home");
           }, 2000);

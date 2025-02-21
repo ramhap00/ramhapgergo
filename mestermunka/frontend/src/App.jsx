@@ -12,6 +12,7 @@ import Navbar from './Components/Navbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import 'tachyons';
+import Sajatposztok from "./Components/Pages/Sajatposztok";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/kedvencek" element={<Kedvencek />} />
           <Route path="/posztok" element={<Posztok />} />
           <Route path="/regisztracio" element={<Regisztracio />} />
+          <Route path="/sajatposztok" element={<Sajatposztok />} />
         </Routes>
       </Router>
     </UserProvider>
