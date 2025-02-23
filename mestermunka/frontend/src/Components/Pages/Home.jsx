@@ -4,8 +4,12 @@ import workersBg from "/src/assets/workers-bg-resized.png";
 
 
 
+
+
+
 const Home = () => {
   return (
+    
     <motion.div 
       initial={{ opacity: 10, y: 50 }} 
       animate={{ opacity: 10, y: 0 }} 
@@ -16,5 +20,5 @@ const Home = () => {
     </motion.div>
   );
 };
-
+ 
 export default Home;

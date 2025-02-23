@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import "../Stilusok/Posztok.css";
- 
+import nagyito from "../../assets/nagyito.png";
+
+
 const Posztok = () => {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [priceRange, setPriceRange] = useState(["", ""]);
     const [location, setLocation] = useState("");
     const [selectedOptions, setSelectedOptions] = useState([]);
- 
+    const [searchTerm, setSearchTerm] = useState(""); // Kereső szöveg állapot
+
     const categories = [
       "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
       "Parkettázás", "Autószerelés", "Gázszerelés", "Klimaszerelés", "Tv-szerelő",
@@ -19,17 +22,28 @@ const Posztok = () => {
       "Vas", "Veszprém", "Zala"
     ];
     const options = ["Elérhető", "Nem elérhető"];
- 
+
     const handleCheckboxChange = (option) => {
       setSelectedOptions((prev) =>
         prev.includes(option) ? prev.filter((item) => item !== option) : [...prev, option]
       );
     };
- 
+
     return (
       <div className="filter-container">
         <h2>Szűrők</h2>
-       
+
+       {/* Kereső mező */}
+        <div className="search-container">
+        <img src={nagyito} alt="Keresés" className="search-icon" />
+         <input
+         type="text"
+         value={searchTerm}
+         onChange={(e) => setSearchTerm(e.target.value)}
+         placeholder="Keresés..."
+        />
+        </div>
+
         {/* Kategória választó */}
         <label>Kategória:</label>
         <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
@@ -38,7 +52,7 @@ const Posztok = () => {
             <option key={category} value={category}>{category}</option>
           ))}
         </select>
-       
+
         {/* Ár választó */}
         <label>Ár:</label>
         <div className="price-inputs">
@@ -76,7 +90,7 @@ const Posztok = () => {
             className="price-slider"
           />
         </div>
-       
+
         {/* Település választó */}
         <label>Település:</label>
         <select value={location} onChange={(e) => setLocation(e.target.value)}>
@@ -85,7 +99,6 @@ const Posztok = () => {
             <option key={city} value={city}>{city}</option>
           ))}
         </select>
-       
         {/* Kiválasztás / pipa */}
         <label>Állapot:</label>
         {options.map((option) => (
@@ -95,7 +108,8 @@ const Posztok = () => {
               checked={selectedOptions.includes(option)}
               onChange={() => handleCheckboxChange(option)}
             />
-            <span>{option}</span> {/* Itt jelenik meg az opció szövege */}
+            <span>{option}</span>
+           
           </div>
         ))}
       </div>
