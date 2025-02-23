@@ -32,10 +32,6 @@ const Posztok = () => {
     return (
       <div className="filter-container">
         <h2>Szűrők</h2>
-<<<<<<< HEAD
-       
-        {}
-=======
 
        {/* Kereső mező */}
         <div className="search-container">
@@ -49,7 +45,6 @@ const Posztok = () => {
         </div>
 
         {/* Kategória választó */}
->>>>>>> 861203584a588890b7bf5a701d8e0e8c13ad76a7
         <label>Kategória:</label>
         <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
           <option value="">Válassz kategóriát</option>
@@ -57,13 +52,8 @@ const Posztok = () => {
             <option key={category} value={category}>{category}</option>
           ))}
         </select>
-<<<<<<< HEAD
-       
-        {}
-=======
 
         {/* Ár választó */}
->>>>>>> 861203584a588890b7bf5a701d8e0e8c13ad76a7
         <label>Ár:</label>
         <div className="price-inputs">
           <input
@@ -100,13 +90,8 @@ const Posztok = () => {
             className="price-slider"
           />
         </div>
-<<<<<<< HEAD
-       
-        {}
-=======
 
         {/* Település választó */}
->>>>>>> 861203584a588890b7bf5a701d8e0e8c13ad76a7
         <label>Település:</label>
         <select value={location} onChange={(e) => setLocation(e.target.value)}>
           <option value="">Válassz települést</option>
@@ -114,12 +99,7 @@ const Posztok = () => {
             <option key={city} value={city}>{city}</option>
           ))}
         </select>
-<<<<<<< HEAD
-       
-        {}
-=======
         {/* Kiválasztás / pipa */}
->>>>>>> 861203584a588890b7bf5a701d8e0e8c13ad76a7
         <label>Állapot:</label>
         {options.map((option) => (
           <div key={option}>
@@ -128,12 +108,8 @@ const Posztok = () => {
               checked={selectedOptions.includes(option)}
               onChange={() => handleCheckboxChange(option)}
             />
-<<<<<<< HEAD
-            <span>{option}</span> {}
-=======
             <span>{option}</span>
            
->>>>>>> 861203584a588890b7bf5a701d8e0e8c13ad76a7
           </div>
         ))}
       </div>
