@@ -16,15 +16,15 @@ const Bejelentkezes = () => {
     Axios.post(
       "http://localhost:5020/login",
       { felhasznalonev, jelszo },
-      { withCredentials: true }
+      { withCredentials: true }  
     )
       .then((response) => {
         if (response.data.success) {
-          setUser(response.data.user);
+          setUser(response.data.user); 
           setSuccessMessage("Sikeres bejelentkezés!");
           setTimeout(() => {
             navigate("/Home");
-          }, 2000);
+          }, 2000); 
         } else {
           setError(response.data.message || "Hibás felhasználónév vagy jelszó");
         }
@@ -63,7 +63,7 @@ const Bejelentkezes = () => {
         </div>
         <button onClick={handleLogin}>Bejelentkezés</button>
 
-        {/* Üzenet a regisztrációhoz */}
+        {}
         <div className="regisztracio-link">
           <p>
             Elfelejtettél regisztrálni?{" "}

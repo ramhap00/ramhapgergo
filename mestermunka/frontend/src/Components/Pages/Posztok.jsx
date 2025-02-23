@@ -30,7 +30,7 @@ const Posztok = () => {
       <div className="filter-container">
         <h2>Szűrők</h2>
        
-        {/* Kategória választó */}
+        {}
         <label>Kategória:</label>
         <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
           <option value="">Válassz kategóriát</option>
@@ -39,7 +39,7 @@ const Posztok = () => {
           ))}
         </select>
        
-        {/* Ár választó */}
+        {}
         <label>Ár:</label>
         <div className="price-inputs">
           <input
@@ -77,7 +77,7 @@ const Posztok = () => {
           />
         </div>
        
-        {/* Település választó */}
+        {}
         <label>Település:</label>
         <select value={location} onChange={(e) => setLocation(e.target.value)}>
           <option value="">Válassz települést</option>
@@ -86,7 +86,7 @@ const Posztok = () => {
           ))}
         </select>
        
-        {/* Kiválasztás / pipa */}
+        {}
         <label>Állapot:</label>
         {options.map((option) => (
           <div key={option}>
@@ -95,7 +95,7 @@ const Posztok = () => {
               checked={selectedOptions.includes(option)}
               onChange={() => handleCheckboxChange(option)}
             />
-            <span>{option}</span> {/* Itt jelenik meg az opció szövege */}
+            <span>{option}</span> {}
           </div>
         ))}
       </div>

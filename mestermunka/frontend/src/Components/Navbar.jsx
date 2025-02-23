@@ -10,32 +10,31 @@ const Navbar = () => {
   const { user, logoutUser } = useContext(UserContext);
   const [accountDropdown, setAccountDropdown] = useState(false);
   const navigate = useNavigate();
-  const dropdownRef = useRef(null); // Referencia a dropdownhoz
+  const dropdownRef = useRef(null); 
 
-  // Kijelentkezés kezelése
+  
   const handleLogout = () => {
     Axios.post("http://localhost:5020/logout", {}, { withCredentials: true })
       .then(() => {
         logoutUser();
-        navigate("/Home"); // Főoldalra navigálás
+        navigate("/Home"); 
       })
       .catch((error) => {
         console.error("Hiba a kijelentkezés során:", error);
       });
   };
 
-  // Dropdown bezárása, ha kattintunk a dropdownon kívül
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setAccountDropdown(false); // Bezárjuk a dropdownot
+        setAccountDropdown(false); 
       }
     };
 
-    // Eseményfigyelő hozzáadása
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Eseményfigyelő eltávolítása a komponens unmountolásakor
+  
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -53,7 +52,7 @@ const Navbar = () => {
     <NavLink
       className="nav-link"
       to="/posztok"
-      style= {{  fontWeight: '700', fontSize: '24px' }}  // Inline stílus a vastagabb betűkhöz
+      style= {{  fontWeight: '700', fontSize: '24px' }}  
     >
       Posztok
     </NavLink>
@@ -66,8 +65,8 @@ const Navbar = () => {
         <ul className="nav-menu-right">
           <li
             className="dropdown"
-            ref={dropdownRef} // Referencia hozzáadva
-            onClick={() => setAccountDropdown(!accountDropdown)} // Csak kattintásra vált
+            ref={dropdownRef} 
+            onClick={() => setAccountDropdown(!accountDropdown)} 
           >
             <NavLink className="dropbtn" to="#">
               <img src={fioklogo} alt="Fiók Logo" className="logo-img" />
@@ -75,7 +74,7 @@ const Navbar = () => {
             {accountDropdown && (
               <ul className="dropdown-content">
                 {user ? (
-                  // Ha a felhasználó be van jelentkezve
+                  
                   <>
                     <li>
                       <NavLink to="/fiok">Fiók Beállítások</NavLink>
@@ -93,7 +92,7 @@ const Navbar = () => {
                     </li>
                   </>
                 ) : (
-                  // Ha a felhasználó nincs bejelentkezve
+                  
                   <>
                     <li>
                       <NavLink to="/regisztracio">Regisztrálok</NavLink>

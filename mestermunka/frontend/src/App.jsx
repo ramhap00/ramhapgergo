@@ -1,5 +1,5 @@
 import React from "react";
-import { UserProvider } from "./UserContext"; // Importáljuk a context-et
+import { UserProvider } from "./UserContext"; 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Components/Pages/Home";
 import Bejelentkezes from "./Components/Pages/Bejelentkezes";
@@ -16,7 +16,7 @@ import Sajatposztok from "./Components/Pages/Sajatposztok";
 
 function App() {
   return (
-    <UserProvider> {/* UserProvider beágyazva */}
+    <UserProvider> {}
       <Router>
         <Navbar />
         <Routes>

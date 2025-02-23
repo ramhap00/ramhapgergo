@@ -1,0 +1,50 @@
+/* Fiok.css */
+.account-settings {
+    display: flex;
+    font-family: Arial, sans-serif;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background: #f4f4f4;
+    padding: 20px;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .sidebar ul .active {
+    font-weight: bold;
+  }
+  
+  .menu-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  
+  .content {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
+  h1, h2 {
+    margin-bottom: 10px;
+  }
+  
+  input, select {
+    display: block;
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 100%;
+    max-width: 400px;
+  }

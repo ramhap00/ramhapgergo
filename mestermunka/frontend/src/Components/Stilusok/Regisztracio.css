@@ -1,4 +1,4 @@
-/* Alapstílusok */
+
 .regisztracio-container {
   background-color: #fff;
   padding: 30px;
@@ -73,16 +73,16 @@
 .regisztracio-link {
   margin-top: 10px;
   text-align: center;
-  white-space: nowrap; /* A szöveg egy sorban marad */
-  overflow: hidden; /* Túlcsorduló szöveg elrejtése */
-  text-overflow: ellipsis; /* Túlcsorduló szöveg helyett "..." megjelenítése */
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
 }
 
 .regisztracio-link a {
-  color: #007bff; /* Kék szín a linkhez */
-  text-decoration: none; /* Aláhúzás eltávolítása */
+  color: #007bff; 
+  text-decoration: none; 
 }
 
 .regisztracio-link a:hover {
-  text-decoration: underline; /* Aláhúzás hover esetén */
+  text-decoration: underline; 
 }
