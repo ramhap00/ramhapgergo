@@ -1,76 +1,46 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../Stilusok/Fiok.css";
 import profileBlank from "../../assets/profile-blank.png";
 
 const Fiok = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
+  const [userData, setUserData] = useState({ felhasznalonev: "", emailcim: "" });
+  const [editing, setEditing] = useState(false);
+  const [newData, setNewData] = useState({ felhasznalonev: "", emailcim: "" });
 
+  // Felhasználói adatok betöltése
   useEffect(() => {
-    fetch("http://localhost:5020/api/getUserData", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,  
-      },
-      credentials: "include", 
-    })
+    axios
+      .get("http://localhost:5020/profile", { withCredentials: true })
       .then((response) => {
-        if (!response.ok) {
-          return response.text().then((text) => {
-            throw new Error(`API hiba: ${text}`);
-          });
+        if (response.data.success) {
+          setUserData(response.data.user);
+          setNewData(response.data.user); // Az új adatok először a meglévő értékek lesznek
         }
-        return response.json();
-      })
-      .then((data) => {
-        setUsername(data.username);
-        setEmail(data.email);
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
       })
       .catch((error) => {
-        console.error("Hiba történt:", error);  
-        alert("Hiba történt az adatok lekérése közben!");
+        console.error("Hiba a felhasználói adatok betöltésekor:", error);
       });
   }, []);
 
-  const handleSave = () => {
-    const updatedData = {
-      username,
-      email,
-      firstName,
-      lastName,
-    };
+  // Inputok változásának kezelése
+  const handleChange = (e) => {
+    setNewData({ ...newData, [e.target.name]: e.target.value });
+  };
 
-    fetch("http://localhost:5020/api/updateUserData", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify(updatedData),
-    })
-      .then(response => {
-        if (!response.ok) {
-          return response.text().then(text => {
-            console.error("Error updating user data:", text);
-            throw new Error(`HTTP hiba: ${response.status}`);
-          });
+  // Adatok frissítése az adatbázisban
+  const handleSave = () => {
+    axios
+      .put("http://localhost:5020/update-profile", newData, { withCredentials: true })
+      .then((response) => {
+        if (response.data.success) {
+          setUserData(newData);
+          setEditing(false);
+          alert("Adatok sikeresen frissítve!");
         }
-        return response.json();
       })
-      .then(data => {
-        console.log("User data updated successfully:", data);
-        alert("Adatok sikeresen mentve!");
-        setIsEditing(false); 
-      })
-      .catch(error => {
-        console.error("Error updating user data:", error);
-        alert("Hiba történt az adatok mentése közben!");
+      .catch((error) => {
+        console.error("Hiba a frissítés során:", error);
       });
   };
 
@@ -82,15 +52,15 @@ const Fiok = () => {
             <img src={profileBlank} alt="icon" className="menu-icon" /> Fiók beállítások
           </li>
           <br />
-          <li style={{ fontWeight: '700', fontSize: '16px' }}>
+          <li style={{ fontWeight: "700", fontSize: "16px" }}>
             <img src={profileBlank} alt="icon" className="menu-icon" /> Jelszó és biztonság
           </li>
           <br />
-          <li style={{ fontWeight: '700', fontSize: '16px' }}>
+          <li style={{ fontWeight: "700", fontSize: "16px" }}>
             <img src={profileBlank} alt="icon" className="menu-icon" /> Fizetés kezelés
           </li>
           <br />
-          <li style={{ fontWeight: '700', fontSize: '16px' }}>
+          <li style={{ fontWeight: "700", fontSize: "16px" }}>
             <img src={profileBlank} alt="icon" className="menu-icon" /> Fizetési előzmények
           </li>
           <br />
@@ -100,90 +70,36 @@ const Fiok = () => {
         <h1>Fiók beállítások</h1>
         <section className="account-info">
           <table>
-            <thead>
-              <tr>
-                <th>Felhasználónév</th>
-                <th>Email-cím</th>
-              </tr>
-            </thead>
             <tbody>
               <tr>
                 <td>
+                  <label>Felhasználónév</label>
                   <input
                     type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    disabled={!isEditing} 
+                    name="felhasznalonev"
+                    value={newData.felhasznalonev}
+                    onChange={handleChange}
+                    disabled={!editing} // Alapból le van tiltva, csak szerkesztéskor engedélyezett
                   />
-                  <button onClick={() => {
-                    if (isEditing) {
-                      handleSave(); 
-                    }
-                    setIsEditing(!isEditing);
-                  }}>
-                    {isEditing ? "Mentés" : "Szerkesztés"}
-                  </button>
                 </td>
                 <td>
+                  <label>Email-cím</label>
                   <input
                     type="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={!isEditing} 
+                    name="emailcim"
+                    value={newData.emailcim}
+                    onChange={handleChange}
+                    disabled={!editing} // Alapból le van tiltva, csak szerkesztéskor engedélyezett
                   />
-                  <button onClick={() => {
-                    if (isEditing) {
-                      handleSave();
-                    }
-                    setIsEditing(!isEditing);
-                  }}>
-                    {isEditing ? "Mentés" : "Szerkesztés"}
-                  </button>
                 </td>
               </tr>
-            </tbody>
-          </table>
-          <br />
-          <table>
-            <thead>
               <tr>
-                <th>Vezetéknév</th>
-                <th>Keresztnév</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    disabled={!isEditing} 
-                  />
-                  <button onClick={() => {
-                    if (isEditing) {
-                      handleSave(); 
-                    }
-                    setIsEditing(!isEditing);
-                  }}>
-                    {isEditing ? "Mentés" : "Szerkesztés"}
-                  </button>
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    disabled={!isEditing} 
-                  />
-                  <button onClick={() => {
-                    if (isEditing) {
-                      handleSave(); 
-                    }
-                    setIsEditing(!isEditing);
-                  }}>
-                    {isEditing ? "Mentés" : "Szerkesztés"}
-                  </button>
+                <td colSpan="2">
+                  {!editing ? (
+                    <button onClick={() => setEditing(true)}>Szerkesztés</button>
+                  ) : (
+                    <button onClick={handleSave}>Mentés</button>
+                  )}
                 </td>
               </tr>
             </tbody>

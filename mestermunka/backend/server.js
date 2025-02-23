@@ -18,30 +18,26 @@ const db = mysql.createConnection({
   port: '3306',
 });
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true, }));
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 const authenticateToken = (req, res, next) => {
-  const token = req.cookies.authToken;  
-  if (!token) return res.status(200).json({ success: false, message: 'Nincs bejelentkezve' });
+  const token = req.cookies.authToken;
+  if (!token) return res.status(401).json({ success: false, message: 'Nincs bejelentkezve' });
+
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      console.error("Token érvénytelen:", err); 
-      return res.status(403).json({ success: false, message: 'Érvénytelen token' });
-    }
+    if (err) return res.status(403).json({ success: false, message: 'Érvénytelen token' });
     req.user = user;
     next();
   });
 };
 
-
 app.post('/register', (req, res) => {
-  const { vezeteknev, keresztnev, felhasznalonev, jelszo, email, telefonszam, telepules, munkaltato } = req.body;
+  const { vezeteknev, keresztnev, felhasznalonev, jelszo, emailcim, telefonszam, telepules, munkaltato } = req.body;
   const munkasreg = munkaltato ? 1 : 0;
   const letrehozasDatum = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-  
   console.log("Received registration data:", req.body);
 
   const query = `
@@ -55,12 +51,10 @@ app.post('/register', (req, res) => {
       return res.status(500).json({ success: false, message: 'Hiba történt a jelszó hash-elése során' });
     }
 
-    
     console.log("Executing SQL query...");
 
-    db.query(query, [vezeteknev, keresztnev, felhasznalonev, hash, email, telefonszam, telepules, munkasreg, letrehozasDatum], (err, result) => {
+    db.query(query, [vezeteknev, keresztnev, felhasznalonev, hash, emailcim, telefonszam, telepules, munkasreg, letrehozasDatum], (err, result) => {
       if (err) {
-        
         console.error('SQL hiba:', err);
         return res.status(500).json({ success: false, message: 'Hiba történt a regisztráció során', error: err.message || err });
       }
@@ -86,7 +80,7 @@ app.post('/login', (req, res) => {
     if (result.length > 0) {
       bcrypt.compare(jelszo, result[0].jelszo, (error, response) => {
         if (response) {
-          const token = jwt.sign({ id: result[0].id, felhasznalonev: result[0].felhasznalonev }, JWT_SECRET, { expiresIn: '1h' });
+          const token = jwt.sign({ userID: result[0].userID, felhasznalonev: result[0].felhasznalonev }, JWT_SECRET, { expiresIn: '1h' });
 
           res.cookie('authToken', token, {
             httpOnly: true,
@@ -99,9 +93,9 @@ app.post('/login', (req, res) => {
             success: true,
             message: "Sikeres bejelentkezés!",
             user: {
-              id: result[0].id,
+              userID: result[0].userID,  // Javított ID név
               felhasznalonev: result[0].felhasznalonev,
-              email: result[0].emailcim,
+              emailcim: result[0].emailcim,
               telefonszam: result[0].telefonszam
             }
           });
@@ -115,50 +109,6 @@ app.post('/login', (req, res) => {
   });
 });
 
-
-app.get('/api/getUserData', authenticateToken, (req, res) => {
-  const userId = req.user?.id;  
-  if (!userId) {
-    return res.status(400).json({ success: false, message: "A felhasználó id-je hiányzik" });
-  }
-
-  
-  db.query("SELECT * FROM felhasznaloi_adatok WHERE userID = ?", [userId], (err, result) => {
-    if (err) {
-      console.error("Hiba a lekérdezésben:", err); 
-      return res.status(500).json({ success: false, message: 'Hiba történt a felhasználói adatok lekérése közben' });
-    }
-    if (result.length === 0) {
-      return res.status(404).json({ success: false, message: 'Nincs adat a felhasználóról' });
-    }
-    res.json({
-      username: result[0].felhasznalonev,
-      email: result[0].email,
-      firstName: result[0].keresztnev,
-      lastName: result[0].vezeteknev
-    });
-  });
-});
-
-
-app.post('/api/updateUserData', authenticateToken, (req, res) => {
-  const { username, email, firstName, lastName } = req.body;
-  const userId = req.user?.id;  
-  if (!userId) {
-    return res.status(400).json({ success: false, message: 'Felhasználói ID hiányzik' });
-  }
-
-  const query = "UPDATE felhasznaloi_adatok SET felhasznalonev = ?, email = ?, keresztnev = ?, vezeteknev = ? WHERE userID = ?";
-  db.query(query, [username, email, firstName, lastName, userId], (err, result) => {
-    if (err) {
-      console.error("Hiba a frissítésnél:", err); 
-      return res.status(500).json({ success: false, message: 'Hiba történt az adatok frissítése közben' });
-    }
-    res.json({ success: true, message: 'Adatok sikeresen frissítve' });
-  });
-});
-
-
 app.get('/user', authenticateToken, (req, res) => {
   res.json({ success: true, user: req.user });
 });
@@ -166,6 +116,46 @@ app.get('/user', authenticateToken, (req, res) => {
 app.post('/logout', (req, res) => {
   res.clearCookie('authToken');
   res.status(200).json({ success: true, message: 'Sikeres kijelentkezés!' });
+});
+
+// Felhasználói adatok lekérése a bejelentkezett felhasználóhoz
+app.get('/profile', authenticateToken, (req, res) => {
+  const userID = req.user.userID;  // Javított ID név
+
+  db.query("SELECT felhasznalonev, emailcim FROM felhasznaloi_adatok WHERE userID = ?", [userID], (err, result) => {
+    if (err) {
+      console.error("Hiba a felhasználó lekérésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt!" });
+    }
+
+    if (result.length > 0) {
+      res.status(200).json({ success: true, user: result[0] });
+    } else {
+      res.status(404).json({ success: false, message: "Felhasználó nem található!" });
+    }
+  });
+});
+
+// Felhasználói adatok frissítése (felhasználónév, email)
+app.put('/update-profile', authenticateToken, (req, res) => {
+  const userID = req.user.userID;  // Javított ID név
+  const { felhasznalonev, emailcim } = req.body;
+
+  if (!felhasznalonev || !emailcim) {
+    return res.status(400).json({ success: false, message: "Minden mezőt ki kell tölteni!" });
+  }
+
+  db.query(
+    "UPDATE felhasznaloi_adatok SET felhasznalonev = ?, emailcim = ? WHERE userID = ?",
+    [felhasznalonev, emailcim, userID],
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ success: false, message: "Hiba történt a frissítés során." });
+      }
+      
+      res.json({ success: true, message: "Adatok sikeresen frissítve!" });
+    }
+  );
 });
 
 const PORT = 5020;

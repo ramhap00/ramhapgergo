@@ -5,7 +5,7 @@ import { UserContext } from "../../UserContext";
 import "../Stilusok/Bejelentkezes.css";
 
 const Bejelentkezes = () => {
-  const [felhasznalonev, setFelhasznalonev] = useState("");
+  const [felhasznalonev, setFelhasznalonev] = useState("");  
   const [jelszo, setJelszo] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -20,7 +20,9 @@ const Bejelentkezes = () => {
     )
       .then((response) => {
         if (response.data.success) {
-          setUser(response.data.user); 
+          setUser(response.data.user);
+          localStorage.setItem("userID", response.data.user.id);
+
           setSuccessMessage("Sikeres bejelentkezés!");
           setTimeout(() => {
             navigate("/Home");
@@ -63,7 +65,6 @@ const Bejelentkezes = () => {
         </div>
         <button onClick={handleLogin}>Bejelentkezés</button>
 
-        {}
         <div className="regisztracio-link">
           <p>
             Elfelejtettél regisztrálni?{" "}
