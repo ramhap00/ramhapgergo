@@ -24,7 +24,7 @@ const Regisztracio = () => {
         keresztnev: keresztnevReg,
         felhasznalonev: felhasznalonevReg,
         jelszo: jelszoReg,
-        email: emailReg,
+        emailcim: emailReg,
         telefonszam: telefonszamReg,
         telepules: telepulesReg,
         munkaltato: munkaltatoReg,

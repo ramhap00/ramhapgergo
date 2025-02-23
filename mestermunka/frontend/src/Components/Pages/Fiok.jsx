@@ -14,6 +14,7 @@ const Fiok = () => {
       .get("http://localhost:5020/profile", { withCredentials: true })
       .then((response) => {
         if (response.data.success) {
+          console.log(response)
           setUserData(response.data.user);
           setNewData(response.data.user); // Az új adatok először a meglévő értékek lesznek
         }
@@ -36,6 +37,8 @@ const Fiok = () => {
         if (response.data.success) {
           setUserData(newData);
           setEditing(false);
+          console.log(userData)
+          console.log(newData)
           alert("Adatok sikeresen frissítve!");
         }
       })
