@@ -4,9 +4,9 @@ import "../Stilusok/Fiok.css";
 import profileBlank from "../../assets/profile-blank.png";
 
 const Fiok = () => {
-  const [userData, setUserData] = useState({ felhasznalonev: "", emailcim: "" });
+  const [userData, setUserData] = useState({ felhasznalonev: "", emailcim: "",vezeteknev:"",keresztnev:"" });
   const [editing, setEditing] = useState(false);
-  const [newData, setNewData] = useState({ felhasznalonev: "", emailcim: "" });
+  const [newData, setNewData] = useState({ felhasznalonev: "", emailcim: "", vezeteknev:"",keresztnev:"" });
 
   // Felhasználói adatok betöltése
   useEffect(() => {
@@ -104,6 +104,45 @@ const Fiok = () => {
                     <button onClick={handleSave}>Mentés</button>
                   )}
                 </td>
+              </tr>
+              
+              <tr>
+                
+              </tr>
+              <tr>
+                <td>
+                  <label>Vezetéknév</label>
+                  <input
+                    type="text"
+                    name="vezeteknev"
+                    value={newData.vezeteknev}
+                    onChange={handleChange}
+                    disabled={!editing} // Alapból le van tiltva, csak szerkesztéskor engedélyezett
+                  />
+                </td>
+                <td>
+                  <label>Keresztnév</label>
+                  <input
+                    type="text"
+                    name="keresztnev"
+                    value={newData.keresztnev}
+                    onChange={handleChange}
+                    disabled={!editing} // Alapból le van tiltva, csak szerkesztéskor engedélyezett
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="2">
+                  {!editing ? (
+                    <button onClick={() => setEditing(true)}>Szerkesztés</button>
+                  ) : (
+                    <button onClick={handleSave}>Mentés</button>
+                  )}
+                </td>
+              </tr>
+              
+              <tr>
+                
               </tr>
             </tbody>
           </table>
