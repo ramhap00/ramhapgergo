@@ -13,6 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import 'tachyons';
 import Sajatposztok from "./Components/Pages/Sajatposztok";
+import Jelszo from "./Components/Pages/Jelszo";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/posztok" element={<Posztok />} />
           <Route path="/regisztracio" element={<Regisztracio />} />
           <Route path="/sajatposztok" element={<Sajatposztok />} />
+          <Route path="/jelszo" element={<Jelszo />} />
         </Routes>
       </Router>
     </UserProvider>

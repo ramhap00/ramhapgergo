@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Stilusok/Fiok.css";
 import profileBlank from "../../assets/profile-blank.png";
+import { Link } from "react-router-dom";
 
 const Fiok = () => {
   const [userData, setUserData] = useState({ felhasznalonev: "", emailcim: "",vezeteknev:"",keresztnev:"" });
@@ -56,7 +57,10 @@ const Fiok = () => {
           </li>
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
-            <img src={profileBlank} alt="icon" className="menu-icon" /> Jelszó és biztonság
+          <img src={profileBlank} alt="icon" className="menu-icon" /> 
+          <Link to="/jelszo" style={{ textDecoration: "none", color: "inherit" }}>
+           Jelszó és biztonság
+          </Link>
           </li>
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>

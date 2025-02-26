@@ -5,6 +5,7 @@ import { UserContext } from "../UserContext";
 import "./Stilusok/Navbar.css";
 import logo from "../assets/sosmunkalogo.png";
 import fioklogo from "../assets/profile-blank.png";
+import "bootstrap"
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(UserContext);

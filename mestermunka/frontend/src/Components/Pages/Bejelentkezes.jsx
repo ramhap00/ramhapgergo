@@ -21,7 +21,9 @@ const Bejelentkezes = () => {
       .then((response) => {
         if (response.data.success) {
           setUser(response.data.user);
-          localStorage.setItem("userID", response.data.user.id);
+          sessionStorage.setItem("userID", response.data.userID);
+
+          console.log('userID mentve:', response.data.userID);
 
           setSuccessMessage("Sikeres bejelentkezés!");
           setTimeout(() => {
