@@ -14,6 +14,7 @@ import 'bootstrap/dist/js/bootstrap.min.js';
 import 'tachyons';
 import Sajatposztok from "./Components/Pages/Sajatposztok";
 import Jelszo from "./Components/Pages/Jelszo";
+import Posztotcsinalok from "./Components/Pages/Posztotcsinalok";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/regisztracio" element={<Regisztracio />} />
           <Route path="/sajatposztok" element={<Sajatposztok />} />
           <Route path="/jelszo" element={<Jelszo />} />
+          <Route path="/posztotcsinalok" element={<Posztotcsinalok />} />
         </Routes>
       </Router>
     </UserProvider>
