@@ -56,7 +56,7 @@ const Regisztracio = () => {
         {error && <div className="error-message">{error}</div>}
         {successMessage && <div className="success-message">{successMessage}</div>} {}
         <div className="form-group">
-          <label htmlFor="vezeteknev">Vezetéknév:</label>
+          <label htmlFor="vezeteknev">Vezetéknév:<span className="required">*</span></label>
           <input
             type="text"
             id="vezeteknev"
@@ -66,7 +66,7 @@ const Regisztracio = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="keresztnev">Keresztnév:</label>
+          <label htmlFor="keresztnev">Keresztnév:<span className="required">*</span></label>
           <input
             type="text"
             id="keresztnev"
@@ -76,7 +76,7 @@ const Regisztracio = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="felhasznalonev">Felhasználónév:</label>
+          <label htmlFor="felhasznalonev">Felhasználónév:<span className="required">*</span></label>
           <input
             type="text"
             id="felhasznalonev"
@@ -86,7 +86,7 @@ const Regisztracio = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="jelszo">Jelszó:</label>
+          <label htmlFor="jelszo">Jelszó:<span className="required">*</span></label>
           <input
             type="password"
             id="jelszo"
@@ -96,7 +96,7 @@ const Regisztracio = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="email">Email cím:</label>
+          <label htmlFor="email">Email cím:<span className="required">*</span></label>
           <input
             type="email"
             id="email"
@@ -106,7 +106,7 @@ const Regisztracio = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="telefonszam">Telefonszám:</label>
+          <label htmlFor="telefonszam">Telefonszám:<span className="required">*</span></label>
           <input
             type="tel"
             id="telefonszam"
@@ -116,7 +116,7 @@ const Regisztracio = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="telepules">Település:</label>
+          <label htmlFor="telepules">Település:<span className="required">*</span></label>
           <input
             type="text"
             id="telepules"
