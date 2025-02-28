@@ -1,0 +1,1 @@
+SELECT * FROM sos_munka.posztok;

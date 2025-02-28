@@ -6,6 +6,8 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const multer = require("multer");
+const path = require("path");
 
 const saltRounds = 10;
 const JWT_SECRET = 'YOUR_SECRET_KEY';
@@ -32,6 +34,15 @@ const authenticateToken = (req, res, next) => {
     next();
   });
 };
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage: storage });
 
 app.post('/register', (req, res) => {
   const { vezeteknev, keresztnev, felhasznalonev, jelszo, emailcim, telefonszam, telepules, munkaltato } = req.body;
@@ -222,19 +233,20 @@ app.put('/update-password', authenticateToken, (req, res) => {
     });
   });
 });
-app.post('/api/poszt', (req, res) => {
+app.post("/api/poszt", upload.single("fotok"), (req, res) => {
   const { vezeteknev, keresztnev, telepules, telefonszam, kategoria, datum, leiras } = req.body;
+  const fotok = req.file ? req.file.filename : null;
 
   if (!vezeteknev || !keresztnev || !telepules || !telefonszam || !kategoria || !datum || !leiras) {
     return res.status(400).json({ success: false, message: "Minden mezőt ki kell tölteni!" });
   }
 
   const query = `
-    INSERT INTO posztok (vezeteknev, keresztnev, telepules, telefonszam, kategoria, datum, leiras) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO posztok (vezeteknev, keresztnev, telepules, telefonszam, kategoria, datum, leiras, fotok) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(query, [vezeteknev, keresztnev, telepules, telefonszam, kategoria, datum, leiras], (err, result) => {
+  db.query(query, [vezeteknev, keresztnev, telepules, telefonszam, kategoria, datum, leiras, fotok], (err, result) => {
     if (err) {
       console.error("Hiba a poszt mentésekor:", err);
       return res.status(500).json({ success: false, message: "Hiba történt a poszt mentésekor!" });

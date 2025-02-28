@@ -1,41 +1,5 @@
 import React, { useState } from "react";
 import "../Stilusok/Posztotcsinalok.css";
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  let newErrors = {};
-
-  Object.keys(formData).forEach((key) => {
-    if (!formData[key]) {
-      newErrors[key] = "Kötelező mező!";
-    }
-  });
-
-  setErrors(newErrors);
-
-  if (Object.keys(newErrors).length === 0) {
-    try {
-      const response = await fetch("http://localhost:5020/api/poszt", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert("Poszt sikeresen létrehozva!");
-        setFormData({ vezeteknev: "", keresztnev: "", telepules: "", telefonszam: "", kategoria: "", datum: "", leiras: "", fotok: null });
-      } else {
-        alert("Hiba történt: " + data.message);
-      }
-    } catch (error) {
-      console.error("Hiba a poszt létrehozásakor:", error);
-      alert("Hiba történt a poszt létrehozásakor!");
-    }
-  }
-};
 
 const Posztotcsinalok = () => {
   const [formData, setFormData] = useState({
@@ -43,19 +7,28 @@ const Posztotcsinalok = () => {
     keresztnev: "",
     telepules: "",
     telefonszam: "",
-    kategoria:"",
-    datum:"",
+    kategoria: "",
+    datum: "",
     leiras: "",
     fotok: null,
   });
 
   const [errors, setErrors] = useState({});
+  const [preview, setPreview] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, fotok: file });
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let newErrors = {};
 
@@ -69,7 +42,42 @@ const Posztotcsinalok = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      alert("Poszt sikeresen létrehozva!");
+      const data = new FormData();
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
+      });
+
+      try {
+        // POST request a backendhez
+        const response = await fetch("http://localhost:5020/api/poszt", {
+          method: "POST",
+          body: data,
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert("Poszt sikeresen létrehozva!");
+
+          // Form újra beállítása
+          setFormData({
+            vezeteknev: "",
+            keresztnev: "",
+            telepules: "",
+            telefonszam: "",
+            kategoria: "",
+            datum: "",
+            leiras: "",
+            fotok: null,
+          });
+          setPreview(null); // Fotó előnézet törlése
+        } else {
+          alert("Hiba történt: " + result.message);
+        }
+      } catch (error) {
+        console.error("Hiba a poszt létrehozásakor:", error);
+        alert("Hiba történt a poszt létrehozásakor!");
+      }
     }
   };
 
@@ -128,6 +136,7 @@ const Posztotcsinalok = () => {
             {errors.telefonszam && <span className="error-message">{errors.telefonszam}</span>}
           </div>
         </div>
+
         <div className="row">
           <div className="input-group">
             <label>Kategoria: <span className="required">*</span></label>
@@ -169,10 +178,8 @@ const Posztotcsinalok = () => {
         {/* Fotók */}
         <div className="input-group">
           <label>Fotók: <span className="required">*</span></label>
-          <div className={`photo-upload-placeholder ${errors.fotok ? "error" : ""}`}>
-            Ide kerülnek a fotók
-          </div>
-          {errors.fotok && <span className="error-message">{errors.fotok}</span>}
+          <input type="file" name="fotok" accept="image/*" onChange={handleFileChange} />
+          {preview && <img src={preview} alt="Előnézet" className="preview-image" />}
         </div>
 
         {/* Beküldő gomb */}
