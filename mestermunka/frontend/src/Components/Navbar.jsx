@@ -42,35 +42,24 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <Link to="/">
-          <img src={logo} alt="Company Logo" className="logo-img2" />
-        </Link>
-      
-        <ul className="nav-menu-left">
-  <li>
-    <NavLink
-      className="nav-link"
-      to="/posztok"
-      style= {{  fontWeight: '700', fontSize: '24px' }}  
-    >
-      Posztok
-    </NavLink>
-  </li>
-</ul>
-
-
-        <div className="navbar-text">S.O.S. Munka</div>
-
-        <ul className="nav-menu-right">
+    <nav id="flex-container" className="navbar navbar-expand-lg navbar-light bg-light">
+      <div className="col-sm-1"><Link to="/">
+          <img src={logo} alt="Company Logo" className="logo-img1" />
+        </Link></div>
+      <div className="col-sm-3"><ul className="nav-menu-left">
+        <li>
+          <NavLink className="nav-link" to="/posztok" style= {{  fontWeight: '700', fontSize: '24px' }}>Posztok</NavLink>
+        </li>
+      </ul></div>
+      <div className="col-sm-6" id="navbar-text">S.O.S. Munka</div>
+      <div className="col-xs-1"><ul className="nav-menu-right">
           <li
             className="dropdown"
             ref={dropdownRef} 
             onClick={() => setAccountDropdown(!accountDropdown)} 
           >
             <NavLink className="dropbtn" to="#">
-              <img src={fioklogo} alt="Fiók Logo" className="logo-img" />
+              <img src={fioklogo} alt="Fiók Logo" className="logo-img2" />
             </NavLink>
             {accountDropdown && (
               <ul className="dropdown-content">
@@ -106,8 +95,7 @@ const Navbar = () => {
               </ul>
             )}
           </li>
-        </ul>
-      </div>
+        </ul></div>
     </nav>
   );
 };
