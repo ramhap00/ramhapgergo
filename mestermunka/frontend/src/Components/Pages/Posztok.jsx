@@ -56,7 +56,7 @@ const Posztok = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Keresés..."
             />
-            <button onClick={handleSearch}>🔎</button>
+            <button  onClick={handleSearch}>🔎</button>
         </div>
 
         {/* 🚨 Hibaüzenet */}

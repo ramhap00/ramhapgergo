@@ -1,5 +1,41 @@
 import React, { useState } from "react";
 import "../Stilusok/Posztotcsinalok.css";
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  let newErrors = {};
+
+  Object.keys(formData).forEach((key) => {
+    if (!formData[key]) {
+      newErrors[key] = "Kötelező mező!";
+    }
+  });
+
+  setErrors(newErrors);
+
+  if (Object.keys(newErrors).length === 0) {
+    try {
+      const response = await fetch("http://localhost:5020/api/poszt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Poszt sikeresen létrehozva!");
+        setFormData({ vezeteknev: "", keresztnev: "", telepules: "", telefonszam: "", kategoria: "", datum: "", leiras: "", fotok: null });
+      } else {
+        alert("Hiba történt: " + data.message);
+      }
+    } catch (error) {
+      console.error("Hiba a poszt létrehozásakor:", error);
+      alert("Hiba történt a poszt létrehozásakor!");
+    }
+  }
+};
 
 const Posztotcsinalok = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +43,8 @@ const Posztotcsinalok = () => {
     keresztnev: "",
     telepules: "",
     telefonszam: "",
+    kategoria:"",
+    datum:"",
     leiras: "",
     fotok: null,
   });
@@ -88,6 +126,30 @@ const Posztotcsinalok = () => {
               className={errors.telefonszam ? "error" : ""}
             />
             {errors.telefonszam && <span className="error-message">{errors.telefonszam}</span>}
+          </div>
+        </div>
+        <div className="row">
+          <div className="input-group">
+            <label>Kategoria: <span className="required">*</span></label>
+            <input
+              type="text"
+              name="kategoria"
+              value={formData.kategoria}
+              onChange={handleChange}
+              className={errors.kategoria ? "error" : ""}
+            />
+            {errors.kategoria && <span className="error-message">{errors.kategoria}</span>}
+          </div>
+          <div className="input-group">
+            <label>Dátum: <span className="required">*</span></label>
+            <input
+              type="date"
+              name="datum"
+              value={formData.datum}
+              onChange={handleChange}
+              className={errors.datum ? "error" : ""}
+            />
+            {errors.datum && <span className="error-message">{errors.datum}</span>}
           </div>
         </div>
 
