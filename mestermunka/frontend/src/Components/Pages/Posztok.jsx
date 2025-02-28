@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import "../Stilusok/Posztok.css";
-import nagyito from "../../assets/nagyito.png";
 
-
+ 
 const Posztok = () => {
-    const [selectedCategory, setSelectedCategory] = useState("");
-    const [priceRange, setPriceRange] = useState(["", ""]);
-    const [location, setLocation] = useState("");
-    const [selectedOptions, setSelectedOptions] = useState([]);
-    const [searchTerm, setSearchTerm] = useState(""); // Kereső szöveg állapot
-
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [priceRange, setPriceRange] = useState(["", ""]);
+  const [location, setLocation] = useState("");
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState(""); 
+  const [sliderValue, setSliderValue] = useState([0, 0]); // Csúszka alapértékei
+  
     const categories = [
       "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
       "Parkettázás", "Autószerelés", "Gázszerelés", "Klimaszerelés", "Tv-szerelő",
@@ -22,28 +23,45 @@ const Posztok = () => {
       "Vas", "Veszprém", "Zala"
     ];
     const options = ["Elérhető", "Nem elérhető"];
-
+ 
     const handleCheckboxChange = (option) => {
       setSelectedOptions((prev) =>
         prev.includes(option) ? prev.filter((item) => item !== option) : [...prev, option]
       );
     };
+    const handleSearch = () => {
+      if (!categories.includes(searchTerm)) {
+          setErrorMessage("❌ Ilyen hirdetés nincs!");
+      } else {
+          setErrorMessage("");
+      }
+  };
+  const handleSliderChange = (e, index) => {
+    const newValue = [...sliderValue];
+    newValue[index] = e.target.value;
+    setSliderValue(newValue);
+    setPriceRange(newValue);
+};
 
+ 
     return (
       <div className="filter-container">
         <h2>Szűrők</h2>
-
-       {/* Kereső mező */}
-        <div className="search-container">
-        <img src={nagyito} alt="Keresés" className="search-icon" />
-         <input
-         type="text"
-         value={searchTerm}
-         onChange={(e) => setSearchTerm(e.target.value)}
-         placeholder="Keresés..."
-        />
+ 
+      {/* 🔍 Kereső mező */}
+      <div className="search-container">
+            <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Keresés..."
+            />
+            <button  onClick={handleSearch}>🔎</button>
         </div>
 
+        {/* 🚨 Hibaüzenet */}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+ 
         {/* Kategória választó */}
         <label>Kategória:</label>
         <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
@@ -52,7 +70,7 @@ const Posztok = () => {
             <option key={category} value={category}>{category}</option>
           ))}
         </select>
-
+ 
         {/* Ár választó */}
         <label>Ár:</label>
         <div className="price-inputs">
@@ -90,7 +108,7 @@ const Posztok = () => {
             className="price-slider"
           />
         </div>
-
+ 
         {/* Település választó */}
         <label>Település:</label>
         <select value={location} onChange={(e) => setLocation(e.target.value)}>
@@ -99,19 +117,22 @@ const Posztok = () => {
             <option key={city} value={city}>{city}</option>
           ))}
         </select>
-        {/* Kiválasztás / pipa */}
-        <label>Állapot:</label>
-        {options.map((option) => (
-          <div key={option}>
-            <input
-              type="checkbox"
-              checked={selectedOptions.includes(option)}
-              onChange={() => handleCheckboxChange(option)}
-            />
-            <span>{option}</span>
-           
-          </div>
-        ))}
+    {/* Állapot választó */}
+<label>Állapot:</label>
+<div className="status-container">
+  {options.map((option) => (
+    <div className="status-item" key={option}>
+      <span>{option}</span>
+      <input
+        type="checkbox"
+        checked={selectedOptions.includes(option)}
+        onChange={() => handleCheckboxChange(option)}
+      />
+    </div>
+  ))}
+</div>
+ 
+ 
       </div>
     );
   };
