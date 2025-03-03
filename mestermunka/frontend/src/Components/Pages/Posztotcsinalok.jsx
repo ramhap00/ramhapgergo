@@ -31,35 +31,39 @@ const Posztotcsinalok = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let newErrors = {};
-
-    // Kötelező mezők validálása
+  
     Object.keys(formData).forEach((key) => {
       if (!formData[key]) {
         newErrors[key] = "Kötelező mező!";
       }
     });
-
+  
     setErrors(newErrors);
-
+  
     if (Object.keys(newErrors).length === 0) {
+      const userID = localStorage.getItem("userID"); // Vagy állapotból szedjük ki
+  
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
         data.append(key, formData[key]);
       });
-
+  
+      if (userID) {
+        data.append("userID", userID); // Hozzáadjuk az azonosítót
+      }
+  
       try {
-        // POST request a backendhez
         const response = await fetch("http://localhost:5020/api/poszt", {
           method: "POST",
           body: data,
+          credentials: "include", // Küldje el a sütiket is
         });
-
+  
         const result = await response.json();
-
+  
         if (result.success) {
           alert("Poszt sikeresen létrehozva!");
-
-          // Form újra beállítása
+  
           setFormData({
             vezeteknev: "",
             keresztnev: "",
@@ -70,7 +74,7 @@ const Posztotcsinalok = () => {
             leiras: "",
             fotok: null,
           });
-          setPreview(null); // Fotó előnézet törlése
+          setPreview(null);
         } else {
           alert("Hiba történt: " + result.message);
         }
@@ -80,6 +84,7 @@ const Posztotcsinalok = () => {
       }
     }
   };
+  
 
   return (
     <div className="post-container">

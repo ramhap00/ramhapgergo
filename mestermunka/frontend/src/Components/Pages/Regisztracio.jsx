@@ -14,9 +14,39 @@ const Regisztracio = () => {
   const [munkaltatoReg, setMunkaltatoReg] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState(""); 
+  const [usernameError, setUsernameError] = useState(""); // Felhasználónév hiba
+  const [isUsernameChecking, setIsUsernameChecking] = useState(false); // Az ellenőrzés állapota
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState(false); // A felhasználónév elérhetősége
   const navigate = useNavigate();
 
+  // Felhasználónév ellenőrzése
+  const checkUsernameAvailability = async () => {
+    if (felhasznalonevReg) {
+      setIsUsernameChecking(true);  // Az ellenőrzés elkezdődött
+      try {
+        const response = await Axios.post("http://localhost:5020/check-username", { felhasznalonev: felhasznalonevReg });
+        if (response.data.exists) {
+          setUsernameError("Ez a felhasználónév már foglalt!");
+          setIsUsernameAvailable(false); // Nincs elérhető
+        } else {
+          setUsernameError("");
+          setIsUsernameAvailable(true); // Elérhető
+        }
+      } catch (error) {
+        setUsernameError("Hiba történt a felhasználónév ellenőrzése során.");
+        setIsUsernameAvailable(false); // Hiba esetén nem elérhető
+      }
+      setIsUsernameChecking(false);  // Az ellenőrzés befejeződött
+    }
+  };
+
+  // Regisztrációs folyamat
   const register = () => {
+    if (!isUsernameAvailable) {
+      setError("Kérlek válassz elérhető felhasználónevet!");
+      return; // Ha a felhasználónév nem elérhető, ne folytasd a regisztrációt
+    }
+
     Axios.post(
       "http://localhost:5020/register",
       {
@@ -34,8 +64,6 @@ const Regisztracio = () => {
       .then((response) => {
         if (response.data.success) {
           setSuccessMessage("Sikeres regisztráció! Átirányítunk a bejelentkezéshez."); 
-
-          
           setTimeout(() => {
             navigate("/bejelentkezes"); 
           }, 2000); 
@@ -44,7 +72,6 @@ const Regisztracio = () => {
         }
       })
       .catch((error) => {
-        console.error("Hiba történt:", error.response ? error.response.data : error.message);
         setError("Hiba történt a regisztráció során.");
       });
   };
@@ -81,9 +108,13 @@ const Regisztracio = () => {
             type="text"
             id="felhasznalonev"
             value={felhasznalonevReg}
-            onChange={(e) => setFelhasznalonevReg(e.target.value)}
+            onChange={(e) => {
+              setFelhasznalonevReg(e.target.value);
+              checkUsernameAvailability(); // Ellenőrizzük a felhasználónevet
+            }}
             required
           />
+          {usernameError && <div className="error-message">{usernameError}</div>}
         </div>
         <div className="form-group">
           <label htmlFor="jelszo">Jelszó:<span className="required">*</span></label>
@@ -134,11 +165,10 @@ const Regisztracio = () => {
             onChange={(e) => setMunkaltatoReg(e.target.checked)}
           />
         </div>
-        <button onClick={register} type="submit">
+        <button onClick={register} type="submit" disabled={!isUsernameAvailable || isUsernameChecking}>
           Regisztrálok
         </button>
 
-        {}
         <div className="bejelentkezes-link">
           <p>
             Van már S.O.S. fiókod?{" "}

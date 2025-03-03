@@ -12,7 +12,7 @@ export const UserProvider = ({ children }) => {
       try {
         const response = await Axios.get("http://localhost:5020/user", { withCredentials: true });
         if (response.data.success) {
-          setUser(response.data.user);
+          setUser(response.data.user); // Feltételezve, hogy a szerver válaszban van munkaltato mező
         }
       } catch (error) {
         console.error("Nem sikerült lekérni a felhasználói adatokat:", error.response || error);
