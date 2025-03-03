@@ -1,11 +1,6 @@
 import { motion } from "framer-motion";
 import "../Stilusok/Home.css"; 
-import workersBg from "/src/assets/workers-bg-resized.png";
-
-
-
-
-
+import workersBg from "/src/assets/munkasok.png";
 
 const Home = () => {
   return (
