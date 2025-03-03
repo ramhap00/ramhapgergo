@@ -36,12 +36,14 @@ const authenticateToken = (req, res, next) => {
 };
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    const uploadPath = path.join(__dirname, "uploads");
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
+
 const upload = multer({ storage: storage });
 
 app.post('/register', (req, res) => {
@@ -85,6 +87,8 @@ app.post('/login', (req, res) => {
   db.query("SELECT * FROM felhasznaloi_adatok WHERE felhasznalonev = ?;", [felhasznalonev], (err, result) => {
     if (err) {
       console.error("Hiba a lekérdezés során:", err);
+      console.log("API válasz:", response.data);
+
       return res.status(500).json({ success: false, message: "Szerverhiba!" });
     }
 
@@ -150,6 +154,25 @@ app.get('/profile', authenticateToken, (req, res) => {
       }
     }
   );
+});
+app.post('/check-username', (req, res) => {
+  const { felhasznalonev } = req.body;
+
+  // Lekérdezzük az adatbázist, hogy van-e már ilyen felhasználónév
+  db.query("SELECT * FROM felhasznaloi_adatok WHERE felhasznalonev = ?", [felhasznalonev], (err, result) => {
+    if (err) {
+      console.error("Hiba a felhasználónév ellenőrzésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt a felhasználónév ellenőrzésekor." });
+    }
+
+    if (result.length > 0) {
+      // Ha van már ilyen felhasználónév
+      res.json({ exists: true });
+    } else {
+      // Ha nincs
+      res.json({ exists: false });
+    }
+  });
 });
 
 app.put('/update-profile', authenticateToken, (req, res) => {
@@ -234,13 +257,15 @@ app.put('/update-password', authenticateToken, (req, res) => {
   });
 });
 app.post("/api/poszt", upload.single("fotok"), (req, res) => {
+  console.log("Kapott adatok:", req.body);
+  console.log("Kapott fájl:", req.file);
   const { vezeteknev, keresztnev, telepules, telefonszam, kategoria, datum, leiras } = req.body;
   const fotok = req.file ? req.file.filename : null;
 
-  if (!vezeteknev || !keresztnev || !telepules || !telefonszam || !kategoria || !datum || !leiras) {
+  if (!req.body.vezeteknev || !req.body.keresztnev || !req.body.telepules || !req.body.telefonszam || !req.body.kategoria || !req.body.datum || !req.body.leiras) {
     return res.status(400).json({ success: false, message: "Minden mezőt ki kell tölteni!" });
   }
-
+  
   const query = `
     INSERT INTO posztok (vezeteknev, keresztnev, telepules, telefonszam, kategoria, datum, leiras, fotok) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
