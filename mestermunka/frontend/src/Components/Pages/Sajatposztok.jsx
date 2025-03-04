@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../Stilusok/Posztok.css";
+import "../Stilusok/Sajatposztok.css";
 import { Link } from "react-router-dom";
 
  
@@ -21,7 +21,7 @@ const Sajatposztok = () => {
       "Bács-Kiskun", "Baranya", "Békés", "Borsod-Abaúj-Zemplén", "Csongrád-Csanád",
       "Fejér", "Győr-Moson-Sopron", "Hajdú-Bihar", "Heves", "Jász-Nagykun-Szolnok",
       "Komárom-Esztergom", "Nógrád", "Pest", "Somogy", "Szabolcs-Szatmár-Bereg", "Tolna",
-      "Vas", "Veszprém", "Zala"
+      "Vas", "Veszprém", "Zala", "Budapest"
     ];
     const options = ["Elérhető", "Nem elérhető"];
  

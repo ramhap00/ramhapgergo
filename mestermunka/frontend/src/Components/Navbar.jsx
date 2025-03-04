@@ -5,41 +5,42 @@ import { UserContext } from "../UserContext";
 import "./Stilusok/Navbar.css";
 import logo from "../assets/sosmunkalogo.png";
 import fioklogo from "../assets/profile-blank.png";
-import "bootstrap"
+import "bootstrap";
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(UserContext);
   const [accountDropdown, setAccountDropdown] = useState(false);
   const navigate = useNavigate();
-  const dropdownRef = useRef(null); 
+  const dropdownRef = useRef(null);
 
-  
   const handleLogout = () => {
     Axios.post("http://localhost:5020/logout", {}, { withCredentials: true })
       .then(() => {
         logoutUser();
-        navigate("/Home"); 
+        navigate("/Home");
       })
       .catch((error) => {
         console.error("Hiba a kijelentkezés során:", error);
       });
   };
 
-  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setAccountDropdown(false); 
+        setAccountDropdown(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
 
-  
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    console.log("🔵 Navbarban kapott user:", user); // Debug konzol
+  }, [user]); 
 
   return (
     <nav id="flex-container" className="navbar navbar-expand-lg navbar-light bg-light">
@@ -48,7 +49,7 @@ const Navbar = () => {
         </Link></div>
       <div className="col-sm-3"><ul className="nav-menu-left">
         <li>
-          <NavLink className="nav-link" to="/posztok" style= {{  fontWeight: '700', fontSize: '24px' }}>Posztok</NavLink>
+          <NavLink className="nav-link" to="/posztok" style={{ fontWeight: '700', fontSize: '24px' }}>Posztok</NavLink>
         </li>
       </ul></div>
       <div className="col-sm-6" id="navbar-text">S.O.S. Munka</div>
@@ -64,7 +65,6 @@ const Navbar = () => {
             {accountDropdown && (
               <ul className="dropdown-content">
                 {user ? (
-                  
                   <>
                     <li>
                       <NavLink to="/fiok">Fiók Beállítások</NavLink>
@@ -72,9 +72,11 @@ const Navbar = () => {
                     <li>
                       <NavLink to="/kedvencek">Kedvenceim</NavLink>
                     </li>
-                    <li>
-                      <NavLink to="/sajatposztok">Posztjaim</NavLink>
-                    </li>
+                    {user && user.munkasreg === 1 &&  ( // Itt van a feltétel
+                      <li>
+                        <NavLink to="/sajatposztok">Posztjaim</NavLink>
+                      </li>
+                    )}
                     <li>
                       <button className="logout-btn" onClick={handleLogout}>
                         Kijelentkezés
@@ -82,7 +84,6 @@ const Navbar = () => {
                     </li>
                   </>
                 ) : (
-                  
                   <>
                     <li>
                       <NavLink to="/regisztracio">Regisztrálok</NavLink>

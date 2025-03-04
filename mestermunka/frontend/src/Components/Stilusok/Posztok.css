@@ -1,91 +1,47 @@
-.filter-container {
+/* Posztok.css */
+.posztok-container {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  justify-content: center;
   padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #08e2c5;
-  width: 380px;
-  height: 100vh;
 }
 
-.filter-container h2 {
-  margin-bottom: 10px;
-  font-size: 18px;
-}
-
-.filter-container label {
-  font-weight: bold;
-}
-
-.filter-container select,
-.filter-container input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  
-}
-
-.filter-container input[type="number"] {
+.posztok-layout {
+  display: flex;
   width: 100%;
+  max-width: 1200px;
+  gap: 20px;
 }
 
-.filter-container div {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.posztok-filter {
+  width: 30%;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
 }
 
-.search-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid #ccc; /* Fekete szegély */
-  padding: 5px;
-  border-radius: 4px;
+.posztok-content {
+  width: 70%;
   background-color: white;
-  width: 100%; /* Kinyújtja a teljes elérhető helyre */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.search-container input {
-  flex: 1; /* Az input kitölti a maradék helyet */
-  border: none;
-  outline: none; /* Eltünteti a kék keretet fókusznál */
-  font-size: 16px;
-  padding: 5px;
+.posztok-list {
+  margin-bottom: 20px;
 }
 
-.search-icon {
-  width: 20px;
-  height: 20px;
-}
-.status-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Balra igazítja az elemeket */
-  gap: 5px;
+.post-item {
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
 }
 
-.status-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%; /* Kitölti a teljes szélességet */
+.post-item img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  margin-top: 10px;
 }
-
-.status-item span {
-  flex: 1; /* A szöveg kitölti a maradék helyet, teljesen balra tolódik */
-  text-align: left; /* Biztosítja a balra igazítást */
-}
-
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 5px; /* Csökkentsd ezt, ha még közelebb akarod */
-}
-
-.error-message {
-  color: red;
-  font-weight: bold;
+.button1{
+  width: 50px;
 }

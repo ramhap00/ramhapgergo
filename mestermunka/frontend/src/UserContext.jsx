@@ -6,16 +6,16 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Ellenőrizzük, hogy van-e aktív bejelentkezett user a szerveren
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await Axios.get("http://localhost:5020/user", { withCredentials: true });
         if (response.data.success) {
-          setUser(response.data.user); // Feltételezve, hogy a szerver válaszban van munkaltato mező
+          setUser(response.data.user);
+          console.log("🔵 Lekért felhasználó adatok:", response.data.user); // Debug konzol
         }
       } catch (error) {
-        console.error("Nem sikerült lekérni a felhasználói adatokat:", error.response || error);
+        console.error("Nem sikerült lekérni a felhasználói adatokat:", error);
       }
     };
 
@@ -24,15 +24,16 @@ export const UserProvider = ({ children }) => {
 
   const loginUser = (userData) => {
     setUser(userData);
+    console.log("🟢 Bejelentkezett user:", userData); // Debug konzol
   };
 
   const logoutUser = () => {
     Axios.post("http://localhost:5020/logout", {}, { withCredentials: true })
       .then(() => {
-        setUser(null); // Bejelentkezés törlése
+        setUser(null);
       })
       .catch((error) => {
-        console.error("Hiba történt a kijelentkezés során:", error.response || error);
+        console.error("Hiba történt a kijelentkezés során:", error);
       });
   };
 
