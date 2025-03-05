@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`felhasznaloi_adatok` (
   INDEX `asd` (`kuldoID` ASC) ,
   INDEX `ig` (`fogadoID` ASC) )
 ENGINE = InnoDB
-AUTO_INCREMENT = 22
+AUTO_INCREMENT = 25
 DEFAULT CHARACTER SET = utf8mb4;
 
 
@@ -71,15 +71,16 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`posztok` (
   `datum` DATE NULL DEFAULT NULL,
   `leiras` VARCHAR(255) NULL DEFAULT NULL,
   `fotok` VARCHAR(255) NULL DEFAULT NULL,
+  `fejlec` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`posztID`),
-  INDEX `userID` (`userID` ASC) ,
+  INDEX `userID` (`userID` ASC) VISIBLE,
   INDEX `kategoria` (`vezeteknev` ASC) ,
   CONSTRAINT `posztok_ibfk_1`
     FOREIGN KEY (`userID`)
     REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 7
+AUTO_INCREMENT = 15
 DEFAULT CHARACTER SET = utf8mb4;
 
 

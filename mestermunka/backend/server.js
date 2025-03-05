@@ -268,19 +268,19 @@ app.put('/update-password', authenticateToken, (req, res) => {
 app.post("/api/poszt", upload.single("fotok"), (req, res) => {
   console.log("Kapott adatok:", req.body);
   console.log("Kapott fájl:", req.file);
-  const { vezeteknev, keresztnev, telepules, telefonszam, kategoria, datum, leiras } = req.body;
+  const { vezeteknev, keresztnev,fejlec, telepules, telefonszam, kategoria, datum, leiras } = req.body;
   const fotok = req.file ? req.file.filename : null;
 
-  if (!vezeteknev || !keresztnev || !telepules || !telefonszam || !kategoria || !datum || !leiras) {
+  if (!vezeteknev || !keresztnev ||!fejlec ||!telepules || !telefonszam || !kategoria || !datum || !leiras) {
     return res.status(400).json({ success: false, message: "Minden mezőt ki kell tölteni!" });
   }
 
   const query = `
-    INSERT INTO posztok (vezeteknev, keresztnev, telepules, telefonszam, kategoria, datum, leiras, fotok)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO posztok (vezeteknev, keresztnev,fejlec, telepules, telefonszam, kategoria, datum, leiras, fotok)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
 
-  db.query(query, [vezeteknev, keresztnev, telepules, telefonszam, kategoria, datum, leiras, fotok], (err, result) => {
+  db.query(query, [vezeteknev, keresztnev,fejlec, telepules, telefonszam, kategoria, datum, leiras, fotok], (err, result) => {
     if (err) {
       console.error("Hiba a poszt mentésekor:", err);
       return res.status(500).json({ success: false, message: "Hiba történt a poszt mentésekor!" });

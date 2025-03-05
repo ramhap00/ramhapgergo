@@ -5,6 +5,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
   const [formData, setFormData] = useState({
     vezeteknev: "",
     keresztnev: "",
+    fejlec:"",
     telepules: "",
     telefonszam: "",
     kategoria: "",
@@ -15,6 +16,19 @@ const Posztotcsinalok = ({ onPostCreated }) => {
 
   const [errors, setErrors] = useState({});
   const [preview, setPreview] = useState(null);
+
+  const categories = [
+    "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
+    "Parkettázás", "Autószerelés", "Gázszerelés", "Klimaszerelés", "Tv-szerelő",
+    "Tetőfedés", "Állatorvos", "Műköröm"
+  ];
+
+  const locations = [
+    "Bács-Kiskun", "Baranya", "Békés", "Borsod-Abaúj-Zemplén", "Csongrád-Csanád",
+    "Fejér", "Győr-Moson-Sopron", "Hajdú-Bihar", "Heves", "Jász-Nagykun-Szolnok",
+    "Komárom-Esztergom", "Nógrád", "Pest", "Somogy", "Szabolcs-Szatmár-Bereg", "Tolna",
+    "Vas", "Veszprém", "Zala"
+  ];
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -69,6 +83,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           setFormData({
             vezeteknev: "",
             keresztnev: "",
+            fejlec:"",
             telepules: "",
             telefonszam: "",
             kategoria: "",
@@ -116,17 +131,33 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           {errors.keresztnev && <span>{errors.keresztnev}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="telepules">Település:</label>
+          <label htmlFor="telepules">Fejléc:</label>
           <input
             type="text"
+            id="fejlec"
+            name="fejlec"
+            value={formData.fejlec}
+            onChange={handleChange}
+            placeholder="Fejléc"
+          />
+          {errors.fejlec && <span>{errors.fejlec}</span>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="telepules">Település:</label>
+          <select
             id="telepules"
             name="telepules"
             value={formData.telepules}
             onChange={handleChange}
-            placeholder="Település"
-          />
+          >
+            <option value="">Válassz települést</option>
+            {locations.map((city, index) => (
+              <option key={index} value={city}>{city}</option>
+            ))}
+          </select>
           {errors.telepules && <span>{errors.telepules}</span>}
         </div>
+
         <div className="form-group">
           <label htmlFor="telefonszam">Telefonszám:</label>
           <input
@@ -148,10 +179,9 @@ const Posztotcsinalok = ({ onPostCreated }) => {
             onChange={handleChange}
           >
             <option value="">Válassz kategóriát</option>
-            <option value="Festés">Festés</option>
-            <option value="Kertészet">Kertészet</option>
-            <option value="Szakács">Szakács</option>
-            <option value="Programozó">Programozó</option>
+            {categories.map((category, index) => (
+              <option key={index} value={category}>{category}</option>
+            ))}
           </select>
           {errors.kategoria && <span>{errors.kategoria}</span>}
         </div>

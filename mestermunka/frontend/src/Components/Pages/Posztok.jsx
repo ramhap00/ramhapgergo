@@ -16,14 +16,14 @@ const Posztok = () => {
     "Parkettázás", "Autószerelés", "Gázszerelés", "Klimaszerelés", "Tv-szerelő",
     "Tetőfedés", "Állatorvos", "Műköröm"
   ];
-  
+
   const locations = [
     "Bács-Kiskun", "Baranya", "Békés", "Borsod-Abaúj-Zemplén", "Csongrád-Csanád",
     "Fejér", "Győr-Moson-Sopron", "Hajdú-Bihar", "Heves", "Jász-Nagykun-Szolnok",
     "Komárom-Esztergom", "Nógrád", "Pest", "Somogy", "Szabolcs-Szatmár-Bereg", "Tolna",
     "Vas", "Veszprém", "Zala"
   ];
-  
+
   const options = ["Elérhető", "Nem elérhető"];
 
   // Posztok betöltése
@@ -52,7 +52,13 @@ const Posztok = () => {
   };
 
   const handleSearch = () => {
-    if (!categories.includes(searchTerm)) {
+    const filteredPosts = posts.filter(post => 
+      post.kategoria.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      post.fejlec.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setPosts(filteredPosts);
+
+    if (filteredPosts.length === 0) {
       setErrorMessage("❌ Ilyen hirdetés nincs!");
     } else {
       setErrorMessage("");
@@ -100,43 +106,6 @@ const Posztok = () => {
             ))}
           </select>
 
-          {/* Ár választó */}
-          <label>Ár:</label>
-          <div className="price-inputs">
-            <input
-              type="number"
-              value={priceRange[0]}
-              onChange={(e) => setPriceRange([e.target.value, priceRange[1]])}
-              placeholder="Min"
-            />
-            <span>Ft</span>
-            <input
-              type="number"
-              value={priceRange[1]}
-              onChange={(e) => setPriceRange([priceRange[0], e.target.value])}
-              placeholder="Max"
-            />
-            <span>Ft</span>
-          </div>
-          <div className="price-slider-container">
-            <input
-              type="range"
-              min="0"
-              max="1000000"
-              value={priceRange[0]}
-              onChange={(e) => handleSliderChange(e, 0)}
-              className="price-slider"
-            />
-            <input
-              type="range"
-              min="0"
-              max="1000000"
-              value={priceRange[1]}
-              onChange={(e) => handleSliderChange(e, 1)}
-              className="price-slider"
-            />
-          </div>
-
           {/* Település választó */}
           <label>Település:</label>
           <select value={location} onChange={(e) => setLocation(e.target.value)}>
@@ -165,23 +134,22 @@ const Posztok = () => {
         {/* Jobb oldali posztok */}
         <div className="posztok-content">
           <div className="posztok-list">
-            <h2>Posztok</h2>
             {posts.length === 0 ? (
               <p>Nincs még poszt!</p>
             ) : (
               posts.map((post) => (
                 <div key={post.id} className="post-item">
                   <h3>{post.vezeteknev} {post.keresztnev}</h3>
+                  <h4>Leírás: {post.fejlec}</h4>
                   <p>Kategória: {post.kategoria}</p>
                   <p>Település: {post.telepules}</p>
-                  <p>Leirás:</p>
+                  <p>Tartalom:</p>
                   <p>{post.leiras}</p>
                   <img
-                  src={`http://localhost:5020/uploads/${post.fotok}`}
-                  alt="Post Image"
-                  style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
+                    src={`http://localhost:5020/uploads/${post.fotok}`}
+                    alt="Post Image"
+                    style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
                   />
-
                 </div>
               ))
             )}
