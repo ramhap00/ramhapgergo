@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`posztok` (
   `fotok` VARCHAR(255) NULL DEFAULT NULL,
   `fejlec` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`posztID`),
-  INDEX `userID` (`userID` ASC) VISIBLE,
+  INDEX `userID` (`userID` ASC) ,
   INDEX `kategoria` (`vezeteknev` ASC) ,
   CONSTRAINT `posztok_ibfk_1`
     FOREIGN KEY (`userID`)

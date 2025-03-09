@@ -8,8 +8,8 @@ const Posztok = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [sliderValue, setSliderValue] = useState([0, 1000000]); // Csúszka alapértékei
   const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
@@ -26,7 +26,6 @@ const Posztok = () => {
 
   const options = ["Elérhető", "Nem elérhető"];
 
-  // Posztok betöltése
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -34,6 +33,7 @@ const Posztok = () => {
         const data = await response.json();
         if (data.success) {
           setPosts(data.posts);
+          setFilteredPosts(data.posts); // Az első betöltéskor minden posztot mutassunk
         } else {
           console.error("Hiba történt a posztok betöltésekor");
         }
@@ -45,34 +45,54 @@ const Posztok = () => {
     fetchPosts();
   }, []);
 
+  const handleSearch = () => {
+    let filtered = posts;
+
+    if (selectedCategory) {
+      filtered = filtered.filter(post => post.kategoria === selectedCategory);
+    }
+
+    if (location) {
+      filtered = filtered.filter(post => post.telepules === location);
+    }
+
+    if (selectedOptions.length > 0) {
+      filtered = filtered.filter(post => selectedOptions.includes(post.allapot));
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter(post => 
+        post.kategoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.fejlec.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.vezeteknev.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.keresztnev.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.leiras.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (filtered.length === 0) {
+      setErrorMessage("❌ Ilyen hirdetés nincs!");
+    } else {
+      setErrorMessage("");
+    }
+
+    setFilteredPosts(filtered);
+};
+
+  
+
   const handleCheckboxChange = (option) => {
     setSelectedOptions((prev) =>
       prev.includes(option) ? prev.filter((item) => item !== option) : [...prev, option]
     );
   };
 
-  const handleSearch = () => {
-    const filteredPosts = posts.filter(post => 
-      post.kategoria.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      post.fejlec.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setPosts(filteredPosts);
-
-    if (filteredPosts.length === 0) {
-      setErrorMessage("❌ Ilyen hirdetés nincs!");
-    } else {
-      setErrorMessage("");
-    }
-  };
-
   const handleSliderChange = (e, index) => {
-    const newValue = [...sliderValue];
+    const newValue = [...priceRange];
     newValue[index] = e.target.value;
-    setSliderValue(newValue);
     setPriceRange(newValue);
   };
 
-  // Callback funkció, hogy frissítse a posztokat, amikor új posztot hoznak létre
   const handlePostCreated = (newPost) => {
     setPosts((prevPosts) => [...prevPosts, newPost]);
   };
@@ -134,11 +154,13 @@ const Posztok = () => {
         {/* Jobb oldali posztok */}
         <div className="posztok-content">
           <div className="posztok-list">
-            {posts.length === 0 ? (
-              <p>Nincs még poszt!</p>
+            {filteredPosts.length === 0 ? (
+              <p>Nincs ilyen poszt!</p>
             ) : (
-              posts.map((post) => (
-                <div key={post.id} className="post-item">
+              
+                filteredPosts.map((post, index) => (
+                  <div key={post.id || index} className="post-item">
+                
                   <h3>{post.vezeteknev} {post.keresztnev}</h3>
                   <h4>Leírás: {post.fejlec}</h4>
                   <p>Kategória: {post.kategoria}</p>
