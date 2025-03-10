@@ -108,7 +108,7 @@ const Sajatposztok = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Keresés..."
         />
-        <button onClick={handleSearch}>🔎</button>
+        <button className="button1" onClick={handleSearch}>🔎</button>
       </div>
 
       {/* 🚨 Hibaüzenet */}
