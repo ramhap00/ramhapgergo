@@ -6,16 +6,22 @@
   justify-content: center;
   align-items: center;
   z-index: 1;
-  background: rgba(0, 0, 0, 0.5); /* Az oldal sötétítése, a teljes képernyőre */
+  background-image: url('jo.png'); /* A háttérkép beállítása */
+  background-size: cover; /* Kép kitöltése */
+  background-position: center; /* Kép középre igazítása */
+  background-attachment: fixed; /* Kép ne mozogjon görgetéskor */
+  
+  
 }
 body {
   margin: 0;
   padding: 0;
- 
   background-size: cover;
   background-position: center;
   background-attachment: fixed; /* A háttérkép ne mozduljon, ha görgetsz */
   height: 100%; /* A test teljes magasságát kitölti */
+  
+
 }
 .overlay {
   position: absolute;
@@ -34,14 +40,16 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   max-width: 500px;
   width: 100%;
-  text-align: center;
-  margin-bottom: -1000px;
+  text-align: left;
+  margin-bottom: 50px;
+  margin-top: 50px;
   z-index: 2; /* A form mindig a háttér előtt */
 }
 
 h2 {
   font-size: 24px;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .form-group {

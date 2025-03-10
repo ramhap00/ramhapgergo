@@ -4,6 +4,7 @@ import Axios from "axios";
 import "../Stilusok/Regisztracio.css"; // A CSS fájlban lesz a stílus
 
 
+
 const Regisztracio = () => {
   const [vezeteknevReg, setVezeteknevReg] = useState("");
   const [keresztnevReg, setKeresztnevReg] = useState("");

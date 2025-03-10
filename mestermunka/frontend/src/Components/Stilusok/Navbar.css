@@ -9,12 +9,12 @@
   left: 0;
   background-color: transparent !important; /* Teljesen átlátszó háttér */
   z-index: 1000; /* A navbar legyen a legfelső rétegen */
-  padding: 10px 0; /* A navbar körüli kis margó */
+  padding: 0px 0; /* A navbar körüli kis margó */
 }
 
 /* A fő tartalom margóját úgy állítjuk be, hogy a navbar ne tolja be a tartalmat */
 body, .main-content {
-  padding-top: 100px; /* A navbar magasságának megfelelő padding (pl. 80px) */
+  padding-top: 80px; /* A navbar magasságának megfelelő padding (pl. 80px) */
   margin: 0;
 }
 
@@ -29,16 +29,17 @@ body, .main-content {
 }
 
 #navbar-text {
-  font-size: 30px;
+  font-size: 25px;
   font-weight: bold;
-  text-align: left;
+  right: auto;
   font-family: Arial, sans-serif;
-  color: black; /* Fehér szöveg, hogy jól látható legyen */
+  color: black; 
+  
 }
 
 .logo-img1 {
   width: 100%;
-  max-width: 99px;
+  max-width: 80px;
   height: auto;
 }
 
