@@ -5,7 +5,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
   const [formData, setFormData] = useState({
     vezeteknev: "",
     keresztnev: "",
-    fejlec:"",
+    fejlec: "",
     telepules: "",
     telefonszam: "",
     kategoria: "",
@@ -30,6 +30,12 @@ const Posztotcsinalok = ({ onPostCreated }) => {
     "Vas", "Veszprém", "Zala"
   ];
 
+  const validatePhoneNumber = (phoneNumber) => {
+    // A telefonszámnak legalább 11 számjegy hosszúnak kell lennie, és csak számokat vagy "+" jelet tartalmazhat
+    const phoneRegex = /^[0-9+]{11,}$/;
+    return phoneRegex.test(phoneNumber);
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -46,11 +52,17 @@ const Posztotcsinalok = ({ onPostCreated }) => {
     e.preventDefault();
     let newErrors = {};
 
+    // Ellenőrizzük, hogy minden mező ki van-e töltve
     Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
+      if (!formData[key] && key !== "fotok") {
         newErrors[key] = "Kötelező mező!";
       }
     });
+
+    // Telefonszám validálása
+    if (formData.telefonszam && !validatePhoneNumber(formData.telefonszam)) {
+      newErrors.telefonszam = "Érvénytelen telefonszám!";
+    }
 
     setErrors(newErrors);
 
@@ -83,7 +95,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           setFormData({
             vezeteknev: "",
             keresztnev: "",
-            fejlec:"",
+            fejlec: "",
             telepules: "",
             telefonszam: "",
             kategoria: "",
@@ -107,7 +119,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
       <h2>Poszt létrehozása</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="vezeteknev">Vezetéknév:</label>
+          <label htmlFor="vezeteknev">Vezetéknév:<span className="required">*</span></label>
           <input
             type="text"
             id="vezeteknev"
@@ -119,7 +131,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           {errors.vezeteknev && <span>{errors.vezeteknev}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="keresztnev">Keresztnév:</label>
+          <label htmlFor="keresztnev">Keresztnév:<span className="required">*</span></label>
           <input
             type="text"
             id="keresztnev"
@@ -131,7 +143,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           {errors.keresztnev && <span>{errors.keresztnev}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="telepules">Fejléc:</label>
+          <label htmlFor="fejlec">Fejléc:<span className="required">*</span></label>
           <input
             type="text"
             id="fejlec"
@@ -143,7 +155,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           {errors.fejlec && <span>{errors.fejlec}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="telepules">Település:</label>
+          <label htmlFor="telepules">Település:<span className="required">*</span></label>
           <select
             id="telepules"
             name="telepules"
@@ -159,7 +171,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="telefonszam">Telefonszám:</label>
+          <label htmlFor="telefonszam">Telefonszám:<span className="required">*</span></label>
           <input
             type="text"
             id="telefonszam"
@@ -171,7 +183,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           {errors.telefonszam && <span>{errors.telefonszam}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="kategoria">Kategória:</label>
+          <label htmlFor="kategoria">Kategória:<span className="required">*</span></label>
           <select
             id="kategoria"
             name="kategoria"
@@ -186,7 +198,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           {errors.kategoria && <span>{errors.kategoria}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="datum">Dátum:</label>
+          <label htmlFor="datum">Dátum:<span className="required">*</span></label>
           <input
             type="date"
             id="datum"
@@ -197,7 +209,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           {errors.datum && <span>{errors.datum}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="leiras">Leírás:</label>
+          <label htmlFor="leiras">Leírás:<span className="required">*</span></label>
           <textarea
             id="leiras"
             name="leiras"
@@ -208,7 +220,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           {errors.leiras && <span>{errors.leiras}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="fotok">Fotók:</label>
+          <label htmlFor="fotok">Fotók:<span className="required">*</span></label>
           <input
             type="file"
             id="fotok"

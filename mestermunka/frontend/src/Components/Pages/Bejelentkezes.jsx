@@ -46,7 +46,7 @@ const Bejelentkezes = () => {
         {error && <div className="error-message">{error}</div>}
         {successMessage && <div className="success-message">{successMessage}</div>}
         <div className="form-group">
-          <label htmlFor="felhasznalonev">Felhasználónév:</label>
+          <label htmlFor="felhasznalonev">Felhasználónév:<span className="required">*</span></label>
           <input
             type="text"
             id="felhasznalonev"
@@ -56,7 +56,7 @@ const Bejelentkezes = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="jelszo">Jelszó:</label>
+          <label htmlFor="jelszo">Jelszó:<span className="required">*</span></label>
           <input
             type="password"
             id="jelszo"
