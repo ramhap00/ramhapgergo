@@ -3,7 +3,12 @@ import { useNavigate, Link } from "react-router-dom";
 import Axios from "axios";
 import "../Stilusok/Regisztracio.css"; // A CSS fájlban lesz a stílus
 
-
+const megyek = [
+  "Bács-Kiskun", "Baranya", "Békés", "Borsod-Abaúj-Zemplén", "Csongrád-Csanád",
+  "Fejér", "Győr-Moson-Sopron", "Hajdú-Bihar", "Heves", "Jász-Nagykun-Szolnok",
+  "Komárom-Esztergom", "Nógrád", "Pest", "Somogy", "Szabolcs-Szatmár-Bereg", "Tolna",
+  "Vas", "Veszprém", "Zala"
+];
 
 const Regisztracio = () => {
   const [vezeteknevReg, setVezeteknevReg] = useState("");
@@ -21,6 +26,14 @@ const Regisztracio = () => {
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(false); 
   const navigate = useNavigate();
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  const validatePhoneNumber = (phone) => {
+    const phoneRegex =  /^\+?\d{1,11}$/;
+    return phoneRegex.test(phone);
+  };
   const checkUsernameAvailability = async () => {
     if (felhasznalonevReg) {
       setIsUsernameChecking(true);  
@@ -42,6 +55,14 @@ const Regisztracio = () => {
   };
 
   const register = () => {
+    if (!validateEmail(emailReg)) {
+      setError("Érvénytelen email cím! Kérlek adj meg egy helyes email címet.");
+      return;
+    }
+    if (!validatePhoneNumber(telefonszamReg)) {
+      setError("Érvénytelen telefonszám!");
+      return;
+    }
     if (!isUsernameAvailable) {
       setError("Kérlek válassz elérhető felhasználónevet!");
       return; 
@@ -149,13 +170,17 @@ const Regisztracio = () => {
         </div>
         <div className="form-group">
           <label htmlFor="telepules">Település:<span className="required">*</span></label>
-          <input
-            type="text"
+          <select
             id="telepules"
             value={telepulesReg}
             onChange={(e) => setTelepulesReg(e.target.value)}
             required
-          />
+          >
+            <option value="">Válassz települést</option>
+            {megyek.map((telepules, index) => (
+              <option key={index} value={telepules}>{telepules}</option>
+            ))}
+          </select>
         </div>
         <div className="form-group">
           <label htmlFor="munkaltato">Munkáltató fiókot szeretnék:</label>
