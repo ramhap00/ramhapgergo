@@ -41,36 +41,8 @@ const Bejelentkezes = () => {
   };
 
   return (
-<<<<<<< Updated upstream
-    <div className="bejelentkezes-container">
-      <h2>Bejelentkezés</h2>
-      <div className="bejelentkezes-form">
-        {error && <div className="error-message">{error}</div>}
-        {successMessage && <div className="success-message">{successMessage}</div>}
-        <div className="form-group">
-          <label htmlFor="felhasznalonev">Felhasználónév:<span className="required">*</span></label>
-          <input
-            type="text"
-            id="felhasznalonev"
-            value={felhasznalonev}
-            onChange={(e) => setFelhasznalonev(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="jelszo">Jelszó:<span className="required">*</span></label>
-          <input
-            type="password"
-            id="jelszo"
-            value={jelszo}
-            onChange={(e) => setJelszo(e.target.value)}
-            required
-          />
-        </div>
-        <button onClick={handleLogin}>Bejelentkezés</button>
-=======
     <div className="bejelentkezes-page" style={{ backgroundImage: `url(${backgroundImage})` }}>
-      <div className="bejelentkezes-container">
+      <div className="bejelentkezes-container" >
         <h2>Bejelentkezés</h2>
         <div className="bejelentkezes-form" >
           {error && <div className="error-message">{error}</div>}
@@ -96,7 +68,6 @@ const Bejelentkezes = () => {
             />
           </div>
           <button onClick={handleLogin}>Bejelentkezés</button>
->>>>>>> Stashed changes
 
           <div className="regisztracio-link">
             <p>
