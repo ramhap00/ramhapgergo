@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import "../Stilusok/Home.css"; 
-import workersBg from "/src/assets/munkasok.png";
+import workersBg from "/src/assets/jo.png";
 
 const Home = () => {
   return (
