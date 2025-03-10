@@ -1,4 +1,4 @@
-.filter-container {
+#filter-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -10,28 +10,28 @@
     height: 100vh;
   }
   
-  .filter-container h2 {
+  #filter-container h2 {
     margin-bottom: 10px;
     font-size: 18px;
   }
   
-  .filter-container label {
+  #filter-container label {
     font-weight: bold;
   }
   
-  .filter-container select,
-  .filter-container input {
+  #filter-container select,
+  #filter-container input {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     
   }
   
-  .filter-container input[type="number"] {
+  #filter-container input[type="number"] {
     width: 100%;
   }
   
-  .filter-container div {
+  #filter-container div {
     display: flex;
     align-items: center;
     gap: 5px;

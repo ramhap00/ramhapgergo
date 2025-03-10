@@ -97,7 +97,8 @@ const Sajatposztok = () => {
   };
 
   return (
-    <div className="filter-container">
+    <div id="flex-container">
+    <div className="col-sm-4" id="filter-container">
       <h2>Szűrők</h2>
 
       {/* 🔍 Kereső mező */}
@@ -170,28 +171,32 @@ const Sajatposztok = () => {
       <br />
       <br />
       <Link to="/posztotcsinalok"><button>Új poszt</button></Link>
-
+      </div>
       {/* Posztok listázása */}
-      <div className="posztok-list">
+      <div className="card-deck">
+      <div className="card">
         {filteredPosts.length === 0 ? (
           <p>Nincsenek saját posztjaid!</p>
         ) : (
           filteredPosts.map((post) => (
-            <div key={post.id} className="post-item">
+            <div key={post.id} className="card-body">
+              <img
+                src={`http://localhost:5020/uploads/${post.fotok}`}
+                className="card-img-top"
+                alt="Post Image"
+                style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
+              />
               <h3>{post.vezeteknev} {post.keresztnev}</h3>
               <h4>Leírás: {post.fejlec}</h4>
               <p>Kategória: {post.kategoria}</p>
               <p>Település: {post.telepules}</p>
               <p>Tartalom:</p>
               <p>{post.leiras}</p>
-              <img
-                src={`http://localhost:5020/uploads/${post.fotok}`}
-                alt="Post Image"
-                style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
-              />
+              
             </div>
           ))
         )}
+      </div>
       </div>
     </div>
   );
