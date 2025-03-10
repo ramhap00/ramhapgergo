@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; 
 import Axios from "axios";
-import "../Stilusok/Regisztracio.css";
+import "../Stilusok/Regisztracio.css"; // A CSS fájlban lesz a stílus
+
 
 const Regisztracio = () => {
   const [vezeteknevReg, setVezeteknevReg] = useState("");
@@ -14,37 +15,35 @@ const Regisztracio = () => {
   const [munkaltatoReg, setMunkaltatoReg] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState(""); 
-  const [usernameError, setUsernameError] = useState(""); // Felhasználónév hiba
-  const [isUsernameChecking, setIsUsernameChecking] = useState(false); // Az ellenőrzés állapota
-  const [isUsernameAvailable, setIsUsernameAvailable] = useState(false); // A felhasználónév elérhetősége
+  const [usernameError, setUsernameError] = useState(""); 
+  const [isUsernameChecking, setIsUsernameChecking] = useState(false); 
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState(false); 
   const navigate = useNavigate();
 
-  // Felhasználónév ellenőrzése
   const checkUsernameAvailability = async () => {
     if (felhasznalonevReg) {
-      setIsUsernameChecking(true);  // Az ellenőrzés elkezdődött
+      setIsUsernameChecking(true);  
       try {
         const response = await Axios.post("http://localhost:5020/check-username", { felhasznalonev: felhasznalonevReg });
         if (response.data.exists) {
           setUsernameError("Ez a felhasználónév már foglalt!");
-          setIsUsernameAvailable(false); // Nincs elérhető
+          setIsUsernameAvailable(false); 
         } else {
           setUsernameError("");
-          setIsUsernameAvailable(true); // Elérhető
+          setIsUsernameAvailable(true); 
         }
       } catch (error) {
         setUsernameError("Hiba történt a felhasználónév ellenőrzése során.");
-        setIsUsernameAvailable(false); // Hiba esetén nem elérhető
+        setIsUsernameAvailable(false); 
       }
-      setIsUsernameChecking(false);  // Az ellenőrzés befejeződött
+      setIsUsernameChecking(false);  
     }
   };
 
-  // Regisztrációs folyamat
   const register = () => {
     if (!isUsernameAvailable) {
       setError("Kérlek válassz elérhető felhasználónevet!");
-      return; // Ha a felhasználónév nem elérhető, ne folytasd a regisztrációt
+      return; 
     }
 
     Axios.post(
@@ -78,10 +77,11 @@ const Regisztracio = () => {
 
   return (
     <div className="regisztracio-container">
-      <h2>Regisztráció</h2>
+      <div className="overlay"></div> {/* Elhomályosított háttér */}
       <div className="regisztracio-form">
+        <h2>Regisztráció</h2>
         {error && <div className="error-message">{error}</div>}
-        {successMessage && <div className="success-message">{successMessage}</div>} {}
+        {successMessage && <div className="success-message">{successMessage}</div>} 
         <div className="form-group">
           <label htmlFor="vezeteknev">Vezetéknév:<span className="required">*</span></label>
           <input

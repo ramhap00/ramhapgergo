@@ -1,15 +1,30 @@
+/* Navbar fix pozíció és átlátszó háttér */
 #flex-container {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: transparent !important; /* Teljesen átlátszó háttér */
+  z-index: 1000; /* A navbar legyen a legfelső rétegen */
+  padding: 10px 0; /* A navbar körüli kis margó */
 }
 
-.nav-menu-left{
+/* A fő tartalom margóját úgy állítjuk be, hogy a navbar ne tolja be a tartalmat */
+body, .main-content {
+  padding-top: 100px; /* A navbar magasságának megfelelő padding (pl. 80px) */
+  margin: 0;
+}
+
+/* Menük és logók stílusai */
+.nav-menu-left {
   list-style: none;
   text-align: left;
 }
 
-.nav-menu-right{
+.nav-menu-right {
   list-style: none;
 }
 
@@ -18,20 +33,22 @@
   font-weight: bold;
   text-align: left;
   font-family: Arial, sans-serif;
+  color: black; /* Fehér szöveg, hogy jól látható legyen */
 }
 
-.logo-img1{
+.logo-img1 {
   width: 100%;
   max-width: 99px;
   height: auto;
 }
 
-.logo-img2{
+.logo-img2 {
   width: 100%;
   max-width: 60px;
   height: auto;
 }
 
+/* Dropdown menü */
 .dropdown {
   position: relative;
 }
@@ -49,8 +66,8 @@
   display: none;
   position: absolute;
   top: 40px;
-  left: 15%; 
-  transform: translateX(-50%); 
+  left: 15%;
+  transform: translateX(-50%);
   background-color: white;
   list-style: none;
   padding: 10px 0;
@@ -58,9 +75,8 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   min-width: 180px;
   z-index: 9999;
-  text-align: center; 
+  text-align: center;
 }
-
 
 .dropdown-content li {
   padding: 8px 16px;
@@ -75,15 +91,11 @@
   background-color: #f1f1f1;
 }
 
-
 .dropdown:hover .dropdown-content {
   display: block;
 }
 
-.dropdown-content {
-  right: 0; 
-}
-
+/* Mobilnézetekhez */
 @media (max-width: 768px) {
   .dropdown-content {
     left: auto;
