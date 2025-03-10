@@ -1,4 +1,5 @@
 /* Az egész oldalra vonatkozó háttérkép */
+/* Az egész oldalra vonatkozó háttérkép */
 body, html {
   height: 100%;
   margin: 0;
@@ -14,6 +15,7 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative; /* Beállítjuk relatív pozicionálást */
 }
 
 /* A bejelentkezési doboz formázása és elmosása */
@@ -21,10 +23,22 @@ body, html {
   background: rgba(255, 255, 255, 0.2); /* Enyhén átlátszó fehér háttér */
   backdrop-filter: blur(10px); /* Elmosás effekt */
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 400px;
+  position: relative; /* Hogy a z-index működjön */
+}
+
+/* Overlay beállítása */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(2, 2, 2, 0.5); /* Elhomályosított háttér */
+  
 }
 
 /* Cím formázása */
@@ -33,6 +47,15 @@ body, html {
   margin-bottom: 20px;
   color: white; /* Jobb olvashatóság érdekében */
 }
+
+/* Navbar (ha van) formázása */
+.navbar {
+  position: relative; /* Ha van navbar, akkor ezt beállítjuk */
+  z-index: 2; /* Magasabb z-index, hogy a navbar mindig a tartalom felett legyen */
+}
+
+/* A további stílusok nem változnak */
+
 
 /* Formázás az input mezőkhöz */
 .bejelentkezes-form {
@@ -67,7 +90,7 @@ body, html {
 
 /* Bejelentkezési gomb */
 .bejelentkezes-form button {
-  background-color: #08e2c5;
+  background-color: white;
   color: black;
   padding: 10px 15px;
   border: none;
@@ -77,7 +100,7 @@ body, html {
 }
 
 .bejelentkezes-form button:hover {
-  background-color: #06c2a1;
+  background-color: lightblue;
 }
 
 /* Üzenetek formázása */
@@ -95,13 +118,39 @@ body, html {
 .regisztracio-link {
   text-align: center;
   margin-top: 10px;
+  color: white;
+  
 }
 
 .regisztracio-link a {
-  color: white;
+  color: lightblue;
   text-decoration: none;
 }
-
-.regisztracio-link a:hover {
+.regisztracio-link:hover{
+  
   text-decoration: underline;
 }
+
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  width: 25px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.eye-icon:hover {
+  opacity: 1;
+}
+

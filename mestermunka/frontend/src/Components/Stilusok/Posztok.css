@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
   padding: 20px;
+  
 }
 
 .posztok-layout {
@@ -31,10 +32,21 @@
   margin-bottom: 20px;
 }
 
+/* Posztok emelése hover hatásra */
 .post-item {
   border-bottom: 1px solid #ddd;
   padding: 15px 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animációs átmenet */
+  cursor: pointer;
 }
+
+/* Hover effektus: emelés és árnyék */
+.post-item:hover {
+  transform: translateY(-10px); /* Kicsit emeli a posztot */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Árnyék hozzáadása */
+  cursor: pointer;
+}
+
 
 .post-item img {
   width: 100%;
@@ -45,3 +57,90 @@
 .button1{
   width: 50px;
 }
+
+
+/* Modal tartalom (fehér háttérrel) */
+.modal-content {
+  background-color: white; /* Fehér háttér a modal tartalomnak */
+  padding: 15px;
+  border-radius: 10px;
+  max-width: 600px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.9);
+  z-index: 1001;
+  text-align: left;
+  opacity: 0; /* Kezdetben átlátszó */
+  animation: slideUp 0.5s forwards, fadeInContent 0.5s forwards; /* Két animáció: emelkedés és halványulás */
+}
+
+/* Modális overlay - teljesen fekete háttér */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9); /* Teljesen fekete háttér */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0; /* Kezdetben átlátszó */
+  animation: fadeIn 0.5s forwards; /* Halványuló animáció */
+  color: white;
+}
+
+/* Halványuló animáció */
+@keyframes fadeIn {
+  from {
+    opacity: 0; /* Kezdő átlátszóság */
+  }
+  to {
+    opacity: 1; /* Végeredmény: teljes átlátszóság */
+  }
+}
+
+
+/* Modal tartalom emelkedés animáció */
+@keyframes slideUp {
+  from {
+    transform: translateY(50px); /* Kezdetben lent */
+  }
+  to {
+    transform: translateY(0); /* Végeredmény: normál pozíció */
+  }
+}
+
+/* Halványuló animáció a modal tartalomhoz */
+@keyframes fadeInContent {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal kép */
+.modal-content img {
+  width: 10px; /* A kép szélessége kitölti a modal szélességét */
+  height: 10px; /* A magasság automatikusan méretezi, hogy ne torzuljon */
+  border-radius: 8px;
+  margin-top: 15px; /* Kisebb távolság */
+}
+
+/* Bezáró gomb */
+.modal-content button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 15px; /* Kisebb távolság */
+}
+
+.modal-content button:hover {
+  background-color: #d32f2f;
+}
+
+

@@ -3,13 +3,16 @@ import "../Stilusok/Posztok.css";
 
 const Posztok = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [location, setLocation] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
+  
+  // Modális poszt
+  const [selectedPost, setSelectedPost] = useState(null); // Kiválasztott poszt
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal állapot
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
@@ -77,9 +80,7 @@ const Posztok = () => {
     }
 
     setFilteredPosts(filtered);
-};
-
-  
+  };
 
   const handleCheckboxChange = (option) => {
     setSelectedOptions((prev) =>
@@ -87,14 +88,15 @@ const Posztok = () => {
     );
   };
 
-  const handleSliderChange = (e, index) => {
-    const newValue = [...priceRange];
-    newValue[index] = e.target.value;
-    setPriceRange(newValue);
+  // Modális ablak kezelése
+  const handlePostClick = (post) => {
+    setSelectedPost(post); // Kiválasztott poszt
+    setIsModalOpen(true); // Modal megnyitása
   };
 
-  const handlePostCreated = (newPost) => {
-    setPosts((prevPosts) => [...prevPosts, newPost]);
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Modal bezárása
+    setSelectedPost(null); // Kiválasztott poszt törlése
   };
 
   return (
@@ -157,27 +159,49 @@ const Posztok = () => {
             {filteredPosts.length === 0 ? (
               <p>Nincs ilyen poszt!</p>
             ) : (
-              
-                filteredPosts.map((post, index) => (
-                  <div key={post.id || index} className="post-item">
-                
+              filteredPosts.map((post) => (
+                <div
+                  key={post.id}
+                  className="post-item"
+                  onClick={() => handlePostClick(post)} // Kattintás esemény
+                >
                   <h3>{post.vezeteknev} {post.keresztnev}</h3>
                   <h4>Leírás: {post.fejlec}</h4>
                   <p>Kategória: {post.kategoria}</p>
                   <p>Település: {post.telepules}</p>
-                  <p>Tartalom:</p>
                   <p>{post.leiras}</p>
                   <img
                     src={`http://localhost:5020/uploads/${post.fotok}`}
                     alt="Post Image"
                     style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
                   />
+                  <p>Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}</p>
                 </div>
               ))
             )}
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && selectedPost && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>{selectedPost.fejlec}</h2>
+            <h3>{selectedPost.vezeteknev} {selectedPost.keresztnev}</h3>
+            <p>{selectedPost.leiras}</p>
+            <p><strong>Kategória:</strong> {selectedPost.kategoria}</p>
+            <p><strong>Település:</strong> {selectedPost.telepules}</p>
+            <p><strong>Dátum:</strong> {new Date(selectedPost.datum).toLocaleDateString("hu-HU")}</p>
+            <img
+              src={`http://localhost:5020/uploads/${selectedPost.fotok}`}
+              alt="Post Image"
+              style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
+            />
+            <button onClick={handleCloseModal}>Bezárás</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
