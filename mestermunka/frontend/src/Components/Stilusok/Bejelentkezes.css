@@ -1,71 +1,107 @@
+/* Az egész oldalra vonatkozó háttérkép */
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
 
+/* Háttér beállítása az egész oldalra */
+.bejelentkezes-page {
+  background: url("jo.png") no-repeat center center fixed;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* A bejelentkezési doboz formázása és elmosása */
 .bejelentkezes-container {
-    background-color: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-  
-  .bejelentkezes-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .bejelentkezes-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .bejelentkezes-form .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .bejelentkezes-form label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    display: block;
-  }
-  
-  .bejelentkezes-form input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .bejelentkezes-form button {
-    background-color: #08e2c5
-    ;
-    color:black;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .bejelentkezes-form button:hover {
-    background-color: #08e2c5
-    ;
-  }
-  
-  .bejelentkezes-form input:focus, .bejelentkezes-form button:focus {
-    outline: none;
-  }
-  
-  .bejelentkezes-form input[type="text"], 
-  .bejelentkezes-form input[type="password"] {
-    margin-bottom: 10px;
-  }
-  .success-message {
-    color: green;
-    margin-bottom: 10px;
-  }
-  
-  .error-message {
-    color: red;
-    margin-bottom: 10px;
-  }
+  background: rgba(255, 255, 255, 0.2); /* Enyhén átlátszó fehér háttér */
+  backdrop-filter: blur(10px); /* Elmosás effekt */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Cím formázása */
+.bejelentkezes-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: white; /* Jobb olvashatóság érdekében */
+}
+
+/* Formázás az input mezőkhöz */
+.bejelentkezes-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.bejelentkezes-form .form-group {
+  margin-bottom: 15px;
+}
+
+.bejelentkezes-form label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+  color: white; /* Kontrasztos szöveg */
+}
+
+.bejelentkezes-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  backdrop-filter: blur(5px); /* Input mezők hátterének elmosása */
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.bejelentkezes-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Bejelentkezési gomb */
+.bejelentkezes-form button {
+  background-color: #08e2c5;
+  color: black;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.bejelentkezes-form button:hover {
+  background-color: #06c2a1;
+}
+
+/* Üzenetek formázása */
+.success-message {
+  color: green;
+  margin-bottom: 10px;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}
+
+/* Regisztrációs link */
+.regisztracio-link {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.regisztracio-link a {
+  color: white;
+  text-decoration: none;
+}
+
+.regisztracio-link a:hover {
+  text-decoration: underline;
+}

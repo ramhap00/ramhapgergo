@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; 
 import Axios from "axios";
 import "../Stilusok/Regisztracio.css"; // A CSS fájlban lesz a stílus
+import backgroundImage from "../../assets/jo.png"
+
 
 const megyek = [
   "Bács-Kiskun", "Baranya", "Békés", "Borsod-Abaúj-Zemplén", "Csongrád-Csanád",
@@ -98,7 +100,7 @@ const Regisztracio = () => {
   };
 
   return (
-    <div className="regisztracio-container">
+    <div className="regisztracio-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <div className="overlay"></div> {/* Elhomályosított háttér */}
       <div className="regisztracio-form">
         <h2>Regisztráció</h2>

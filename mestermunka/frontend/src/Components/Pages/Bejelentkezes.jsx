@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Axios from "axios";
 import { UserContext } from "../../UserContext";
 import "../Stilusok/Bejelentkezes.css";
+import backgroundImage from "../../assets/jo.png"
 
 const Bejelentkezes = () => {
   const [felhasznalonev, setFelhasznalonev] = useState("");  
@@ -40,6 +41,7 @@ const Bejelentkezes = () => {
   };
 
   return (
+<<<<<<< Updated upstream
     <div className="bejelentkezes-container">
       <h2>Bejelentkezés</h2>
       <div className="bejelentkezes-form">
@@ -66,12 +68,42 @@ const Bejelentkezes = () => {
           />
         </div>
         <button onClick={handleLogin}>Bejelentkezés</button>
+=======
+    <div className="bejelentkezes-page" style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <div className="bejelentkezes-container">
+        <h2>Bejelentkezés</h2>
+        <div className="bejelentkezes-form" >
+          {error && <div className="error-message">{error}</div>}
+          {successMessage && <div className="success-message">{successMessage}</div>}
+          <div className="form-group">
+            <label htmlFor="felhasznalonev">Felhasználónév:</label>
+            <input
+              type="text"
+              id="felhasznalonev"
+              value={felhasznalonev}
+              onChange={(e) => setFelhasznalonev(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="jelszo">Jelszó:</label>
+            <input
+              type="password"
+              id="jelszo"
+              value={jelszo}
+              onChange={(e) => setJelszo(e.target.value)}
+              required
+            />
+          </div>
+          <button onClick={handleLogin}>Bejelentkezés</button>
+>>>>>>> Stashed changes
 
-        <div className="regisztracio-link">
-          <p>
-            Elfelejtettél regisztrálni?{" "}
-            <Link to="/regisztracio">Regisztrálj most S.O.S fiókot!</Link>
-          </p>
+          <div className="regisztracio-link">
+            <p>
+              Elfelejtettél regisztrálni?{" "}
+              <Link to="/regisztracio">Regisztrálj most S.O.S fiókot!</Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
