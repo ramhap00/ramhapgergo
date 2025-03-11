@@ -155,21 +155,21 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           {errors.fejlec && <span>{errors.fejlec}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="telepules">Település:<span className="required">*</span></label>
-          <select
-            id="telepules"
-            name="telepules"
-            value={formData.telepules}
-            onChange={handleChange}
-          >
-            <option value="">Válassz települést</option>
-            {locations.map((city, index) => (
-              <option key={index} value={city}>{city}</option>
-            ))}
-          </select>
-          {errors.telepules && <span>{errors.telepules}</span>}
-        </div>
-
+      <label htmlFor="telepules">Település:<span className="required">*</span></label>
+      <select
+    id="telepules"
+    name="telepules"
+    value={formData.telepules}
+    onChange={handleChange}
+    className={errors.telepules ? "error" : ""}
+     >
+        <option value="">Válassz települést</option>
+       {locations.map((city, index) => (
+      <option key={index} value={city}>{city}</option>
+       ))}
+     </select>
+       {errors.telepules && <span className="error-message">{errors.telepules}</span>}
+      </div>
         <div className="form-group">
           <label htmlFor="telefonszam">Telefonszám:<span className="required">*</span></label>
           <input
@@ -183,20 +183,21 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           {errors.telefonszam && <span>{errors.telefonszam}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="kategoria">Kategória:<span className="required">*</span></label>
-          <select
-            id="kategoria"
-            name="kategoria"
-            value={formData.kategoria}
-            onChange={handleChange}
-          >
-            <option value="">Válassz kategóriát</option>
-            {categories.map((category, index) => (
-              <option key={index} value={category}>{category}</option>
-            ))}
-          </select>
-          {errors.kategoria && <span>{errors.kategoria}</span>}
-        </div>
+  <label htmlFor="kategoria">Kategória:<span className="required">*</span></label>
+  <select
+    id="kategoria"
+    name="kategoria"
+    value={formData.kategoria}
+    onChange={handleChange}
+    className={errors.kategoria ? "error" : ""}
+  >
+    <option value="">Válassz kategóriát</option>
+    {categories.map((category, index) => (
+      <option key={index} value={category}>{category}</option>
+    ))}
+  </select>
+  {errors.kategoria && <span className="error-message">{errors.kategoria}</span>}
+</div>
         <div className="form-group">
           <label htmlFor="datum">Dátum:<span className="required">*</span></label>
           <input

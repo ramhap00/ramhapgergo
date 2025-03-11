@@ -1,5 +1,4 @@
 /* Az egész oldalra vonatkozó háttérkép */
-/* Az egész oldalra vonatkozó háttérkép */
 body, html {
   height: 100%;
   margin: 0;
@@ -15,19 +14,19 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative; /* Beállítjuk relatív pozicionálást */
+  position: relative;
 }
 
 /* A bejelentkezési doboz formázása és elmosása */
 .bejelentkezes-container {
-  background: rgba(255, 255, 255, 0.2); /* Enyhén átlátszó fehér háttér */
-  backdrop-filter: blur(10px); /* Elmosás effekt */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 400px;
-  position: relative; /* Hogy a z-index működjön */
+  position: relative;
 }
 
 /* Overlay beállítása */
@@ -37,25 +36,15 @@ body, html {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(2, 2, 2, 0.5); /* Elhomályosított háttér */
-  
+  background: rgba(2, 2, 2, 0.5);
 }
 
 /* Cím formázása */
 .bejelentkezes-container h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: white; /* Jobb olvashatóság érdekében */
+  color: white;
 }
-
-/* Navbar (ha van) formázása */
-.navbar {
-  position: relative; /* Ha van navbar, akkor ezt beállítjuk */
-  z-index: 2; /* Magasabb z-index, hogy a navbar mindig a tartalom felett legyen */
-}
-
-/* A további stílusok nem változnak */
-
 
 /* Formázás az input mezőkhöz */
 .bejelentkezes-form {
@@ -71,7 +60,7 @@ body, html {
   font-weight: bold;
   margin-bottom: 5px;
   display: block;
-  color: white; /* Kontrasztos szöveg */
+  color: white;
 }
 
 .bejelentkezes-form input {
@@ -79,7 +68,7 @@ body, html {
   padding: 10px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 4px;
-  backdrop-filter: blur(5px); /* Input mezők hátterének elmosása */
+  backdrop-filter: blur(5px);
   background: rgba(255, 255, 255, 0.2);
   color: white;
 }
@@ -119,15 +108,14 @@ body, html {
   text-align: center;
   margin-top: 10px;
   color: white;
-  
 }
 
 .regisztracio-link a {
   color: lightblue;
   text-decoration: none;
 }
-.regisztracio-link:hover{
-  
+
+.regisztracio-link a:hover {
   text-decoration: underline;
 }
 
@@ -153,4 +141,3 @@ body, html {
 .eye-icon:hover {
   opacity: 1;
 }
-
