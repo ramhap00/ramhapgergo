@@ -9,10 +9,10 @@ const Posztok = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
-  
-  // Modális poszt
-  const [selectedPost, setSelectedPost] = useState(null); // Kiválasztott poszt
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal állapot
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [ratings, setRatings] = useState({}); // Felhasználó saját értékelései
+  const [hoverRating, setHoverRating] = useState(0); // Egérfeletti csillagok
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
@@ -33,18 +33,22 @@ const Posztok = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch("http://localhost:5020/api/posztok");
+        if (!response.ok) {
+          throw new Error(`HTTP hiba! Státusz: ${response.status}`);
+        }
         const data = await response.json();
+        console.log("Backend válasz:", data);
         if (data.success) {
           setPosts(data.posts);
-          setFilteredPosts(data.posts); // Az első betöltéskor minden posztot mutassunk
+          setFilteredPosts(data.posts);
         } else {
-          console.error("Hiba történt a posztok betöltésekor");
+          console.error("Hiba történt a posztok betöltésekor:", data.message);
         }
       } catch (error) {
-        console.error("Hiba a posztok betöltésekor:", error);
+        console.error("Hiba a posztok betöltésekor:", error.message);
       }
     };
-
+  
     fetchPosts();
   }, []);
 
@@ -88,15 +92,92 @@ const Posztok = () => {
     );
   };
 
-  // Modális ablak kezelése
   const handlePostClick = (post) => {
-    setSelectedPost(post); // Kiválasztott poszt
-    setIsModalOpen(true); // Modal megnyitása
+    setSelectedPost(post);
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false); // Modal bezárása
-    setSelectedPost(null); // Kiválasztott poszt törlése
+    setIsModalOpen(false);
+    setSelectedPost(null);
+  };
+
+  const handleRating = async (postId, rating) => {
+    setRatings((prev) => ({
+      ...prev,
+      [postId]: rating,
+    }));
+  
+    console.log("Cookie tartalma:", document.cookie); // Ellenőrizd, mit tartalmaz
+  
+    const cookies = document.cookie.split('; ');
+    const authCookie = cookies.find(row => row.startsWith('authToken='));
+    const token = authCookie ? authCookie.split('=')[1] : null;
+  
+    if (!token) {
+      console.error("Nincs authToken megtalálva! Cookie tartalma:", document.cookie);
+      alert("Kérlek, jelentkezz be újra az értékeléshez!");
+      return;
+    }
+  
+    try {
+      console.log("Küldött adatok:", { postId, rating });
+      const response = await fetch("http://localhost:5020/api/ertekelesek", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({ postId, rating }),
+      });
+  
+      const data = await response.json();
+      if (data.success) {
+        console.log("Értékelés mentve");
+        const postsResponse = await fetch("http://localhost:5020/api/posztok");
+        const postsData = await postsResponse.json();
+        if (postsData.success) {
+          setPosts(postsData.posts);
+          setFilteredPosts(postsData.posts);
+        }
+      } else {
+        console.error("Hiba történt az értékelés mentésekor:", data.message);
+      }
+    } catch (error) {
+      console.error("Hiba az értékelés küldésekor:", error.message);
+    }
+  };
+
+  const renderStars = (post) => {
+    console.log("Post objektum a renderStars-ban:", post);
+    const postId = post.posztID;
+    const userRating = ratings[postId] || 0;
+    const averageRating = post.averageRating || 0;
+    const ratingCount = post.ratingCount || 0;
+    let stars = [];
+  
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span
+          key={i}
+          className={`star ${i <= userRating ? "filled" : ""}`}
+          style={{ color: i <= hoverRating || i <= userRating ? "orange" : "gray" }}
+          onMouseEnter={() => setHoverRating(i)}
+          onMouseLeave={() => setHoverRating(0)}
+          onClick={() => handleRating(postId, i)}
+        >
+          ★
+        </span>
+      );
+    }
+  
+    return (
+      <div>
+        <div>{stars}</div>
+        <p>Átlag: {averageRating} ({ratingCount} értékelés)</p>
+      </div>
+    );
   };
 
   return (
@@ -104,8 +185,6 @@ const Posztok = () => {
       <div className="posztok-layout">
         <div className="posztok-filter">
           <h2>Szűrők</h2>
-          
-          {/* 🔍 Kereső mező */}
           <div className="search-container">
             <input
               type="text"
@@ -115,11 +194,7 @@ const Posztok = () => {
             />
             <button className="button1" onClick={handleSearch}>🔎</button>
           </div>
-
-          {/* 🚨 Hibaüzenet */}
           {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-          {/* Kategória választó */}
           <label>Kategória:</label>
           <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
             <option value="">Válassz kategóriát</option>
@@ -127,8 +202,6 @@ const Posztok = () => {
               <option key={category} value={category}>{category}</option>
             ))}
           </select>
-
-          {/* Település választó */}
           <label>Település:</label>
           <select value={location} onChange={(e) => setLocation(e.target.value)}>
             <option value="">Válassz települést</option>
@@ -136,8 +209,6 @@ const Posztok = () => {
               <option key={city} value={city}>{city}</option>
             ))}
           </select>
-
-          {/* Állapot választó */}
           <label>Állapot:</label>
           <div className="status-container">
             {options.map((option) => (
@@ -152,38 +223,34 @@ const Posztok = () => {
             ))}
           </div>
         </div>
-
-        {/* Jobb oldali posztok */}
         <div className="posztok-content">
-          <div className="posztok-list">
-            {filteredPosts.length === 0 ? (
-              <p>Nincs ilyen poszt!</p>
-            ) : (
-              filteredPosts.map((post) => (
-                <div
-                  key={post.id}
-                  className="post-item"
-                  onClick={() => handlePostClick(post)} // Kattintás esemény
-                >
-                  <h3>{post.vezeteknev} {post.keresztnev}</h3>
-                  <h4>Leírás: {post.fejlec}</h4>
-                  <p>Kategória: {post.kategoria}</p>
-                  <p>Település: {post.telepules}</p>
-                  <p>{post.leiras}</p>
-                  <img
-                    src={`http://localhost:5020/uploads/${post.fotok}`}
-                    alt="Post Image"
-                    style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
-                  />
-                  <p>Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}</p>
-                </div>
-              ))
-            )}
-          </div>
+        <div className="posztok-list">
+  {console.log("Filtered posts:", filteredPosts)}
+  {filteredPosts.length === 0 ? (
+    <p>Nincs ilyen poszt!</p>
+  ) : (
+    filteredPosts.map((post) => (
+      <div key={post.posztID} className="post-item" onClick={() => handlePostClick(post)}>
+        <h3>{post.vezeteknev} {post.keresztnev}</h3>
+        <h4>Leírás: {post.fejlec}</h4>
+        <p>Kategória: {post.kategoria}</p>
+        <p>Település: {post.telepules}</p>
+        <p>{post.leiras}</p>
+        <img
+          src={`http://localhost:5020/uploads/${post.fotok}`}
+          alt="Post Image"
+          style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
+        />
+        <p>Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}</p>
+        <div className="stars">
+          {renderStars(post)}
         </div>
       </div>
-
-      {/* Modal */}
+    ))
+  )}
+</div>
+        </div>
+      </div>
       {isModalOpen && selectedPost && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -198,6 +265,9 @@ const Posztok = () => {
               alt="Post Image"
               style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
             />
+            <div className="stars">
+              {renderStars(selectedPost)}
+            </div>
             <button onClick={handleCloseModal}>Bezárás</button>
           </div>
         </div>

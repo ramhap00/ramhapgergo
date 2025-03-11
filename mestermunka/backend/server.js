@@ -117,8 +117,8 @@ app.post('/login', (req, res) => {
             );
 
             res.cookie("authToken", token, {
-              httpOnly: true,
-              secure: false,
+              httpOnly: false, // JavaScript is olvashatja
+              secure: false,   // localhost esetén
               maxAge: 60 * 60 * 1000,
               sameSite: "Lax",
             });
@@ -289,6 +289,54 @@ app.post("/api/poszt", upload.single("fotok"), (req, res) => {
     res.status(201).json({ success: true, message: "Poszt sikeresen létrehozva!", posztID: result.insertId });
   });
 });
+app.post('/api/ertekelesek', authenticateToken, (req, res) => {
+  const userID = req.user.userID;
+  const { postId, rating } = req.body;
+
+  if (!postId || !rating || rating < 1 || rating > 5) {
+    return res.status(400).json({ success: false, message: 'Érvénytelen poszt ID vagy értékelés!' });
+  }
+
+  // Ellenőrizzük, hogy a felhasználó már értékelte-e ezt a posztot
+  db.query(
+    'SELECT * FROM ertekelesek WHERE post_id = ? AND user_id = ?',
+    [postId, userID],
+    (err, result) => {
+      if (err) {
+        console.error('Hiba az értékelés ellenőrzésekor:', err);
+        return res.status(500).json({ success: false, message: 'Hiba történt az ellenőrzés során!' });
+      }
+
+      if (result.length > 0) {
+        // Ha már létezik értékelés, frissítjük
+        db.query(
+          'UPDATE ertekelesek SET rating = ?, created_at = NOW() WHERE post_id = ? AND user_id = ?',
+          [rating, postId, userID],
+          (err, updateResult) => {
+            if (err) {
+              console.error('Hiba az értékelés frissítésekor:', err);
+              return res.status(500).json({ success: false, message: 'Hiba történt a frissítés során!' });
+            }
+            return res.status(200).json({ success: true, message: 'Értékelés frissítve!' });
+          }
+        );
+      } else {
+        // Ha még nem létezik, új értékelést hozunk létre
+        db.query(
+          'INSERT INTO ertekelesek (post_id, user_id, rating) VALUES (?, ?, ?)',
+          [postId, userID, rating],
+          (err, insertResult) => {
+            if (err) {
+              console.error('Hiba az értékelés mentésekor:', err);
+              return res.status(500).json({ success: false, message: 'Hiba történt a mentés során!' });
+            }
+            return res.status(201).json({ success: true, message: 'Értékelés sikeresen mentve!' });
+          }
+        );
+      }
+    }
+  );
+});
 // API a posztok lekérésére
 app.get('/api/posztok', (req, res) => {
   const query = "SELECT * FROM posztok";
@@ -302,7 +350,27 @@ app.get('/api/posztok', (req, res) => {
     res.status(200).json({ success: true, posts: result });
   });
 });
+app.get('/api/user-rating/:postId', authenticateToken, (req, res) => {
+  const userID = req.user.userID;
+  const { postId } = req.params;
 
+  db.query(
+    'SELECT rating FROM ertekelesek WHERE post_id = ? AND user_id = ?',
+    [postId, userID],
+    (err, result) => {
+      if (err) {
+        console.error('Hiba az értékelés lekérdezésekor:', err);
+        return res.status(500).json({ success: false, message: 'Hiba történt!' });
+      }
+
+      if (result.length > 0) {
+        res.status(200).json({ success: true, rating: result[0].rating });
+      } else {
+        res.status(200).json({ success: true, rating: 0 }); // Ha nincs értékelés
+      }
+    }
+  );
+});
 const PORT = 5020;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
