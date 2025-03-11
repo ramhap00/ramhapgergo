@@ -3,23 +3,23 @@ body, html {
   height: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
-  background-size: cover; /* Töltsön ki mindent */
-  background-position: center; /* A kép középre igazítása */
-  background-attachment: fixed; /* A háttérkép ne mozduljon görgetéskor */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 /* Regisztrációs konténer háttérképének beállítása */
 .regisztracio-container {
   position: relative;
   width: 100%;
-  height: 100vh; /* Teljes magasságot foglal el */
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-image: url('/jo.png'); /* A háttérkép beállítása */
-  background-size: cover; /* Kép kitöltése */
-  background-position: center; /* Kép középre igazítása */
-  background-attachment: fixed; /* Kép ne mozogjon görgetéskor */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 /* Az overlay réteg beállítása */
@@ -35,8 +35,8 @@ body, html {
 /* Regisztrációs form beállítása */
 .regisztracio-form {
   position: relative;
-  background: rgba(255, 255, 255, 0.2); /* Enyhén átlátszó fehér háttér */
-  backdrop-filter: blur(10px); /* Elmosás effekt */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -44,17 +44,6 @@ body, html {
   max-width: 400px;
   color: white;
 }
-.regisztracio-form input{
-  width: 100%;
-  padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 4px;
-  backdrop-filter: blur(5px); /* Input mezők hátterének elmosása */
-  background: rgba(255, 255, 255, 0.2);
-  color: black;
-}
-/* További stílusok maradnak */
-
 
 .regisztracio-form h2 {
   text-align: center;
@@ -65,24 +54,57 @@ body, html {
   margin-bottom: 15px;
 }
 
-.required {
-  color: red;
-}
-
-button {
+.form-group input, 
+.form-group select {
   width: 100%;
   padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.2);
+  color: black;
+}
+
+/* Checkbox elrendezés */
+.checkbox-container {
+  display: flex;
+  flex-direction: column; /* A szöveg a checkbox fölé kerüljön */
+  align-items: flex-start;
+  gap: 5px;
+  
+}
+
+.checkbox-container label {
+  font-size: 16px;
+  color: white;
+}
+
+.checkbox-container input[type="checkbox"] {
+  width: 13px;
+  height: 13px;
+  cursor: pointer;
+  accent-color: lightblue;
+}
+
+/* Gombok stílusa */
+button {
+  width: 15%;
+  padding: 15%;
   background-color: lightblue;
-  color: lightblue;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+button:hover {
+  background-color: deepskyblue;
 }
 
 button:disabled {
   background-color: white;
 }
 
+/* Üzenetek színei */
 .success-message {
   color: green;
   margin-bottom: 15px;
@@ -95,11 +117,10 @@ button:disabled {
 
 /* Bejelentkezési link a regisztrációs oldalon */
 .bejelentkezes-link a {
-  color: lightblue; /* Például piros szín */
-  text-decoration: none; /* Eltávolítja az aláhúzást */
+  color: lightblue;
+  text-decoration: none;
 }
 
 .bejelentkezes-link a:hover {
-  color: lightblue; /* Például egy másik szín a hover hatásra */
   text-decoration: underline;
 }
