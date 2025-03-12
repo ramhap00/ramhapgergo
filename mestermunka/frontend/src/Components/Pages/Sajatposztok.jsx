@@ -174,13 +174,15 @@ const Sajatposztok = () => {
       <Link to="/posztotcsinalok"><button>Új poszt</button></Link>
       </div>
       {/* Posztok listázása */}
-      <div className="card-deck">
-      <div className="card">
+
+
+        <div className="card col-md-3 col-lg-2">
+        
         {filteredPosts.length === 0 ? (
           <p>Nincsenek saját posztjaid!</p>
         ) : (
           filteredPosts.map((post) => (
-            <div key={post.id} className="card-body">
+            <div key={post.id} className="card-img-top border rounded border-black">
               <img
                 src={`http://localhost:5020/uploads/${post.fotok}`}
                 className="card-img-top"
@@ -197,8 +199,7 @@ const Sajatposztok = () => {
             </div>
           ))
         )}
-      </div>
-      </div>
+        </div>
       </div>
     </div>
   );
