@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import "../Stilusok/Posztok.css";
 
 const Posztok = () => {
+  // Token kinyerése a sütiből
+  const getTokenFromCookie = () => {
+    const cookies = document.cookie.split("; ");
+    const authCookie = cookies.find((cookie) => cookie.startsWith("authToken="));
+    return authCookie ? authCookie.split("=")[1] : null;
+  };
   const [selectedCategory, setSelectedCategory] = useState("");
   const [location, setLocation] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -103,25 +109,19 @@ const Posztok = () => {
   };
 
   const handleRating = async (postId, rating) => {
+    const token = getTokenFromCookie();
+  
+    if (!token) {
+      alert("Kérlek, jelentkezz be az értékeléshez!");
+      return;
+    }
+  
     setRatings((prev) => ({
       ...prev,
       [postId]: rating,
     }));
   
-    console.log("Cookie tartalma:", document.cookie); // Ellenőrizd, mit tartalmaz
-  
-    const cookies = document.cookie.split('; ');
-    const authCookie = cookies.find(row => row.startsWith('authToken='));
-    const token = authCookie ? authCookie.split('=')[1] : null;
-  
-    if (!token) {
-      console.error("Nincs authToken megtalálva! Cookie tartalma:", document.cookie);
-      alert("Kérlek, jelentkezz be újra az értékeléshez!");
-      return;
-    }
-  
     try {
-      console.log("Küldött adatok:", { postId, rating });
       const response = await fetch("http://localhost:5020/api/ertekelesek", {
         method: "POST",
         headers: {
@@ -133,13 +133,16 @@ const Posztok = () => {
       });
   
       const data = await response.json();
+      console.log("API válasz:", data);
+  
       if (data.success) {
         console.log("Értékelés mentve");
-        const postsResponse = await fetch("http://localhost:5020/api/posztok");
-        const postsData = await postsResponse.json();
-        if (postsData.success) {
-          setPosts(postsData.posts);
-          setFilteredPosts(postsData.posts);
+        // Frissítjük a posztok listáját
+        const updatedResponse = await fetch("http://localhost:5020/api/posztok");
+        const updatedData = await updatedResponse.json();
+        if (updatedData.success) {
+          setPosts(updatedData.posts);
+          setFilteredPosts(updatedData.posts);
         }
       } else {
         console.error("Hiba történt az értékelés mentésekor:", data.message);
@@ -148,9 +151,11 @@ const Posztok = () => {
       console.error("Hiba az értékelés küldésekor:", error.message);
     }
   };
+  
+  
 
   const renderStars = (post) => {
-    console.log("Post objektum a renderStars-ban:", post);
+    
     const postId = post.posztID;
     const userRating = ratings[postId] || 0;
     const averageRating = post.averageRating || 0;
@@ -162,10 +167,10 @@ const Posztok = () => {
         <span
           key={i}
           className={`star ${i <= userRating ? "filled" : ""}`}
-          style={{ color: i <= hoverRating || i <= userRating ? "orange" : "gray" }}
-          onMouseEnter={() => setHoverRating(i)}
+          style={{ color: i <= userRating ? "orange" : "gray", cursor: ratings[postId] ? "default" : "pointer" }}
+          onMouseEnter={() => !ratings[postId] && setHoverRating(i)}
           onMouseLeave={() => setHoverRating(0)}
-          onClick={() => handleRating(postId, i)}
+          onClick={() => !ratings[postId] && handleRating(postId, i)}
         >
           ★
         </span>
@@ -175,7 +180,7 @@ const Posztok = () => {
     return (
       <div>
         <div>{stars}</div>
-        <p>Átlag: {averageRating} ({ratingCount} értékelés)</p>
+        <p>Átlag: {averageRating.toFixed(1)} ({ratingCount} értékelés)</p>
       </div>
     );
   };
@@ -224,31 +229,30 @@ const Posztok = () => {
           </div>
         </div>
         <div className="posztok-content">
-        <div className="posztok-list">
-  {console.log("Filtered posts:", filteredPosts)}
-  {filteredPosts.length === 0 ? (
-    <p>Nincs ilyen poszt!</p>
-  ) : (
-    filteredPosts.map((post) => (
-      <div key={post.posztID} className="post-item" onClick={() => handlePostClick(post)}>
-        <h3>{post.vezeteknev} {post.keresztnev}</h3>
-        <h4>Leírás: {post.fejlec}</h4>
-        <p>Kategória: {post.kategoria}</p>
-        <p>Település: {post.telepules}</p>
-        <p>{post.leiras}</p>
-        <img
-          src={`http://localhost:5020/uploads/${post.fotok}`}
-          alt="Post Image"
-          style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
-        />
-        <p>Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}</p>
-        <div className="stars">
-          {renderStars(post)}
-        </div>
-      </div>
-    ))
-  )}
-</div>
+          <div className="posztok-list">
+            {filteredPosts.length === 0 ? (
+              <p>Nincs ilyen poszt!</p>
+            ) : (
+              filteredPosts.map((post) => (
+                <div key={post.posztID} className="post-item" onClick={() => handlePostClick(post)}>
+                  <h3>{post.vezeteknev} {post.keresztnev}</h3>
+                  <h4>Leírás: {post.fejlec}</h4>
+                  <p>Kategória: {post.kategoria}</p>
+                  <p>Település: {post.telepules}</p>
+                  <p>{post.leiras}</p>
+                  <img
+                    src={`http://localhost:5020/uploads/${post.fotok}`}
+                    alt="Post Image"
+                    style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
+                  />
+                  <p>Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}</p>
+                  <div className="stars">
+                    {renderStars(post)}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
       {isModalOpen && selectedPost && (

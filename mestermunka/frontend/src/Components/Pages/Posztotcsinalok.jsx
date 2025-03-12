@@ -47,73 +47,88 @@ const Posztotcsinalok = ({ onPostCreated }) => {
       setPreview(URL.createObjectURL(file));
     }
   };
-
+  const getToken = () => {
+    const cookies = document.cookie.split('; ');
+    const authCookie = cookies.find(row => row.startsWith('authToken='));
+    return authCookie ? authCookie.split('=')[1] : null;
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    console.log("🔵 Poszt létrehozása indult...");
+  
     let newErrors = {};
-
-    // Ellenőrizzük, hogy minden mező ki van-e töltve
     Object.keys(formData).forEach((key) => {
       if (!formData[key] && key !== "fotok") {
         newErrors[key] = "Kötelező mező!";
       }
     });
-
-    // Telefonszám validálása
-    if (formData.telefonszam && !validatePhoneNumber(formData.telefonszam)) {
-      newErrors.telefonszam = "Érvénytelen telefonszám!";
+  
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      console.log("❌ Hiányzó mezők:", newErrors);
+      return;
     }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      const userID = localStorage.getItem("userID");
-      const data = new FormData();
-      Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
+  
+    const token = getToken();  // 🔹 Most már működik!
+    if (!token) {
+      alert("⚠️ Be kell jelentkezni a poszt létrehozásához!");
+      console.log("❌ Nincs token!");
+      return;
+    }
+  
+    console.log("🟢 Token sikeresen betöltve:", token);
+  
+    const data = new FormData();
+    Object.keys(formData).forEach((key) => {
+      data.append(key, formData[key]);
+    });
+  
+    try {
+      console.log("📡 Küldés a szervernek...");
+      const response = await fetch("http://localhost:5020/api/poszt", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: data,
       });
-
-      if (userID) {
-        data.append("userID", userID); // Hozzáadjuk az azonosítót
-      }
-
-      try {
-        const response = await fetch("http://localhost:5020/api/poszt", {
-          method: "POST",
-          body: data,
-          credentials: "include", // Küldje el a sütiket is
+  
+      console.log("📨 Szerver válasza érkezett!");
+  
+      const result = await response.json();
+      console.log("🔍 Válasz JSON:", result);
+  
+      if (result.success) {
+        alert("🎉 Poszt sikeresen létrehozva!");
+        onPostCreated(result.post);
+  
+        setFormData({
+          vezeteknev: "",
+          keresztnev: "",
+          fejlec: "",
+          telepules: "",
+          telefonszam: "",
+          kategoria: "",
+          datum: "",
+          leiras: "",
+          fotok: null,
         });
-
-        const result = await response.json();
-
-        if (result.success) {
-          alert("Poszt sikeresen létrehozva!");
-
-          // Értesítjük a szülő komponenst, hogy új posztot hoztunk létre
-          onPostCreated(result.post); // `onPostCreated` hívás
-
-          setFormData({
-            vezeteknev: "",
-            keresztnev: "",
-            fejlec: "",
-            telepules: "",
-            telefonszam: "",
-            kategoria: "",
-            datum: "",
-            leiras: "",
-            fotok: null,
-          });
-          setPreview(null);
-        } else {
-          alert("Hiba történt: " + result.message);
-        }
-      } catch (error) {
-        console.error("Hiba a poszt létrehozásakor:", error);
-        alert("Hiba történt a poszt létrehozásakor!");
+        setPreview(null);
+        setErrors({});
+      } else {
+        alert("❌ Hiba történt: " + result.message);
+        console.log("⚠️ Szerver visszautasította a kérést:", result.message);
       }
+    } catch (error) {
+      console.error("🚨 Hiba a poszt létrehozásakor:", error);
+      alert("❌ Hiba történt a poszt létrehozásakor!");
     }
   };
-
+  
+  
   return (
     <div className="post-container">
       <h2>Poszt létrehozása</h2>

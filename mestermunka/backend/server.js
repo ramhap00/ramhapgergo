@@ -265,22 +265,24 @@ app.put('/update-password', authenticateToken, (req, res) => {
   });
 });
 
-app.post("/api/poszt", upload.single("fotok"), (req, res) => {
+app.post("/api/poszt", authenticateToken, upload.single("fotok"), (req, res) => {
   console.log("Kapott adatok:", req.body);
   console.log("Kapott fájl:", req.file);
-  const { vezeteknev, keresztnev,fejlec, telepules, telefonszam, kategoria, datum, leiras } = req.body;
+
+  const userID = req.user.userID;  // Bejelentkezett felhasználó ID-ja
+  const { vezeteknev, keresztnev, fejlec, telepules, telefonszam, kategoria, datum, leiras } = req.body;
   const fotok = req.file ? req.file.filename : null;
 
-  if (!vezeteknev || !keresztnev ||!fejlec ||!telepules || !telefonszam || !kategoria || !datum || !leiras) {
+  if (!vezeteknev || !keresztnev || !fejlec || !telepules || !telefonszam || !kategoria || !datum || !leiras) {
     return res.status(400).json({ success: false, message: "Minden mezőt ki kell tölteni!" });
   }
 
   const query = `
-    INSERT INTO posztok (vezeteknev, keresztnev,fejlec, telepules, telefonszam, kategoria, datum, leiras, fotok)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)
+    INSERT INTO posztok (userID, vezeteknev, keresztnev, fejlec, telepules, telefonszam, kategoria, datum, leiras, fotok)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(query, [vezeteknev, keresztnev,fejlec, telepules, telefonszam, kategoria, datum, leiras, fotok], (err, result) => {
+  db.query(query, [userID, vezeteknev, keresztnev, fejlec, telepules, telefonszam, kategoria, datum, leiras, fotok], (err, result) => {
     if (err) {
       console.error("Hiba a poszt mentésekor:", err);
       return res.status(500).json({ success: false, message: "Hiba történt a poszt mentésekor!" });
@@ -289,6 +291,7 @@ app.post("/api/poszt", upload.single("fotok"), (req, res) => {
     res.status(201).json({ success: true, message: "Poszt sikeresen létrehozva!", posztID: result.insertId });
   });
 });
+
 app.post('/api/ertekelesek', authenticateToken, (req, res) => {
   const userID = req.user.userID;
   const { postId, rating } = req.body;
@@ -307,6 +310,30 @@ app.post('/api/ertekelesek', authenticateToken, (req, res) => {
         return res.status(500).json({ success: false, message: 'Hiba történt az ellenőrzés során!' });
       }
 
+      const updateAverageRating = () => {
+        // Számoljuk ki az új átlagot és az értékelések számát
+        db.query(
+          'SELECT AVG(rating) as averageRating, COUNT(*) as ratingCount FROM ertekelesek WHERE post_id = ?',
+          [postId],
+          (err, stats) => {
+            if (err) {
+              console.error('Hiba az átlag kiszámításakor:', err);
+              return;
+            }
+            const { averageRating, ratingCount } = stats[0];
+            db.query(
+              'UPDATE posztok SET averageRating = ?, ratingCount = ? WHERE posztID = ?',
+              [averageRating, ratingCount, postId],
+              (err) => {
+                if (err) {
+                  console.error('Hiba a poszt frissítésekor:', err);
+                }
+              }
+            );
+          }
+        );
+      };
+
       if (result.length > 0) {
         // Ha már létezik értékelés, frissítjük
         db.query(
@@ -317,6 +344,7 @@ app.post('/api/ertekelesek', authenticateToken, (req, res) => {
               console.error('Hiba az értékelés frissítésekor:', err);
               return res.status(500).json({ success: false, message: 'Hiba történt a frissítés során!' });
             }
+            updateAverageRating(); // Frissítjük az átlagot
             return res.status(200).json({ success: true, message: 'Értékelés frissítve!' });
           }
         );
@@ -330,6 +358,7 @@ app.post('/api/ertekelesek', authenticateToken, (req, res) => {
               console.error('Hiba az értékelés mentésekor:', err);
               return res.status(500).json({ success: false, message: 'Hiba történt a mentés során!' });
             }
+            updateAverageRating(); // Frissítjük az átlagot
             return res.status(201).json({ success: true, message: 'Értékelés sikeresen mentve!' });
           }
         );
