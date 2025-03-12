@@ -54,80 +54,80 @@ const Posztotcsinalok = ({ onPostCreated }) => {
   };
   
   const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    console.log("🔵 Poszt létrehozása indult...");
-  
-    let newErrors = {};
-    Object.keys(formData).forEach((key) => {
-      if (!formData[key] && key !== "fotok") {
-        newErrors[key] = "Kötelező mező!";
-      }
-    });
-  
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      console.log("❌ Hiányzó mezők:", newErrors);
-      return;
+  e.preventDefault();
+
+  console.log("🔵 Poszt létrehozása indult...");
+
+  let newErrors = {};
+  Object.keys(formData).forEach((key) => {
+    if (!formData[key] && key !== "fotok") {
+      newErrors[key] = "Kötelező mező!";
     }
-  
-    const token = getToken();  // 🔹 Most már működik!
-    if (!token) {
-      alert("⚠️ Be kell jelentkezni a poszt létrehozásához!");
-      console.log("❌ Nincs token!");
-      return;
-    }
-  
-    console.log("🟢 Token sikeresen betöltve:", token);
-  
-    const data = new FormData();
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
+  });
+
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    console.log("❌ Hiányzó mezők:", newErrors);
+    return;
+  }
+
+  const token = getToken();  // 🔹 Most már működik!
+  if (!token) {
+    alert("⚠️ Be kell jelentkezni a poszt létrehozásához!");
+    console.log("❌ Nincs token!");
+    return;
+  }
+
+  console.log("🟢 Token sikeresen betöltve:", token);
+
+  const data = new FormData();
+  Object.keys(formData).forEach((key) => {
+    data.append(key, formData[key]);
+  });
+
+  try {
+    console.log("📡 Küldés a szervernek...");
+    const response = await fetch("http://localhost:5020/api/poszt", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: data,
     });
-  
-    try {
-      console.log("📡 Küldés a szervernek...");
-      const response = await fetch("http://localhost:5020/api/poszt", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: data,
+
+    console.log("📨 Szerver válasza érkezett!");
+
+    const result = await response.json();
+    console.log("🔍 Válasz JSON:", result);
+
+    if (result.success) {
+      alert("🎉 Poszt sikeresen létrehozva!");
+      onPostCreated(result.post);
+
+      setFormData({
+        vezeteknev: "",
+        keresztnev: "",
+        fejlec: "",
+        telepules: "",
+        telefonszam: "",
+        kategoria: "",
+        datum: "",
+        leiras: "",
+        fotok: null,
       });
-  
-      console.log("📨 Szerver válasza érkezett!");
-  
-      const result = await response.json();
-      console.log("🔍 Válasz JSON:", result);
-  
-      if (result.success) {
-        alert("🎉 Poszt sikeresen létrehozva!");
-        onPostCreated(result.post);
-  
-        setFormData({
-          vezeteknev: "",
-          keresztnev: "",
-          fejlec: "",
-          telepules: "",
-          telefonszam: "",
-          kategoria: "",
-          datum: "",
-          leiras: "",
-          fotok: null,
-        });
-        setPreview(null);
-        setErrors({});
-      } else {
-        alert("❌ Hiba történt: " + result.message);
-        console.log("⚠️ Szerver visszautasította a kérést:", result.message);
-      }
-    } catch (error) {
-      console.error("🚨 Hiba a poszt létrehozásakor:", error);
-      alert("❌ Hiba történt a poszt létrehozásakor!");
+      setPreview(null);
+      setErrors({});
+    } else {
+      alert("❌ Hiba történt: " + result.message);
+      console.log("⚠️ Szerver visszautasította a kérést:", result.message);
     }
-  };
-  
+  } catch (error) {
+    console.error("🚨 Hiba a poszt létrehozásakor:", error);
+    alert("❌ Hiba történt a poszt létrehozásakor!");
+  }
+};
+
   
   return (
     <div className="post-container">

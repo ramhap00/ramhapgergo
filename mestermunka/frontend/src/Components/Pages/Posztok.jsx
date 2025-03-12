@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import "../Stilusok/Posztok.css";
 
 const Posztok = () => {
-  // Token kinyerése a sütiből
   const getTokenFromCookie = () => {
     const cookies = document.cookie.split("; ");
     const authCookie = cookies.find((cookie) => cookie.startsWith("authToken="));
     return authCookie ? authCookie.split("=")[1] : null;
   };
+
   const [selectedCategory, setSelectedCategory] = useState("");
   const [location, setLocation] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -35,27 +35,45 @@ const Posztok = () => {
 
   const options = ["Elérhető", "Nem elérhető"];
 
+  // Posztok és felhasználói értékelések betöltése
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchPostsAndRatings = async () => {
       try {
-        const response = await fetch("http://localhost:5020/api/posztok");
-        if (!response.ok) {
-          throw new Error(`HTTP hiba! Státusz: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Backend válasz:", data);
-        if (data.success) {
-          setPosts(data.posts);
-          setFilteredPosts(data.posts);
-        } else {
-          console.error("Hiba történt a posztok betöltésekor:", data.message);
+        // Posztok lekérése
+        const postsResponse = await fetch("http://localhost:5020/api/posztok");
+        if (!postsResponse.ok) throw new Error(`HTTP hiba! Státusz: ${postsResponse.status}`);
+        const postsData = await postsResponse.json();
+        if (postsData.success) {
+          setPosts(postsData.posts);
+          setFilteredPosts(postsData.posts);
+
+          // Felhasználói értékelések lekérése minden poszthoz
+          const token = getTokenFromCookie();
+          if (token) {
+            const ratingsData = {};
+            await Promise.all(
+              postsData.posts.map(async (post) => {
+                const ratingResponse = await fetch(`http://localhost:5020/api/user-rating/${post.posztID}`, {
+                  headers: {
+                    "Authorization": `Bearer ${token}`,
+                  },
+                  credentials: "include",
+                });
+                const ratingData = await ratingResponse.json();
+                if (ratingData.success && ratingData.rating > 0) {
+                  ratingsData[post.posztID] = ratingData.rating;
+                }
+              })
+            );
+            setRatings(ratingsData);
+          }
         }
       } catch (error) {
-        console.error("Hiba a posztok betöltésekor:", error.message);
+        console.error("Hiba a posztok vagy értékelések betöltésekor:", error.message);
       }
     };
-  
-    fetchPosts();
+
+    fetchPostsAndRatings();
   }, []);
 
   const handleSearch = () => {
@@ -64,15 +82,12 @@ const Posztok = () => {
     if (selectedCategory) {
       filtered = filtered.filter(post => post.kategoria === selectedCategory);
     }
-
     if (location) {
       filtered = filtered.filter(post => post.telepules === location);
     }
-
     if (selectedOptions.length > 0) {
       filtered = filtered.filter(post => selectedOptions.includes(post.allapot));
     }
-
     if (searchTerm) {
       filtered = filtered.filter(post => 
         post.kategoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -83,13 +98,8 @@ const Posztok = () => {
       );
     }
 
-    if (filtered.length === 0) {
-      setErrorMessage("❌ Ilyen hirdetés nincs!");
-    } else {
-      setErrorMessage("");
-    }
-
-    setFilteredPosts(filtered);
+    setFilteredPosts(filtered.length > 0 ? filtered : []);
+    setErrorMessage(filtered.length === 0 ? "❌ Ilyen hirdetés nincs!" : "");
   };
 
   const handleCheckboxChange = (option) => {
@@ -110,17 +120,16 @@ const Posztok = () => {
 
   const handleRating = async (postId, rating) => {
     const token = getTokenFromCookie();
-  
     if (!token) {
       alert("Kérlek, jelentkezz be az értékeléshez!");
       return;
     }
-  
-    setRatings((prev) => ({
-      ...prev,
-      [postId]: rating,
-    }));
-  
+
+    // Ha már értékeltük, ne tegyünk semmit
+    if (ratings[postId]) {
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:5020/api/ertekelesek", {
         method: "POST",
@@ -131,13 +140,11 @@ const Posztok = () => {
         credentials: "include",
         body: JSON.stringify({ postId, rating }),
       });
-  
+
       const data = await response.json();
-      console.log("API válasz:", data);
-  
       if (data.success) {
-        console.log("Értékelés mentve");
-        // Frissítjük a posztok listáját
+        setRatings((prev) => ({ ...prev, [postId]: rating }));
+        // Frissítjük a posztok listáját az új átlaggal
         const updatedResponse = await fetch("http://localhost:5020/api/posztok");
         const updatedData = await updatedResponse.json();
         if (updatedData.success) {
@@ -145,38 +152,38 @@ const Posztok = () => {
           setFilteredPosts(updatedData.posts);
         }
       } else {
-        console.error("Hiba történt az értékelés mentésekor:", data.message);
+        console.error("Hiba az értékelés mentésekor:", data.message);
       }
     } catch (error) {
       console.error("Hiba az értékelés küldésekor:", error.message);
     }
   };
-  
-  
 
   const renderStars = (post) => {
-    
     const postId = post.posztID;
     const userRating = ratings[postId] || 0;
     const averageRating = post.averageRating || 0;
     const ratingCount = post.ratingCount || 0;
     let stars = [];
-  
+
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <span
           key={i}
-          className={`star ${i <= userRating ? "filled" : ""}`}
-          style={{ color: i <= userRating ? "orange" : "gray", cursor: ratings[postId] ? "default" : "pointer" }}
-          onMouseEnter={() => !ratings[postId] && setHoverRating(i)}
-          onMouseLeave={() => setHoverRating(0)}
-          onClick={() => !ratings[postId] && handleRating(postId, i)}
+          className={`star ${i <= (hoverRating || userRating) ? "filled" : ""}`}
+          style={{
+            color: i <= (hoverRating || userRating) ? "orange" : "gray",
+            cursor: userRating ? "default" : "pointer", // Ha már értékelt, nem kattintható
+          }}
+          onMouseEnter={() => !userRating && setHoverRating(i)} // Csak ha nincs értékelés
+          onMouseLeave={() => !userRating && setHoverRating(0)}
+          onClick={() => !userRating && handleRating(postId, i)} // Csak ha nincs értékelés
         >
           ★
         </span>
       );
     }
-  
+
     return (
       <div>
         <div>{stars}</div>
