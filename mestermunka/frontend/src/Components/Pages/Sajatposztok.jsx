@@ -97,7 +97,8 @@ const Sajatposztok = () => {
   };
 
   return (
-    <div id="flex-container">
+    <div className="flex-container">
+    <div className="row">
     <div className="col-sm-4" id="filter-container">
       <h2>Szűrők</h2>
 
@@ -196,6 +197,7 @@ const Sajatposztok = () => {
             </div>
           ))
         )}
+      </div>
       </div>
       </div>
     </div>
