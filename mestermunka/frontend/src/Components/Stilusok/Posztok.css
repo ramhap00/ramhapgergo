@@ -1,53 +1,67 @@
 /* Posztok.css */
+ 
 .posztok-container {
   display: flex;
   justify-content: center;
   padding: 20px;
-  
+  margin: 20px;
+  height: 800px;
+  margin-left:auto;
+ 
 }
-
+ 
 .posztok-layout {
   display: flex;
   width: 100%;
   max-width: 1200px;
   gap: 20px;
 }
-
+ 
 .posztok-filter {
   width: 30%;
-  background-color: #f4f4f4;
+  background-color: #08e2c5;
   padding: 20px;
   border-radius: 8px;
+  position: sticky;
+  top: 0;
 }
-
+ 
 .posztok-content {
   width: 70%;
   background-color: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  height: 100vh; /* Állíts be egy fix magasságot */
+  overflow-y: auto; /* Engedélyezett függőleges görgetés */
+ 
 }
-
+ 
 .posztok-list {
   margin-bottom: 20px;
+ 
+ 
+ 
+ 
 }
-
+ 
 /* Posztok emelése hover hatásra */
 .post-item {
   border-bottom: 1px solid #ddd;
   padding: 15px 0;
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animációs átmenet */
   cursor: pointer;
+ 
 }
-
+ 
 /* Hover effektus: emelés és árnyék */
 .post-item:hover {
   transform: translateY(-10px); /* Kicsit emeli a posztot */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Árnyék hozzáadása */
   cursor: pointer;
 }
-
-
+ 
+ 
 .post-item img {
   width: 100%;
   max-height: 300px;
@@ -57,8 +71,8 @@
 .button1{
   width: 50px;
 }
-
-
+ 
+ 
 /* Modal tartalom (fehér háttérrel) */
 .modal-content {
   background-color: white; /* Fehér háttér a modal tartalomnak */
@@ -71,7 +85,7 @@
   opacity: 0; /* Kezdetben átlátszó */
   animation: slideUp 0.5s forwards, fadeInContent 0.5s forwards; /* Két animáció: emelkedés és halványulás */
 }
-
+ 
 /* Modális overlay - teljesen fekete háttér */
 .modal-overlay {
   position: fixed;
@@ -88,7 +102,7 @@
   animation: fadeIn 0.5s forwards; /* Halványuló animáció */
   color: white;
 }
-
+ 
 /* Halványuló animáció */
 @keyframes fadeIn {
   from {
@@ -98,8 +112,8 @@
     opacity: 1; /* Végeredmény: teljes átlátszóság */
   }
 }
-
-
+ 
+ 
 /* Modal tartalom emelkedés animáció */
 @keyframes slideUp {
   from {
@@ -109,7 +123,7 @@
     transform: translateY(0); /* Végeredmény: normál pozíció */
   }
 }
-
+ 
 /* Halványuló animáció a modal tartalomhoz */
 @keyframes fadeInContent {
   from {
@@ -119,7 +133,7 @@
     opacity: 1;
   }
 }
-
+ 
 /* Modal kép */
 .modal-content img {
   width: 10px; /* A kép szélessége kitölti a modal szélességét */
@@ -127,7 +141,7 @@
   border-radius: 8px;
   margin-top: 15px; /* Kisebb távolság */
 }
-
+ 
 /* Bezáró gomb */
 .modal-content button {
   background-color: #f44336;
@@ -138,27 +152,50 @@
   cursor: pointer;
   margin-top: 15px; /* Kisebb távolság */
 }
-
+ 
 .modal-content button:hover {
   background-color: #d32f2f;
 }
 .stars {
   margin-top: 10px;
 }
-
+ 
 .star {
   font-size: 24px;
   cursor: pointer;
   transition: color 0.2s;
 }
-
+ 
 .star.filled {
   color: orange;
 }
-
+ 
 .stars p {
   margin: 5px 0 0;
   font-size: 14px;
   color: #555;
 }
-
+.calendar-days {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+ 
+.calendar-days button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+ 
+.calendar-hours {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+ 
+.calendar-hours button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}

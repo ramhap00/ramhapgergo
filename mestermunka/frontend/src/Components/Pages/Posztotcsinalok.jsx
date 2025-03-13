@@ -86,7 +86,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
   });
 
   try {
-    console.log("📡 Küldés a szervernek...");
+    
     const response = await fetch("http://localhost:5020/api/poszt", {
       method: "POST",
       headers: {
