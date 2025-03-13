@@ -75,7 +75,7 @@ const Jelszo = () => {
           </li>
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
-            <img src={profileBlank} alt="icon" className="menu-icon" /> Fizetés kezelés
+            <img src={profileBlank} alt="icon" className="menu-icon" /> Időpont foglalások
           </li>
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
