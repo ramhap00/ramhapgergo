@@ -69,12 +69,11 @@ app.post('/register', (req, res) => {
   const { vezeteknev, keresztnev, felhasznalonev, jelszo, emailcim, telefonszam, telepules, munkaltato } = req.body;
   const munkasreg = munkaltato ? 1 : 0;
   const letrehozasDatum = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
-  console.log("Received registration data:", req.body);
+  const profilkep = 'default-profile.png'; // Alapértelmezett kép neve
 
   const query = `
-    INSERT INTO felhasznaloi_adatok (vezeteknev, keresztnev, felhasznalonev, jelszo, emailcim, telefonszam, telepules, munkasreg, letrehozasDatum)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO felhasznaloi_adatok (vezeteknev, keresztnev, felhasznalonev, jelszo, emailcim, telefonszam, telepules, munkasreg, letrehozasDatum, profilkep)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   bcrypt.hash(jelszo, saltRounds, (err, hash) => {
@@ -85,7 +84,7 @@ app.post('/register', (req, res) => {
 
     console.log("Executing SQL query...");
 
-    db.query(query, [vezeteknev, keresztnev, felhasznalonev, hash, emailcim, telefonszam, telepules, munkasreg, letrehozasDatum], (err, result) => {
+    db.query(query, [vezeteknev, keresztnev, felhasznalonev, hash, emailcim, telefonszam, telepules, munkasreg, letrehozasDatum, profilkep], (err, result) => {
       if (err) {
         console.error('SQL hiba:', err);
         return res.status(500).json({ success: false, message: 'Hiba történt a regisztráció során', error: err.message || err });
@@ -120,7 +119,8 @@ app.post('/login', (req, res) => {
               {
                 userID: result[0].userID,
                 felhasznalonev: result[0].felhasznalonev,
-                munkasreg: result[0].munkasreg
+                munkasreg: result[0].munkasreg,
+                profilkep: result[0].profilkep
               },
               JWT_SECRET,
               { expiresIn: "1h" }
@@ -142,6 +142,7 @@ app.post('/login', (req, res) => {
                 emailcim: result[0].emailcim,
                 telefonszam: result[0].telefonszam,
                 munkasreg: result[0].munkasreg,
+                profilkep: result[0].profilkep,
               },
             });
           } else {
@@ -169,15 +170,15 @@ app.get('/profile', authenticateToken, (req, res) => {
   const userID = req.user.id;
 
   db.query(
-    "SELECT felhasznalonev, emailcim, vezeteknev, keresztnev FROM felhasznaloi_adatok WHERE userID = ?",
+    "SELECT felhasznalonev, emailcim, vezeteknev, keresztnev, profilkep, munkasreg FROM felhasznaloi_adatok WHERE userID = ?",
     [userID],
     (err, result) => {
       if (err) {
         console.error("Hiba a felhasználó lekérésekor:", err);
         return res.status(500).json({ success: false, message: "Hiba történt!" });
       }
-
       if (result.length > 0) {
+        console.log("Profil válasz:", result[0]); // Hibakeresés
         res.status(200).json({ success: true, user: result[0] });
       } else {
         res.status(404).json({ success: false, message: "Felhasználó nem található!" });
@@ -203,24 +204,47 @@ app.post('/check-username', (req, res) => {
   });
 });
 
-app.put('/update-profile', authenticateToken, (req, res) => {
+app.put('/update-profile', authenticateToken, upload.single('profilkep'), (req, res) => {
   const userID = req.user.id;
   const { felhasznalonev, emailcim, vezeteknev, keresztnev } = req.body;
+  const profilkep = req.file ? req.file.filename : null;
 
   if (!felhasznalonev || !emailcim || !vezeteknev || !keresztnev) {
     return res.status(400).json({ success: false, message: "Minden mezőt ki kell tölteni!" });
   }
 
+  const updateQuery = `
+    UPDATE felhasznaloi_adatok 
+    SET felhasznalonev = ?, emailcim = ?, vezeteknev = ?, keresztnev = ?, profilkep = COALESCE(?, profilkep)
+    WHERE userID = ?
+  `;
+
   db.query(
-    "UPDATE felhasznaloi_adatok SET felhasznalonev = ?, emailcim = ?, vezeteknev = ?, keresztnev = ? WHERE userID = ?",
-    [felhasznalonev, emailcim, vezeteknev, keresztnev, userID],
+    updateQuery,
+    [felhasznalonev, emailcim, vezeteknev, keresztnev, profilkep, userID],
     (err, result) => {
       if (err) {
         console.error("Hiba a frissítés során:", err);
         return res.status(500).json({ success: false, message: "Hiba történt a frissítés során." });
       }
-      
-      res.json({ success: true, message: "Adatok sikeresen frissítve!" });
+
+      // Lekérdezzük a frissített rekordot
+      db.query(
+        "SELECT profilkep FROM felhasznaloi_adatok WHERE userID = ?",
+        [userID],
+        (err, updatedResult) => {
+          if (err) {
+            console.error("Hiba a frissített adat lekérdezésekor:", err);
+            return res.status(500).json({ success: false, message: "Hiba történt az adatok lekérdezésekor." });
+          }
+          const updatedProfilkep = updatedResult[0].profilkep;
+          res.json({
+            success: true,
+            message: "Adatok sikeresen frissítve!",
+            profilkep: updatedProfilkep,
+          });
+        }
+      );
     }
   );
 });
@@ -463,7 +487,46 @@ app.post('/api/book-time', authenticateToken, (req, res) => {
     }
   );
 });
+// server.js - új végpont a meglévő app.get('/api/booked-times/:postId', ...) után
+app.get('/api/user-bookings', authenticateToken, (req, res) => {
+  const userId = req.user.id;
 
+  const query = `
+    SELECT n.naptarID, n.posztID, n.nap, n.ora, p.vezeteknev, p.keresztnev, p.telepules, p.telefonszam, p.kategoria, p.datum, p.leiras, p.fotok, p.fejlec
+    FROM naptar n
+    JOIN posztok p ON n.posztID = p.posztID
+    WHERE n.userID = ?
+  `;
+
+  db.query(query, [userId], (err, result) => {
+    if (err) {
+      console.error("Hiba a foglalások lekérésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt a foglalások lekérésekor!" });
+    }
+    res.status(200).json({ success: true, bookings: result });
+  });
+});
+// server.js - új végpont az app.post('/api/book-time', ...) után
+app.delete('/api/cancel-booking/:naptarID', authenticateToken, (req, res) => {
+  const { naptarID } = req.params;
+  const userId = req.user.id;
+
+  const query = `
+    DELETE FROM naptar 
+    WHERE naptarID = ? AND userID = ?
+  `;
+
+  db.query(query, [naptarID, userId], (err, result) => {
+    if (err) {
+      console.error("Hiba a foglalás törlésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt a foglalás törlésekor!" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "A foglalás nem található vagy nem a tiéd!" });
+    }
+    res.status(200).json({ success: true, message: "Foglalás sikeresen törölve!" });
+  });
+});
 const PORT = 5020;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

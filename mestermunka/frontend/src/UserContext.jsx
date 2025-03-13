@@ -9,18 +9,21 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await Axios.get("http://localhost:5020/user", { withCredentials: true });
+        const response = await Axios.get("http://localhost:5020/profile", { withCredentials: true });
         if (response.data.success) {
           setUser(response.data.user);
-          console.log("🔵 Lekért felhasználó adatok:", response.data.user); // Debug konzol
+          console.log("🔵 Lekért felhasználó adatok (UserContext):", response.data.user); // Debug konzol
+        } else {
+          setUser(null);
         }
       } catch (error) {
         console.error("Nem sikerült lekérni a felhasználói adatokat:", error);
+        setUser(null);
       }
     };
 
     fetchUser();
-  }, []);
+  }, []); // Üres függőség, csak egyszer fut le az alkalmazás indulásakor
 
   const loginUser = (userData) => {
     setUser(userData);

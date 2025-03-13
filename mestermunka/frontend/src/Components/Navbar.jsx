@@ -10,6 +10,9 @@ import "bootstrap";
 const Navbar = () => {
   const { user, logoutUser } = useContext(UserContext);
   const [accountDropdown, setAccountDropdown] = useState(false);
+  const profileImage = user?.profilkep
+    ? `http://localhost:5020/uploads/${user.profilkep}?t=${Date.now()}`
+    : fioklogo;
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
@@ -40,27 +43,44 @@ const Navbar = () => {
 
   useEffect(() => {
     console.log("🔵 Navbarban kapott user:", user); // Debug konzol
-  }, [user]); 
+  }, [user]);
 
   return (
     <nav id="flex-container" className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="col-sm-1"><Link to="/">
+      <div className="col-sm-1">
+        <Link to="/">
           <img src={logo} alt="Company Logo" className="logo-img1" />
-        </Link></div>
-      <div className="col-sm-3"><ul className="nav-menu-left">
-        <li>
-          <NavLink className="nav-link" to="/posztok" style={{ fontWeight: '700', fontSize: '20px' }}>Posztok</NavLink>
-        </li>
-      </ul></div>
-      <div className="col-sm-5" id="navbar-text">S.O.S. Munka</div>
-      <div className="col-xs-1"><ul className="nav-menu-right">
+        </Link>
+      </div>
+      <div className="col-sm-3">
+        <ul className="nav-menu-left">
+          <li>
+            <NavLink
+              className="nav-link"
+              to="/posztok"
+              style={{ fontWeight: "700", fontSize: "20px" }}
+            >
+              Posztok
+            </NavLink>
+          </li>
+        </ul>
+      </div>
+      <div className="col-sm-5" id="navbar-text">
+        S.O.S. Munka
+      </div>
+      <div className="col-xs-1">
+        <ul className="nav-menu-right">
           <li
             className="dropdown"
-            ref={dropdownRef} 
-            onClick={() => setAccountDropdown(!accountDropdown)} 
+            ref={dropdownRef}
+            onClick={() => setAccountDropdown(!accountDropdown)}
           >
             <NavLink className="dropbtn" to="#">
-              <img src={fioklogo} alt="Fiók Logo" className="logo-img2" />
+              <img
+                src={profileImage}
+                alt="Fiók Logo"
+                className="logo-img2 rounded-image"
+              />
             </NavLink>
             {accountDropdown && (
               <ul className="dropdown-content">
@@ -72,7 +92,7 @@ const Navbar = () => {
                     <li>
                       <NavLink to="/kedvencek">Kedvenceim</NavLink>
                     </li>
-                    {user && user.munkasreg === 1 &&  ( // Itt van a feltétel
+                    {user.munkasreg === 1 && (
                       <li>
                         <NavLink to="/sajatposztok">Posztjaim</NavLink>
                       </li>
@@ -96,7 +116,8 @@ const Navbar = () => {
               </ul>
             )}
           </li>
-        </ul></div>
+        </ul>
+      </div>
     </nav>
   );
 };

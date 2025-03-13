@@ -15,10 +15,11 @@ import 'tachyons';
 import Sajatposztok from "./Components/Pages/Sajatposztok";
 import Jelszo from "./Components/Pages/Jelszo";
 import Posztotcsinalok from "./Components/Pages/Posztotcsinalok";
+import IdopontFoglalasok from "./Components/Pages/IdopontFoglalasok";
 
 function App() {
   return (
-    <UserProvider> {}
+    <UserProvider>
       <Router>
         <Navbar />
         <Routes>
@@ -33,6 +34,7 @@ function App() {
           <Route path="/sajatposztok" element={<Sajatposztok />} />
           <Route path="/jelszo" element={<Jelszo />} />
           <Route path="/posztotcsinalok" element={<Posztotcsinalok />} />
+          <Route path="/idopont-foglalasok" element={<IdopontFoglalasok />} />
         </Routes>
       </Router>
     </UserProvider>

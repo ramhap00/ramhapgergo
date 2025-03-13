@@ -48,3 +48,15 @@
     width: 100%;
     max-width: 400px;
   }
+  /* Fiok.css vagy egy új stílusfájl */
+.rounded-image {
+  border-radius: 50%; /* Teljes kör alak */
+  width: 100px; /* Egységes méret, ha szükséges */
+  height: 100px; /* Egységes méret, ha szükséges */
+  object-fit: cover; /* Biztosítja, hogy a kép kitöltse a kört */
+}
+.sidebar a {
+  pointer-events: auto; /* Engedélyezzük a kattintást */
+  text-decoration: none;
+  color: inherit;
+}
