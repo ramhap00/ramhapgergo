@@ -10,52 +10,61 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-
 const saltRounds = 10;
-const JWT_SECRET = 'YOUR_SECRET_KEY';
+const JWT_SECRET = 'YOUR_SECRET_KEY'; // Ezt érdemes .env fájlba tenni
 
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
   database: 'sos_munka',
-  port: '3307',
+  port: '3306',
 });
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true , methods: ['GET', 'POST', 'PUT', 'DELETE'], }));
+app.use(cors({ origin: 'http://localhost:5173', credentials: true, methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+// AuthenticateToken middleware javítása
 const authenticateToken = (req, res, next) => {
+  console.log("Middleware elindult"); // Debug
   const token = req.cookies.authToken;
-  if (!token) return res.status(401).json({ success: false, message: 'Nincs bejelentkezve' });
+  console.log("Token:", token); // Debug
+  
+  if (!token) {
+    console.log("Nincs token"); // Debug
+    return res.status(401).json({ success: false, message: 'Nincs bejelentkezve' });
+  }
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ success: false, message: 'Érvénytelen token' });
-    req.user = user;
+    if (err) {
+      console.log("Token ellenőrzési hiba:", err); // Debug
+      return res.status(403).json({ success: false, message: 'Érvénytelen token' });
+    }
+    console.log("Dekódolt user:", user); // Debug
+    req.user = { id: user.userID, ...user }; // Explicit módon állítjuk be az id-t
+    console.log("Beállított req.user:", req.user); // Debug
     next();
   });
 };
-const uploadPath = path.join(__dirname, "uploads");
 
-// Ha nem létezik, létrehozzuk az uploads mappát
+// Fájl feltöltés konfiguráció
+const uploadPath = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath);
 }
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, "uploads");
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
-
 const upload = multer({ storage: storage });
+app.use("/uploads", express.static(uploadPath));
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
+// Regisztráció végpont
 app.post('/register', (req, res) => {
   const { vezeteknev, keresztnev, felhasznalonev, jelszo, emailcim, telefonszam, telepules, munkaltato } = req.body;
   const munkasreg = munkaltato ? 1 : 0;
@@ -91,6 +100,7 @@ app.post('/register', (req, res) => {
   });
 });
 
+// Bejelentkezés végpont
 app.post('/login', (req, res) => {
   const { felhasznalonev, jelszo } = req.body;
 
@@ -117,8 +127,8 @@ app.post('/login', (req, res) => {
             );
 
             res.cookie("authToken", token, {
-              httpOnly: false, // JavaScript is olvashatja
-              secure: false,   // localhost esetén
+              httpOnly: false,
+              secure: false,
               maxAge: 60 * 60 * 1000,
               sameSite: "Lax",
             });
@@ -145,6 +155,7 @@ app.post('/login', (req, res) => {
   );
 });
 
+// Egyéb végpontok (nem módosítom őket)
 app.get('/user', authenticateToken, (req, res) => {
   res.json({ success: true, user: req.user });
 });
@@ -155,7 +166,7 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/profile', authenticateToken, (req, res) => {
-  const userID = req.user.userID;
+  const userID = req.user.id;
 
   db.query(
     "SELECT felhasznalonev, emailcim, vezeteknev, keresztnev FROM felhasznaloi_adatok WHERE userID = ?",
@@ -193,7 +204,7 @@ app.post('/check-username', (req, res) => {
 });
 
 app.put('/update-profile', authenticateToken, (req, res) => {
-  const userID = req.user.userID;
+  const userID = req.user.id;
   const { felhasznalonev, emailcim, vezeteknev, keresztnev } = req.body;
 
   if (!felhasznalonev || !emailcim || !vezeteknev || !keresztnev) {
@@ -215,7 +226,7 @@ app.put('/update-profile', authenticateToken, (req, res) => {
 });
 
 app.put('/update-password', authenticateToken, (req, res) => {
-  const userID = req.user.userID;
+  const userID = req.user.id;
   const { oldPassword, newPassword } = req.body;
 
   if (!oldPassword || !newPassword) {
@@ -269,7 +280,7 @@ app.post("/api/poszt", authenticateToken, upload.single("fotok"), (req, res) => 
   console.log("Kapott adatok:", req.body);
   console.log("Kapott fájl:", req.file);
 
-  const userID = req.user.userID;  // Bejelentkezett felhasználó ID-ja
+  const userID = req.user.id;
   const { vezeteknev, keresztnev, fejlec, telepules, telefonszam, kategoria, datum, leiras } = req.body;
   const fotok = req.file ? req.file.filename : null;
 
@@ -293,14 +304,13 @@ app.post("/api/poszt", authenticateToken, upload.single("fotok"), (req, res) => 
 });
 
 app.post('/api/ertekelesek', authenticateToken, (req, res) => {
-  const userID = req.user.userID;
+  const userID = req.user.id;
   const { postId, rating } = req.body;
 
   if (!postId || !rating || rating < 1 || rating > 5) {
     return res.status(400).json({ success: false, message: 'Érvénytelen poszt ID vagy értékelés!' });
   }
 
-  // Ellenőrizzük, hogy a felhasználó már értékelte-e ezt a posztot
   db.query(
     'SELECT * FROM ertekelesek WHERE post_id = ? AND user_id = ?',
     [postId, userID],
@@ -311,7 +321,6 @@ app.post('/api/ertekelesek', authenticateToken, (req, res) => {
       }
 
       const updateAverageRating = () => {
-        // Számoljuk ki az új átlagot és az értékelések számát
         db.query(
           'SELECT AVG(rating) as averageRating, COUNT(*) as ratingCount FROM ertekelesek WHERE post_id = ?',
           [postId],
@@ -335,7 +344,6 @@ app.post('/api/ertekelesek', authenticateToken, (req, res) => {
       };
 
       if (result.length > 0) {
-        // Ha már létezik értékelés, frissítjük
         db.query(
           'UPDATE ertekelesek SET rating = ?, created_at = NOW() WHERE post_id = ? AND user_id = ?',
           [rating, postId, userID],
@@ -344,12 +352,11 @@ app.post('/api/ertekelesek', authenticateToken, (req, res) => {
               console.error('Hiba az értékelés frissítésekor:', err);
               return res.status(500).json({ success: false, message: 'Hiba történt a frissítés során!' });
             }
-            updateAverageRating(); // Frissítjük az átlagot
+            updateAverageRating();
             return res.status(200).json({ success: true, message: 'Értékelés frissítve!' });
           }
         );
       } else {
-        // Ha még nem létezik, új értékelést hozunk létre
         db.query(
           'INSERT INTO ertekelesek (post_id, user_id, rating) VALUES (?, ?, ?)',
           [postId, userID, rating],
@@ -358,7 +365,7 @@ app.post('/api/ertekelesek', authenticateToken, (req, res) => {
               console.error('Hiba az értékelés mentésekor:', err);
               return res.status(500).json({ success: false, message: 'Hiba történt a mentés során!' });
             }
-            updateAverageRating(); // Frissítjük az átlagot
+            updateAverageRating();
             return res.status(201).json({ success: true, message: 'Értékelés sikeresen mentve!' });
           }
         );
@@ -366,7 +373,7 @@ app.post('/api/ertekelesek', authenticateToken, (req, res) => {
     }
   );
 });
-// API a posztok lekérésére
+
 app.get('/api/posztok', (req, res) => {
   const query = "SELECT * FROM posztok";
   
@@ -379,8 +386,9 @@ app.get('/api/posztok', (req, res) => {
     res.status(200).json({ success: true, posts: result });
   });
 });
+
 app.get('/api/user-rating/:postId', authenticateToken, (req, res) => {
-  const userID = req.user.userID;
+  const userID = req.user.id;
   const { postId } = req.params;
 
   db.query(
@@ -395,11 +403,67 @@ app.get('/api/user-rating/:postId', authenticateToken, (req, res) => {
       if (result.length > 0) {
         res.status(200).json({ success: true, rating: result[0].rating });
       } else {
-        res.status(200).json({ success: true, rating: 0 }); // Ha nincs értékelés
+        res.status(200).json({ success: true, rating: 0 });
       }
     }
   );
 });
+
+// Foglalt időpontok lekérése MySQL-lel
+app.get('/api/booked-times/:postId', authenticateToken, (req, res) => {
+  const { postId } = req.params;
+  
+  db.query(
+    'SELECT nap, ora FROM naptar WHERE posztID = ?',
+    [postId],
+    (err, result) => {
+      if (err) {
+        console.error('Hiba az időpontok lekérésekor:', err);
+        return res.status(500).json({ success: false, message: 'Hiba az időpontok lekérésekor' });
+      }
+      const times = result.map(row => `${row.nap}-${row.ora}`);
+      res.json({ success: true, times });
+    }
+  );
+});
+
+// Időpont foglalás végpont
+app.post('/api/book-time', authenticateToken, (req, res) => {
+  const { postId, day, hour } = req.body;
+  const userId = req.user.id;
+
+  console.log("Beérkező adatok:", { postId, day, hour, userId });
+
+  if (!userId) {
+    console.log("Hiányzó userId"); // Debug
+    return res.status(400).json({ success: false, message: 'Hiányzó userID a kérésben!' });
+  }
+
+  db.query(
+    'INSERT INTO naptar (posztID, userID, nap, ora) VALUES (?, ?, ?, ?)',
+    [postId, userId, day, hour],
+    (err, result) => {
+      if (err) {
+        console.error("Hiba az időpont mentésekor:", err);
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.status(400).json({ success: false, message: 'Ez az időpont már foglalt!' });
+        }
+        return res.status(500).json({
+          success: false,
+          message: 'Hiba az időpont mentésekor',
+          error: {
+            code: err.code,
+            message: err.sqlMessage || err.message,
+            sql: err.sql
+          }
+        });
+      }
+      console.log("Időpont sikeresen mentve:", { postId, day, hour, insertId: result.insertId });
+      res.json({ success: true });
+    }
+  );
+});
+
 const PORT = 5020;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

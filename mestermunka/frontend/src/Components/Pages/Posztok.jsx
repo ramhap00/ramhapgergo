@@ -17,8 +17,11 @@ const Posztok = () => {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [ratings, setRatings] = useState({}); // Felhasználó saját értékelései
-  const [hoverRating, setHoverRating] = useState(0); // Egérfeletti csillagok
+  const [ratings, setRatings] = useState({});
+  const [hoverRating, setHoverRating] = useState(0);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false); // Naptár modal állapota
+  const [selectedDay, setSelectedDay] = useState(""); // Kiválasztott nap
+  const [bookedTimes, setBookedTimes] = useState({}); // Foglalt időpontok
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
@@ -34,12 +37,13 @@ const Posztok = () => {
   ];
 
   const options = ["Elérhető", "Nem elérhető"];
+  const daysOfWeek = ["Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat", "Vasárnap"];
+  const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
 
-  // Posztok és felhasználói értékelések betöltése
+  // Posztok, értékelések és foglalt időpontok betöltése
   useEffect(() => {
     const fetchPostsAndRatings = async () => {
       try {
-        // Posztok lekérése
         const postsResponse = await fetch("http://localhost:5020/api/posztok");
         if (!postsResponse.ok) throw new Error(`HTTP hiba! Státusz: ${postsResponse.status}`);
         const postsData = await postsResponse.json();
@@ -47,32 +51,39 @@ const Posztok = () => {
           setPosts(postsData.posts);
           setFilteredPosts(postsData.posts);
 
-          // Felhasználói értékelések lekérése minden poszthoz
           const token = getTokenFromCookie();
           if (token) {
             const ratingsData = {};
+            const bookedTimesData = {};
             await Promise.all(
               postsData.posts.map(async (post) => {
                 const ratingResponse = await fetch(`http://localhost:5020/api/user-rating/${post.posztID}`, {
-                  headers: {
-                    "Authorization": `Bearer ${token}`,
-                  },
+                  headers: { "Authorization": `Bearer ${token}` },
                   credentials: "include",
                 });
                 const ratingData = await ratingResponse.json();
                 if (ratingData.success && ratingData.rating > 0) {
                   ratingsData[post.posztID] = ratingData.rating;
                 }
+
+                const bookedResponse = await fetch(`http://localhost:5020/api/booked-times/${post.posztID}`, {
+                  headers: { "Authorization": `Bearer ${token}` },
+                  credentials: "include",
+                });
+                const bookedData = await bookedResponse.json();
+                if (bookedData.success) {
+                  bookedTimesData[post.posztID] = bookedData.times || [];
+                }
               })
             );
             setRatings(ratingsData);
+            setBookedTimes(bookedTimesData);
           }
         }
       } catch (error) {
-        console.error("Hiba a posztok vagy értékelések betöltésekor:", error.message);
+        console.error("Hiba a posztok, értékelések vagy időpontok betöltésekor:", error.message);
       }
     };
-
     fetchPostsAndRatings();
   }, []);
 
@@ -125,10 +136,7 @@ const Posztok = () => {
       return;
     }
 
-    // Ha már értékeltük, ne tegyünk semmit
-    if (ratings[postId]) {
-      return;
-    }
+    if (ratings[postId]) return;
 
     try {
       const response = await fetch("http://localhost:5020/api/ertekelesek", {
@@ -144,7 +152,6 @@ const Posztok = () => {
       const data = await response.json();
       if (data.success) {
         setRatings((prev) => ({ ...prev, [postId]: rating }));
-        // Frissítjük a posztok listáját az új átlaggal
         const updatedResponse = await fetch("http://localhost:5020/api/posztok");
         const updatedData = await updatedResponse.json();
         if (updatedData.success) {
@@ -173,11 +180,11 @@ const Posztok = () => {
           className={`star ${i <= (hoverRating || userRating) ? "filled" : ""}`}
           style={{
             color: i <= (hoverRating || userRating) ? "orange" : "gray",
-            cursor: userRating ? "default" : "pointer", // Ha már értékelt, nem kattintható
+            cursor: userRating ? "default" : "pointer",
           }}
-          onMouseEnter={() => !userRating && setHoverRating(i)} // Csak ha nincs értékelés
+          onMouseEnter={() => !userRating && setHoverRating(i)}
           onMouseLeave={() => !userRating && setHoverRating(0)}
-          onClick={() => !userRating && handleRating(postId, i)} // Csak ha nincs értékelés
+          onClick={() => !userRating && handleRating(postId, i)}
         >
           ★
         </span>
@@ -192,6 +199,60 @@ const Posztok = () => {
     );
   };
 
+  const handleCalendarOpen = (post) => {
+    setSelectedPost(post);
+    setIsCalendarOpen(true);
+  };
+
+  const handleCalendarClose = () => {
+    setIsCalendarOpen(false);
+    setSelectedDay("");
+    setSelectedPost(null);
+  };
+
+  const handleBookTime = async (postId, day, hour) => {
+    const token = getTokenFromCookie();
+    if (!token) {
+      alert("Kérlek, jelentkezz be az időpont foglalásához!");
+      return;
+    }
+  
+    if (bookedTimes[postId]?.includes(`${day}-${hour}`)) {
+      return;
+    }
+  
+    const confirmBooking = window.confirm(`Biztosan ezt az időpontot szeretnéd kiválasztani: ${day} ${hour}?`);
+    if (!confirmBooking) return;
+  
+    console.log("Foglalás adatai:", { postId, day, hour, token });
+  
+    try {
+      const response = await fetch("http://localhost:5020/api/book-time", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({ postId, day, hour }),
+      });
+  
+      const data = await response.json();
+      console.log("Szerver válasza:", data);
+      if (data.success) {
+        alert("Az időpontodat sikeresen mentettük!");
+        setBookedTimes((prev) => ({
+          ...prev,
+          [postId]: [...(prev[postId] || []), `${day}-${hour}`],
+        }));
+      } else {
+        alert("Hiba történt: " + (data.error?.message || data.message));
+      }
+    } catch (error) {
+      console.error("Hiba az időpont foglalásakor:", error);
+      alert("Hiba történt az időpont foglalásakor: " + error.message);
+    }
+  };
   return (
     <div className="posztok-container">
       <div className="posztok-layout">
@@ -253,15 +314,16 @@ const Posztok = () => {
                     style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
                   />
                   <p>Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}</p>
-                  <div className="stars">
-                    {renderStars(post)}
-                  </div>
+                  <div className="stars">{renderStars(post)}</div>
+                  <button onClick={(e) => { e.stopPropagation(); handleCalendarOpen(post); }}>Naptár</button>
                 </div>
               ))
             )}
           </div>
         </div>
       </div>
+
+      {/* Post Modal */}
       {isModalOpen && selectedPost && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -276,10 +338,53 @@ const Posztok = () => {
               alt="Post Image"
               style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
             />
-            <div className="stars">
-              {renderStars(selectedPost)}
-            </div>
+            <div className="stars">{renderStars(selectedPost)}</div>
             <button onClick={handleCloseModal}>Bezárás</button>
+          </div>
+        </div>
+      )}
+
+      {/* Calendar Modal */}
+      {isCalendarOpen && selectedPost && (
+        <div className="modal-overlay" onClick={handleCalendarClose}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Naptár</h2>
+            <div className="calendar-days">
+              {daysOfWeek.map((day) => (
+                <button
+                  key={day}
+                  onClick={() => setSelectedDay(day)}
+                  style={{
+                    backgroundColor: selectedDay === day ? "#007bff" : "#f0f0f0",
+                    color: selectedDay === day ? "#fff" : "#000",
+                  }}
+                >
+                  {day}
+                </button>
+              ))}
+            </div>
+            {selectedDay && (
+              <div className="calendar-hours">
+                {hours.map((hour) => {
+                  const isBooked = bookedTimes[selectedPost.posztID]?.includes(`${selectedDay}-${hour}`);
+                  return (
+                    <button
+                      key={hour}
+                      onClick={() => handleBookTime(selectedPost.posztID, selectedDay, hour)}
+                      style={{
+                        backgroundColor: isBooked ? "#666" : "#ccc",
+                        cursor: isBooked ? "not-allowed" : "pointer",
+                        margin: "5px",
+                      }}
+                      disabled={isBooked}
+                    >
+                      {hour}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            <button onClick={handleCalendarClose}>Bezárás</button>
           </div>
         </div>
       )}

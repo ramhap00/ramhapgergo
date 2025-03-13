@@ -161,4 +161,27 @@
   font-size: 14px;
   color: #555;
 }
+.calendar-days {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
 
+.calendar-days button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.calendar-hours {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+
+.calendar-hours button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
