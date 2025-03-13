@@ -98,110 +98,106 @@ const Sajatposztok = () => {
 
   return (
     <div className="flex-container">
-    <div className="row">
-    <div className="col-sm-4" id="filter-container">
-      <h2>Szűrők</h2>
+      <div className="row container-fluid">
+        <div className="col-sm-2" id="filter-container">
+          <h2>Szűrők</h2>
 
-      {/* 🔍 Kereső mező */}
-      <div className="search-container">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Keresés..."
-        />
-        <button className="button1" onClick={handleSearch}>🔎</button>
-      </div>
-
-      {/* 🚨 Hibaüzenet */}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-      {/* Kategória választó */}
-      <label>Kategória:</label>
-      <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-        <option value="">Válassz kategóriát</option>
-        {categories.map((category) => (
-          <option key={category} value={category}>{category}</option>
-        ))}
-      </select>
-
-      {/* Ár választó */}
-      <label>Ár:</label>
-      <div className="price-inputs">
-        <input
-          type="number"
-          value={priceRange[0]}
-          onChange={(e) => setPriceRange([e.target.value, priceRange[1]])}
-          placeholder="Min"
-        />
-        <span>Ft</span>
-        <input
-          type="number"
-          value={priceRange[1]}
-          onChange={(e) => setPriceRange([priceRange[0], e.target.value])}
-          placeholder="Max"
-        />
-        <span>Ft</span>
-      </div>
-
-      {/* Település választó */}
-      <label>Település:</label>
-      <select value={location} onChange={(e) => setLocation(e.target.value)}>
-        <option value="">Válassz települést</option>
-        {locations.map((city) => (
-          <option key={city} value={city}>{city}</option>
-        ))}
-      </select>
-
-      {/* Állapot választó */}
-      <label>Állapot:</label>
-      <div className="status-container">
-        {options.map((option) => (
-          <div className="status-item" key={option}>
-            <span>{option}</span>
+          {/* 🔍 Kereső mező */}
+          <div className="search-container">
             <input
-              type="checkbox"
-              checked={selectedOptions.includes(option)}
-              onChange={() => handleCheckboxChange(option)}
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Keresés..."
             />
+            <button className="button1" onClick={handleSearch}>🔎</button>
           </div>
-        ))}
-      </div>
 
-      <br />
-      <br />
-      <br />
-      <Link to="/posztotcsinalok"><button>Új poszt</button></Link>
-      </div>
-      {/* Posztok listázása */}
+          {/* 🚨 Hibaüzenet */}
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
 
+          {/* Kategória választó */}
+          <label>Kategória:</label>
+          <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+            <option value="">Válassz kategóriát</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>{category}</option>
+            ))}
+          </select>
 
-        <div className="card col-md-3 col-lg-2">
-        
-        {filteredPosts.length === 0 ? (
-          <p>Nincsenek saját posztjaid!</p>
-        ) : (
-          filteredPosts.map((post) => (
-            <div key={post.id} className="card-img-top border rounded border-black">
-              <img
-                src={`http://localhost:5020/uploads/${post.fotok}`}
-                className="card-img-top"
-                alt="Post Image"
-                style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
-              />
-              <h3>{post.vezeteknev} {post.keresztnev}</h3>
-              <h4>Leírás: {post.fejlec}</h4>
-              <p>Kategória: {post.kategoria}</p>
-              <p>Település: {post.telepules}</p>
-              <p>Tartalom:</p>
-              <p>{post.leiras}</p>
-              
-            </div>
-          ))
-        )}
-        </div>
+          {/* Ár választó */}
+          <label>Ár:</label>
+          <div className="price-inputs">
+            <input
+              type="number"
+              value={priceRange[0]}
+              onChange={(e) => setPriceRange([e.target.value, priceRange[1]])}
+              placeholder="Min"
+            />
+            <span>Ft</span>
+            <input
+              type="number"
+              value={priceRange[1]}
+              onChange={(e) => setPriceRange([priceRange[0], e.target.value])}
+              placeholder="Max"
+            />
+            <span>Ft</span>
+          </div>
+
+          {/* Település választó */}
+          <label>Település:</label>
+          <select value={location} onChange={(e) => setLocation(e.target.value)}>
+            <option value="">Válassz települést</option>
+            {locations.map((city) => (
+              <option key={city} value={city}>{city}</option>
+            ))}
+          </select>
+
+          {/* Állapot választó */}
+          <label>Állapot:</label>
+          <div className="status-container">
+            {options.map((option) => (
+              <div className="status-item" key={option}>
+                <span>{option}</span>
+                <input
+                  type="checkbox"
+                  checked={selectedOptions.includes(option)}
+                  onChange={() => handleCheckboxChange(option)}
+                />
+              </div>
+            ))}
+          </div>
+
+          <br />
+          <br />
+          <br />
+          <Link to="/posztotcsinalok"><button>Új poszt</button></Link>
+          </div>
+          {/* Posztok listázása */}
+            {filteredPosts.length === 0 ? (
+              <p>Nincsenek saját posztjaid!</p>
+            ) : (
+              filteredPosts.map((post) => (
+                <div key={post.id} className="card col-sm-2 border-black">
+                  <img
+                    src={`http://localhost:5020/uploads/${post.fotok}`}
+                    className="card-img-top"
+                    alt="Post Image"
+                    style={{ width: '300px', height: '150px', objectFit: 'cover', borderRadius: '8px' }}
+                  />
+                  <div>
+                    <h3>{post.vezeteknev} {post.keresztnev}</h3>
+                    <h5>{post.fejlec}</h5>
+                    <p>Kategória: {post.kategoria}</p>
+                    <p>Település: {post.telepules}</p>
+                    <p>Leírás: {post.leiras}</p>
+                  </div>
+                  
+                </div>
+              ))
+            )}
+          </div>
       </div>
-    </div>
   );
 };
 

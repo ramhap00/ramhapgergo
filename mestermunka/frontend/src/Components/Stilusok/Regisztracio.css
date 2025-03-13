@@ -16,7 +16,6 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('/jo.png'); /* A háttérkép beállítása */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
