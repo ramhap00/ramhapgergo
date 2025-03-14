@@ -1,0 +1,65 @@
+/* Üzenetek legördülő lista */
+.message-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .message-dropdown h3 {
+    font-size: 16px;
+    margin: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+  }
+  
+  .message-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .message-dropdown li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+  }
+  
+  .message-dropdown li:last-child {
+    border-bottom: none;
+  }
+  
+  .message-dropdown p {
+    margin: 0;
+    line-height: 1.4;
+  }
+  
+  .message-dropdown button {
+    margin-right: 5px;
+    padding: 3px 8px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  /* Piros pont az új üzenetek jelzésére */
+  .message-icon-wrapper {
+    position: relative;
+  }
+  
+  .new-message-dot {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+    border: 1px solid white;
+  }
