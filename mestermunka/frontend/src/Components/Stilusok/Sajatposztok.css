@@ -1,42 +1,4 @@
-
-#filter-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #08e2c5;
-  }
-  
-  #filter-container h2 {
-    margin-bottom: 10px;
-    font-size: 18px;
-  }
-  
-  #filter-container label {
-    font-weight: bold;
-  }
-  
-  #filter-container select,
-  #filter-container input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    
-  }
-  
-  #filter-container input[type="number"] {
-    width: 100%;
-  }
-  
-  #filter-container div {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .search-container {
+.search-container {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -93,8 +55,4 @@
   }
   .card{
     flex-grow: 1;
-  }
-  .flex-container{
-    display: flex;
-    justify-content: space-evenly;
   }

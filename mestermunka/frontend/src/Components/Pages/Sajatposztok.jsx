@@ -97,9 +97,9 @@ const Sajatposztok = () => {
   };
 
   return (
-    <div className="flex-container">
-      <div className="row container-fluid">
-        <div className="col-sm-2" id="filter-container">
+    <div className="posztok-container">
+      <div className="posztok-layout">
+        <div className="posztok-filter">
           <h2>Szűrők</h2>
 
           {/* 🔍 Kereső mező */}
@@ -173,12 +173,14 @@ const Sajatposztok = () => {
           <br />
           <Link to="/posztotcsinalok"><button>Új poszt</button></Link>
           </div>
+          <div className="posztok-content">
+            <div className="posztok-list">
           {/* Posztok listázása */}
             {filteredPosts.length === 0 ? (
               <p>Nincsenek saját posztjaid!</p>
             ) : (
               filteredPosts.map((post) => (
-                <div key={post.id} className="card col-sm-2 border-black">
+                <div key={post.id} className="card col-sm-12 border-black">
                   <img
                     src={`http://localhost:5020/uploads/${post.fotok}`}
                     className="card-img-top"
@@ -197,7 +199,10 @@ const Sajatposztok = () => {
               ))
             )}
           </div>
+        </div>
       </div>
+      
+    </div>
   );
 };
 
