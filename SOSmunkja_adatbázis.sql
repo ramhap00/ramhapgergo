@@ -26,11 +26,12 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`felhasznaloi_adatok` (
   `modositasDatum` DATE NULL DEFAULT NULL,
   `admin` TINYINT(1) NULL DEFAULT NULL,
   `munkasreg` TINYINT(1) NULL DEFAULT NULL,
+  `profilkep` VARCHAR(255) DEFAULT 'default-profile.png',
   PRIMARY KEY (`userID`),
   UNIQUE INDEX `felhasznalonev_UNIQUE` (`felhasznalonev` ASC),
   INDEX `asd` (`kuldoID` ASC),
   INDEX `ig` (`fogadoID` ASC)
-) ENGINE = InnoDB AUTO_INCREMENT = 25 DEFAULT CHARACTER SET = utf8mb4;
+) ENGINE = InnoDB AUTO_INCREMENT = 30 DEFAULT CHARSET = utf8mb4;
 
 -- -----------------------------------------------------
 -- Table `sos_munka`.`kategoriak`
@@ -66,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`posztok` (
     FOREIGN KEY (`userID`)
     REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`)
     ON DELETE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 15 DEFAULT CHARACTER SET = utf8mb4;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 DEFAULT CHARSET = utf8mb4;
 
 -- -----------------------------------------------------
 -- Table `sos_munka`.`kedvencek`
@@ -95,25 +96,32 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`kedvencek` (
 -- Table `sos_munka`.`uzenetek`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `sos_munka`.`uzenetek` (
-  `uzenetID` INT(11) NOT NULL,
-  `kuldoID` INT(11) NOT NULL,
-  `fogadoID` INT(11) NOT NULL,
-  `uzenetekcol` VARCHAR(45) NOT NULL,
-  `uzenet` VARCHAR(45) NOT NULL,
-  `kuldesi_datum` DATETIME NULL DEFAULT NULL,
-  `olvasott` TINYINT(4) NULL DEFAULT NULL,
-  PRIMARY KEY (`uzenetID`),
-  INDEX `fkkuldo_idx` (`kuldoID` ASC),
-  INDEX `asdas` (`fogadoID` ASC),
-  CONSTRAINT `asder`
-    FOREIGN KEY (`fogadoID`)
-    REFERENCES `sos_munka`.`felhasznaloi_adatok` (`fogadoID`)
-    ON DELETE NO ACTION
+  `uzenetID` INT AUTO_INCREMENT PRIMARY KEY,
+  `feladoID` INT NOT NULL,
+  `cimzettID` INT NOT NULL,
+  `posztID` INT,
+  `nap` VARCHAR(10),
+  `ora` VARCHAR(5),
+  `tartalom` TEXT NOT NULL,
+  `allapot` ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+  `kuldesIdopont` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  INDEX `fk_felado_idx` (`feladoID` ASC),
+  INDEX `fk_cimzett_idx` (`cimzettID` ASC),
+  INDEX `fk_poszt_idx` (`posztID` ASC),
+  CONSTRAINT `fk_uzenetek_felado`
+    FOREIGN KEY (`feladoID`)
+    REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`)
+    ON DELETE CASCADE
     ON UPDATE NO ACTION,
-  CONSTRAINT `fkkuldo`
-    FOREIGN KEY (`kuldoID`)
-    REFERENCES `sos_munka`.`felhasznaloi_adatok` (`kuldoID`)
-    ON DELETE NO ACTION
+  CONSTRAINT `fk_uzenetek_cimzett`
+    FOREIGN KEY (`cimzettID`)
+    REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_uzenetek_poszt`
+    FOREIGN KEY (`posztID`)
+    REFERENCES `sos_munka`.`posztok` (`posztID`)
+    ON DELETE CASCADE
     ON UPDATE NO ACTION
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
 
@@ -140,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`ertekelesek` (
     REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
-) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 DEFAULT CHARSET = utf8mb4;
 
 -- -----------------------------------------------------
 -- Table `sos_munka`.`naptar`
@@ -166,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`naptar` (
     REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
-) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 DEFAULT CHARSET = utf8mb4;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
