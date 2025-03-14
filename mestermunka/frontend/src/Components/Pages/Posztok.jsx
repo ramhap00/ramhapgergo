@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../Stilusok/Posztok.css";
+import axios from "axios";
 
 const Posztok = () => {
   const getTokenFromCookie = () => {
@@ -19,9 +20,11 @@ const Posztok = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ratings, setRatings] = useState({});
   const [hoverRating, setHoverRating] = useState(0);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false); // Naptár modal állapota
-  const [selectedDay, setSelectedDay] = useState(""); // Kiválasztott nap
-  const [bookedTimes, setBookedTimes] = useState({}); // Foglalt időpontok
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [selectedDay, setSelectedDay] = useState("");
+  const [bookedTimes, setBookedTimes] = useState({});
+
+  const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
@@ -40,7 +43,37 @@ const Posztok = () => {
   const daysOfWeek = ["Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat", "Vasárnap"];
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
 
-  // Posztok, értékelések és foglalt időpontok betöltése
+  const currentDate = new Date(2025, 2, 1);
+  const monthNames = [
+    "Január", "Február", "Március", "Április", "Május", "Június",
+    "Július", "Augusztus", "Szeptember", "Október", "November", "December"
+  ];
+
+  const getWeekDates = () => {
+    const weekStart = new Date(currentDate);
+    weekStart.setDate(weekStart.getDate() + currentWeekOffset * 7);
+    const dayOfWeek = weekStart.getDay();
+    const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    weekStart.setDate(weekStart.getDate() + diffToMonday);
+
+    const weekDates = [];
+    const dayToDateMap = {};
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(weekStart);
+      date.setDate(weekStart.getDate() + i);
+      weekDates.push(date.getDate());
+      dayToDateMap[daysOfWeek[i]] = {
+        day: date.getDate(),
+        fullDate: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+      };
+    }
+
+    return { weekDates, dayToDateMap, month: monthNames[weekStart.getMonth()], year: weekStart.getFullYear() };
+  };
+
+  const { weekDates, dayToDateMap, month, year } = getWeekDates();
+
   useEffect(() => {
     const fetchPostsAndRatings = async () => {
       try {
@@ -216,43 +249,45 @@ const Posztok = () => {
       alert("Kérlek, jelentkezz be az időpont foglalásához!");
       return;
     }
-  
-    if (bookedTimes[postId]?.includes(`${day}-${hour}`)) {
+
+    const selectedDate = dayToDateMap[day].fullDate;
+    const bookingTime = `${selectedDate} ${hour}`;
+
+    // Ellenőrizzük, hogy az időpont már véglegesen foglalt-e
+    if (bookedTimes[postId]?.includes(bookingTime)) {
       return;
     }
-  
-    const confirmBooking = window.confirm(`Biztosan ezt az időpontot szeretnéd kiválasztani: ${day} ${hour}?`);
+
+    const confirmBooking = window.confirm(`Biztosan ezt az időpontot szeretnéd foglalni: ${month} ${dayToDateMap[day].day}. ${hour}?`);
     if (!confirmBooking) return;
-  
-    console.log("Foglalás adatai:", { postId, day, hour, token });
-  
+
     try {
-      const response = await fetch("http://localhost:5020/api/book-time", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: JSON.stringify({ postId, day, hour }),
-      });
-  
-      const data = await response.json();
-      console.log("Szerver válasza:", data);
-      if (data.success) {
-        alert("Az időpontodat sikeresen mentettük!");
-        setBookedTimes((prev) => ({
-          ...prev,
-          [postId]: [...(prev[postId] || []), `${day}-${hour}`],
-        }));
+      const response = await axios.post(
+        "http://localhost:5020/api/book-time",
+        { postId, day: selectedDate, hour },
+        { headers: { "Authorization": `Bearer ${token}` }, withCredentials: true }
+      );
+      if (response.data.success) {
+        alert("Időpont-foglalási kérés elküldve a felhasználónak!");
       } else {
-        alert("Hiba történt: " + (data.error?.message || data.message));
+        alert("Hiba történt: " + response.data.message);
       }
     } catch (error) {
       console.error("Hiba az időpont foglalásakor:", error);
       alert("Hiba történt az időpont foglalásakor: " + error.message);
     }
   };
+
+  const handlePreviousWeek = () => {
+    setCurrentWeekOffset((prev) => prev - 1);
+    setSelectedDay("");
+  };
+
+  const handleNextWeek = () => {
+    setCurrentWeekOffset((prev) => prev + 1);
+    setSelectedDay("");
+  };
+
   return (
     <div className="posztok-container">
       <div className="posztok-layout">
@@ -323,7 +358,6 @@ const Posztok = () => {
         </div>
       </div>
 
-      {/* Post Modal */}
       {isModalOpen && selectedPost && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -344,29 +378,42 @@ const Posztok = () => {
         </div>
       )}
 
-      {/* Calendar Modal */}
       {isCalendarOpen && selectedPost && (
         <div className="modal-overlay" onClick={handleCalendarClose}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Naptár</h2>
+            <div className="calendar-navigation">
+              <button onClick={handlePreviousWeek} className="nav-button">⬅️</button>
+              <h2>Naptár - {month} {year}</h2>
+              <button onClick={handleNextWeek} className="nav-button">➡️</button>
+            </div>
             <div className="calendar-days">
-              {daysOfWeek.map((day) => (
-                <button
-                  key={day}
-                  onClick={() => setSelectedDay(day)}
-                  style={{
-                    backgroundColor: selectedDay === day ? "#007bff" : "#f0f0f0",
-                    color: selectedDay === day ? "#fff" : "#000",
-                  }}
-                >
-                  {day}
-                </button>
-              ))}
+              <div className="calendar-header">
+                {daysOfWeek.map((day, index) => (
+                  <div key={day} className="calendar-day-header">
+                    <span>{weekDates[index]}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="calendar-day-buttons">
+                {daysOfWeek.map((day) => (
+                  <button
+                    key={day}
+                    onClick={() => setSelectedDay(day)}
+                    style={{
+                      backgroundColor: selectedDay === day ? "#007bff" : "#f0f0f0",
+                      color: selectedDay === day ? "#fff" : "#000",
+                    }}
+                  >
+                    {day}
+                  </button>
+                ))}
+              </div>
             </div>
             {selectedDay && (
               <div className="calendar-hours">
                 {hours.map((hour) => {
-                  const isBooked = bookedTimes[selectedPost.posztID]?.includes(`${selectedDay}-${hour}`);
+                  const bookingTime = `${dayToDateMap[selectedDay].fullDate} ${hour}`;
+                  const isBooked = bookedTimes[selectedPost.posztID]?.includes(bookingTime);
                   return (
                     <button
                       key={hour}

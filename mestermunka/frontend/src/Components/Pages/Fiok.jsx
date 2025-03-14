@@ -25,6 +25,7 @@ const Fiok = () => {
     munkasreg: 0,
   });
   const [newProfileImage, setNewProfileImage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     axios
@@ -45,18 +46,26 @@ const Fiok = () => {
       })
       .catch((error) => {
         console.error("Hiba a felhasználói adatok betöltésekor:", error);
+        setErrorMessage("Hiba történt a felhasználói adatok betöltésekor!");
       });
   }, [setUser]);
 
   const handleChange = (e) => {
     setNewData({ ...newData, [e.target.name]: e.target.value });
+    setErrorMessage(""); // Töröljük a hibaüzenetet, ha változtatnak
   };
 
   const handleFileChange = (e) => {
     setNewProfileImage(e.target.files[0]);
+    setErrorMessage(""); // Töröljük a hibaüzenetet, ha fájlt választanak
   };
 
   const handleSave = () => {
+    if (!newData.felhasznalonev || !newData.emailcim || !newData.vezeteknev || !newData.keresztnev) {
+      setErrorMessage("Minden mezőt ki kell tölteni!");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("felhasznalonev", newData.felhasznalonev);
     formData.append("emailcim", newData.emailcim);
@@ -74,8 +83,8 @@ const Fiok = () => {
       .then((response) => {
         console.log("Válasz a szerverről:", response.data);
         if (response.data.success) {
-          const updatedProfilkep = response.data.profilkep;
-          setUserData((prev) => ({ ...prev, profilkep: updatedProfilkep }));
+          const updatedProfilkep = response.data.profilkep || userData.profilkep; // Ha nincs új profilkép, az eredetit használjuk
+          setUserData((prev) => ({ ...prev, profilkep: updatedProfilkep, ...newData }));
           setNewData((prev) => ({ ...prev, profilkep: updatedProfilkep }));
           if (setUser) {
             setUser((prev) => ({
@@ -90,11 +99,12 @@ const Fiok = () => {
           }
           setEditing(false);
           setNewProfileImage(null);
-          alert("Adatok sikeresen frissítve!");
+          setErrorMessage("Adatok sikeresen frissítve!");
         }
       })
       .catch((error) => {
         console.error("Hiba a frissítés során:", error);
+        setErrorMessage(error.response?.data?.message || "Hiba történt a frissítés során!");
       });
   };
 
@@ -141,6 +151,7 @@ const Fiok = () => {
       </aside>
       <main className="content">
         <h1>Fiók beállítások</h1>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <section className="account-info">
           <table>
             <tbody>
@@ -189,15 +200,6 @@ const Fiok = () => {
                     onChange={handleChange}
                     disabled={!editing}
                   />
-                </td>
-              </tr>
-              <tr>
-                <td colSpan="2">
-                  {!editing ? (
-                    <button onClick={() => setEditing(true)}>Szerkesztés</button>
-                  ) : (
-                    <button onClick={handleSave}>Mentés</button>
-                  )}
                 </td>
               </tr>
               <tr>

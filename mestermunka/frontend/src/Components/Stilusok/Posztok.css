@@ -176,39 +176,88 @@
   font-size: 14px;
   color: #555;
 }
-.calendar-days {
+/* Posztok.css */
+
+/* ... (a meglévő CSS tartalom változatlan marad a naptár részig) */
+
+.calendar-navigation {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
- 
-.calendar-days button {
-  padding: 10px;
+
+.nav-button {
+  background-color: #007bff;
+  color: white;
   border: none;
+  padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
 }
- 
+
+.nav-button:hover {
+  background-color: #0056b3;
+}
+
+.calendar-days {
+  margin-bottom: 20px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  width: 14.28%; /* 7 napra egyenlően elosztva */
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.calendar-day-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px; /* Kis távolság a gombok között */
+}
+
+.calendar-day-buttons button {
+  width: 14.28%; /* Egyenlő szélesség a gomboknak */
+  height: 40px; /* Fix magasság a gomboknak */
+  border: none;
+  border-radius: 5px;
+  background-color: #f0f0f0; /* Alap háttérszín */
+  transition: background-color 0.3s ease;
+  font-size: 14px; /* Szöveg mérete a gombokban */
+  text-align: center;
+}
+
+.calendar-day-buttons button:hover {
+  background-color: #ddd; /* Hover effekt */
+}
+
 .calendar-hours {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
 }
- 
+
 .calendar-hours button {
   padding: 10px;
   border: none;
   border-radius: 5px;
-}
-.cancel-button {
-  background-color: #ff4444;
-  color: white;
-  border: none;
-  padding: 8px 16px;
+  background-color: #ccc;
   cursor: pointer;
-  margin-top: 10px;
 }
 
-.cancel-button:hover {
-  background-color: #cc0000;
+.calendar-hours button:disabled {
+  background-color: #666;
+  cursor: not-allowed;
 }
+
+/* ... (a CSS többi része változatlan marad) */
+
+
