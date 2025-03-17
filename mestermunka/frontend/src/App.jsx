@@ -16,6 +16,7 @@ import Sajatposztok from "./Components/Pages/Sajatposztok";
 import Jelszo from "./Components/Pages/Jelszo";
 import Posztotcsinalok from "./Components/Pages/Posztotcsinalok";
 import IdopontFoglalasok from "./Components/Pages/IdopontFoglalasok";
+import Beszelgetesek from "./Components/Pages/Beszelgetesek";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/jelszo" element={<Jelszo />} />
           <Route path="/posztotcsinalok" element={<Posztotcsinalok />} />
           <Route path="/idopont-foglalasok" element={<IdopontFoglalasok />} />
+          <Route path="/beszelgetesek" element={<Beszelgetesek />} />
         </Routes>
       </Router>
     </UserProvider>

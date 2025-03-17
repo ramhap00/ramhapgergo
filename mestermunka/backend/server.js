@@ -730,7 +730,73 @@ app.put('/api/update-message-status', authenticateToken, (req, res) => {
     );
   });
 });
+app.get('/beszelgetesek', authenticateToken, (req, res) => {
+  const userID = req.user.id;
 
+  const query = `
+    SELECT b.beszelgetesID, b.feladoID, b.cimzettID, b.tartalom, b.kuldesIdopont, b.olvasott,
+           f.vezeteknev AS feladoVezeteknev, f.keresztnev AS feladoKeresztnev, f.profilkep AS feladoProfilkep,
+           c.vezeteknev AS cimzettVezeteknev, c.keresztnev AS cimzettKeresztnev, c.profilkep AS cimzettProfilkep
+    FROM beszelgetesek b
+    LEFT JOIN felhasznaloi_adatok f ON b.feladoID = f.userID
+    LEFT JOIN felhasznaloi_adatok c ON b.cimzettID = c.userID
+    WHERE b.feladoID = ? OR b.cimzettID = ?
+    ORDER BY b.kuldesIdopont ASC
+  `;
+
+  db.query(query, [userID, userID], (err, result) => {
+    if (err) {
+      console.error("Hiba az üzenetek lekérdezésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt az üzenetek lekérdezésekor!" });
+    }
+    res.status(200).json({ success: true, messages: result });
+  });
+});
+
+app.post('/beszelgetesek', authenticateToken, (req, res) => {
+  const feladoID = req.user.id;
+  const { cimzettID, tartalom } = req.body;
+
+  if (!cimzettID || !tartalom) {
+    return res.status(400).json({ success: false, message: "Címzett és üzenet megadása kötelező!" });
+  }
+
+  const query = `
+    INSERT INTO beszelgetesek (feladoID, cimzettID, tartalom)
+    VALUES (?, ?, ?)
+  `;
+
+  db.query(query, [feladoID, cimzettID, tartalom], (err, result) => {
+    if (err) {
+      console.error("Hiba az üzenet mentésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt az üzenet mentésekor!" });
+    }
+    res.status(201).json({ success: true, message: "Üzenet sikeresen elküldve!", beszelgetesID: result.insertId });
+  });
+});
+
+// Üzenet olvasott állapotának frissítése
+app.put('/beszelgetesek/:id/read', authenticateToken, (req, res) => {
+  const userID = req.user.id;
+  const beszelgetesID = req.params.id;
+
+  const query = `
+    UPDATE beszelgetesek 
+    SET olvasott = 1 
+    WHERE beszelgetesID = ? AND cimzettID = ?
+  `;
+
+  db.query(query, [beszelgetesID, userID], (err, result) => {
+    if (err) {
+      console.error("Hiba az olvasott állapot frissítésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt az állapot frissítésekor!" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Üzenet nem található vagy nem neked szól!" });
+    }
+    res.status(200).json({ success: true, message: "Üzenet olvasottként jelölve!" });
+  });
+});
 const PORT = 5020;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

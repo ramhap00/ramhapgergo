@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode"; // Hozzáadjuk a JWT dekódoláshoz
 import "../Stilusok/Posztok.css";
-import axios from "axios";
 
 const Posztok = () => {
+  const navigate = useNavigate();
+
   const getTokenFromCookie = () => {
-    const cookies = document.cookie.split("; ");
-    const authCookie = cookies.find((cookie) => cookie.startsWith("authToken="));
-    return authCookie ? authCookie.split("=")[1] : null;
+    const cookies = document.cookie.split("; ").find(row => row.startsWith("authToken="))?.split("=")[1];
+    return cookies || null;
+  };
+
+  // Bejelentkezett felhasználó ID-jének lekérése
+  const getCurrentUserId = () => {
+    const token = getTokenFromCookie();
+    if (token) {
+      const decoded = jwtDecode(token);
+      return decoded.userID; // Feltételezem, hogy a tokenben "userID" a kulcs
+    }
+    return null;
   };
 
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -23,7 +35,6 @@ const Posztok = () => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState("");
   const [bookedTimes, setBookedTimes] = useState({});
-
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
 
   const categories = [
@@ -253,24 +264,33 @@ const Posztok = () => {
     const selectedDate = dayToDateMap[day].fullDate;
     const bookingTime = `${selectedDate} ${hour}`;
 
-    // Ellenőrizzük, hogy az időpont már véglegesen foglalt-e
     if (bookedTimes[postId]?.includes(bookingTime)) {
       return;
     }
 
-    const confirmBooking = window.confirm(`Biztosan ezt az időpontot szeretnéd foglalni: ${month} ${dayToDateMap[day].day}. ${hour}?`);
+    const confirmBooking = window.confirm(`Biztosan ezt az időpontot szeretnéd kiválasztani: ${month} ${dayToDateMap[day].day}. ${hour}?`);
     if (!confirmBooking) return;
 
     try {
-      const response = await axios.post(
-        "http://localhost:5020/api/book-time",
-        { postId, day: selectedDate, hour },
-        { headers: { "Authorization": `Bearer ${token}` }, withCredentials: true }
-      );
-      if (response.data.success) {
-        alert("Időpont-foglalási kérés elküldve a felhasználónak!");
+      const response = await fetch("http://localhost:5020/api/book-time", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({ postId, day: selectedDate, hour }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert("Az időpontodat sikeresen mentettük!");
+        setBookedTimes((prev) => ({
+          ...prev,
+          [postId]: [...(prev[postId] || []), bookingTime],
+        }));
       } else {
-        alert("Hiba történt: " + response.data.message);
+        alert("Hiba történt: " + (data.error?.message || data.message));
       }
     } catch (error) {
       console.error("Hiba az időpont foglalásakor:", error);
@@ -287,6 +307,25 @@ const Posztok = () => {
     setCurrentWeekOffset((prev) => prev + 1);
     setSelectedDay("");
   };
+
+  const handleWriteToUser = (post) => {
+    const token = getTokenFromCookie();
+    if (!token) {
+      alert("Kérlek, jelentkezz be az üzenetküldéshez!");
+      return;
+    }
+    navigate("/beszelgetesek", {
+      state: {
+        user: {
+          id: post.userID,
+          name: `${post.vezeteknev} ${post.keresztnev}`,
+          profilePic: post.profilkep || "default-profile.png",
+        },
+      },
+    });
+  };
+
+  const currentUserId = getCurrentUserId(); // Aktuális felhasználó ID-je
 
   return (
     <div className="posztok-container">
@@ -339,18 +378,47 @@ const Posztok = () => {
               filteredPosts.map((post) => (
                 <div key={post.posztID} className="post-item" onClick={() => handlePostClick(post)}>
                   <h3>{post.vezeteknev} {post.keresztnev}</h3>
-                  <h4>Leírás: {post.fejlec}</h4>
+                  <h4>{post.fejlec}</h4>
                   <p>Kategória: {post.kategoria}</p>
                   <p>Település: {post.telepules}</p>
+                  <p>Telefonszám: {post.telefonszam}</p>
                   <p>{post.leiras}</p>
                   <img
                     src={`http://localhost:5020/uploads/${post.fotok}`}
                     alt="Post Image"
-                    style={{ width: '150px', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
+                    style={{ width: "150px", height: "auto", objectFit: "cover", borderRadius: "8px" }}
                   />
-                  <p>Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}</p>
                   <div className="stars">{renderStars(post)}</div>
-                  <button onClick={(e) => { e.stopPropagation(); handleCalendarOpen(post); }}>Naptár</button>
+                  {/* Csak akkor jelenik meg az "Írj rám" gomb, ha nem a saját poszt */}
+                  {currentUserId !== post.userID && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleWriteToUser(post);
+                      }}
+                      style={{
+                        padding: "5px 10px",
+                        backgroundColor: "#007bff",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        marginTop: "10px",
+                      }}
+                    >
+                      Írj rám
+                    </button>
+                  )}
+                  <p>Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}</p>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCalendarOpen(post);
+                    }}
+                    style={{ marginTop: "10px" }}
+                  >
+                    Naptár
+                  </button>
                 </div>
               ))
             )}
@@ -358,19 +426,20 @@ const Posztok = () => {
         </div>
       </div>
 
+      {/* Post Modal */}
       {isModalOpen && selectedPost && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>{selectedPost.fejlec}</h2>
             <h3>{selectedPost.vezeteknev} {selectedPost.keresztnev}</h3>
-            <p>{selectedPost.leiras}</p>
             <p><strong>Kategória:</strong> {selectedPost.kategoria}</p>
             <p><strong>Település:</strong> {selectedPost.telepules}</p>
-            <p><strong>Dátum:</strong> {new Date(selectedPost.datum).toLocaleDateString("hu-HU")}</p>
+            <p><strong>Telefonszám:</strong> {selectedPost.telefonszam}</p>
+            <p>{selectedPost.leiras}</p>
             <img
               src={`http://localhost:5020/uploads/${selectedPost.fotok}`}
               alt="Post Image"
-              style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: '8px' }}
+              style={{ width: "100%", height: "auto", objectFit: "cover", borderRadius: "8px" }}
             />
             <div className="stars">{renderStars(selectedPost)}</div>
             <button onClick={handleCloseModal}>Bezárás</button>
@@ -378,6 +447,7 @@ const Posztok = () => {
         </div>
       )}
 
+      {/* Calendar Modal */}
       {isCalendarOpen && selectedPost && (
         <div className="modal-overlay" onClick={handleCalendarClose}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>

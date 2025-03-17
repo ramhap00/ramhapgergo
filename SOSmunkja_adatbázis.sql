@@ -176,6 +176,26 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`naptar` (
     ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 14 DEFAULT CHARSET = utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `sos_munka`.`beszelgetesek` (
+  `beszelgetesID` INT AUTO_INCREMENT PRIMARY KEY,
+  `feladoID` INT NOT NULL,
+  `cimzettID` INT NOT NULL,
+  `tartalom` TEXT NOT NULL,
+  `kuldesIdopont` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `olvasott` TINYINT(1) DEFAULT 0,
+  INDEX `fk_felado_idx` (`feladoID` ASC),
+  INDEX `fk_cimzett_idx` (`cimzettID` ASC),
+  CONSTRAINT `fk_beszelgetesek_felado`
+    FOREIGN KEY (`feladoID`)
+    REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_beszelgetesek_cimzett`
+    FOREIGN KEY (`cimzettID`)
+    REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../Stilusok/Posztok.css";
+
 
 const IdopontFoglalasok = () => {
   const [bookings, setBookings] = useState([]);

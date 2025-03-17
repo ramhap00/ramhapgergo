@@ -137,6 +137,9 @@ const Navbar = () => {
                     <li>
                       <NavLink to="/kedvencek">Kedvenceim</NavLink>
                     </li>
+                    <li>
+                      <NavLink to="/beszelgetesek">Üzenetek</NavLink>
+                    </li>
                     {user && user.munkasreg === 1 && (
                       <li>
                         <NavLink to="/sajatposztok">Posztjaim</NavLink>
