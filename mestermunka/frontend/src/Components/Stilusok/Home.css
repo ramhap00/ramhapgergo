@@ -1,16 +1,78 @@
-.image-container {
+/* Home.css */
+.home-container {
   position: relative;
-  height: 100%;
-  max-height: 2000px;
-  width: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  width: 100%;
+  min-height: 150vh; /* Magasabb, hogy legyen görgethető tartalom */
+  overflow-y: auto; /* Görgethető tartalom */
 }
 
-.faded-image {
+.image-container {
+  position: fixed; /* Fix pozíció, hogy görgetéskor is látható maradjon */
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto; 
-  object-fit: contain;
+  height: 100vh; /* Teljes képernyő magasság */
+  z-index: 0; /* Háttérben marad */
+}
+
+.background-image {
+  width: 100%;
+  height: 100%; 
+  object-fit: cover; /* Kitölti a konténert */
+}
+
+/* Tartalom konténer, ami a kép fölött van */
+.content-container {
+  position: relative;
+  z-index: 1; /* A kép fölött legyen */
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Középen lévő szöveg stílusa */
+.center-text {
+  text-align: center;
+  color: black;
+  font-weight: bold; /* Vastag szöveg */
+  font-size: 2rem; /* Nagy betűméret */
+  text-transform: uppercase; /* Nagybetűs szöveg */
+  margin-bottom: 40px; /* Távolság az alatta lévő tömböktől */
+}
+
+/* Tömbök konténere */
+.blocks-container {
+  display: flex;
+  justify-content: space-between;
+  width: 80%; /* Szélesség korlátozása */
+  max-width: 1200px; /* Maximum szélesség */
+}
+
+/* Bal és jobb oldali tömbök */
+.left-blocks, .right-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Tömbök közötti távolság */
+  width: 45%; /* Szélességük */
+}
+
+/* Egyedi tömb stílusa */
+.block {
+  background: rgba(255, 255, 255, 0.3); /* Halvány háttér */
+  backdrop-filter: blur(8px); /* Csak a háttér elmosása */
+  padding: 20px;
+  border-radius: 10px;
+  color: black;
+  font-weight: bold; /* Vastag szöveg */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Árnyék */
+}
+
+/* A szöveg éles marad */
+.block p {
+  margin: 0;
+  position: relative;
+  z-index: 2; /* A szöveg a homályos háttér fölött */
 }
