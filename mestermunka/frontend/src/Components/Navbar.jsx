@@ -119,6 +119,11 @@ const Navbar = () => {
               )}
             </div>
           </li>
+        </ul>
+      </div>
+      <div className="col-xs-1">
+        <ul className="nav-menu-right">
+          
           <li
             className="dropdown profile-item"
             ref={dropdownRef}

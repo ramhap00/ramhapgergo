@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import "../Stilusok/IdopontFoglalasok.css"; 
 
 const IdopontFoglalasok = () => {
   const [bookings, setBookings] = useState([]);
@@ -87,7 +87,6 @@ const IdopontFoglalasok = () => {
 
   return (
     <div className="posztok-container">
-      <h1>Foglalt időpontjaim</h1>
       <div className="split-container">
         <div className="left-panel">
           <h2>Bejövő foglalási kérelmek</h2>
