@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Axios from "axios";
 import "../Stilusok/Regisztracio.css"; // CSS importálása
-import backgroundImage from "../../assets/jo.png";
+import backgroundImage from "../../assets/hatterkep1.png";
 
 const megyek = [
   "Bács-Kiskun", "Baranya", "Békés", "Borsod-Abaúj-Zemplén", "Csongrád-Csanád",
