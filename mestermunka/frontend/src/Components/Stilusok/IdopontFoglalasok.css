@@ -1,8 +1,8 @@
-body{
-    background-image: url("../../assets/hatterkep1.png");
-    width: 100%;
-    height: 100%; 
-    object-fit: cover; /* Kitölti a konténert */
+h2{
+    font-size: 24px;
+}
+p{
+    font-size: 16px;
 }
 .split-container{
     width: 100%;
@@ -12,20 +12,20 @@ body{
     flex-grow: 1;
 }
 .left-panel{
-    backdrop-filter: blur(20px); /*elhomályosítja a hátteret */
-    color: white;
+    backdrop-filter: blur(50px); /*elhomályosítja a hátteret */
     width: 30%;
     border: black 3px solid;
     border-radius: 0.5vh;
     text-align: center;
     overflow-y: auto; /* Engedélyezett függőleges görgetés */
-
+    box-shadow: 0 0 10px;
 }
 .right-panel{
-    background-color: white;
+    backdrop-filter: blur(20px); /*elhomályosítja a hátteret */
     width: 30%;
     border: black 3px solid;
     border-radius: 0.5vh;
     text-align: center;
     overflow-y: auto; /* Engedélyezett függőleges görgetés */
+    box-shadow: 0 0 10px;
 }

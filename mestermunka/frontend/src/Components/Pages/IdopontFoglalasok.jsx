@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Stilusok/IdopontFoglalasok.css"; 
 import workersBg from "/src/assets/hatterkep1.png";
+import { px } from "framer-motion";
 
 const IdopontFoglalasok = () => {
   const [bookings, setBookings] = useState([]);
@@ -87,9 +88,12 @@ const IdopontFoglalasok = () => {
   };
 
   return (
+    
     <div className="posztok-container">
+      <div className="image-container"><img src={workersBg} alt="Munkások" className="background-image"/></div>
       <div className="split-container">
-        <div className="left-panel">
+        
+        <div className="left-panel" style={{backgroundColor:"lightblue"}}>
           <h2>Bejövő foglalási kérelmek</h2>
           {incomingBookings.length === 0 ? (
             <p>Nincs bejövő foglalási kérelem.</p>
@@ -127,7 +131,7 @@ const IdopontFoglalasok = () => {
             </div>
           )}
         </div>
-        <div className="right-panel">
+        <div className="right-panel" style={{backgroundColor:"lightblue"}}>
           <h2>Saját foglalásaim</h2>
           {bookings.length === 0 ? (
             <p>Még nem foglaltál elfogadott időpontot.</p>
