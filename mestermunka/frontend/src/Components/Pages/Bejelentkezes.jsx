@@ -1,10 +1,11 @@
+// Bejelentkezes.jsx
 import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Axios from "axios";
 import { UserContext } from "../../UserContext";
 import "../Stilusok/Bejelentkezes.css";
 import backgroundImage from "../../assets/jo.png";
-import eyeIcon from "../../assets/password-eye.png"; // Kép importálása
+import eyeIcon from "../../assets/password-eye.png";
 
 const Bejelentkezes = () => {
   const [felhasznalonev, setFelhasznalonev] = useState("");
@@ -13,7 +14,7 @@ const Bejelentkezes = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
+  const { loginUser } = useContext(UserContext); // loginUser használata
 
   const handleLogin = () => {
     Axios.post(
@@ -23,11 +24,7 @@ const Bejelentkezes = () => {
     )
       .then((response) => {
         if (response.data.success) {
-          setUser(response.data.user);
-          localStorage.setItem("userID", response.data.user);
-
-          console.log("userID mentve:", response.data.user);
-
+          loginUser(response.data.user);
           setSuccessMessage("Sikeres bejelentkezés!");
           setTimeout(() => {
             navigate("/Home");
@@ -37,8 +34,8 @@ const Bejelentkezes = () => {
         }
       })
       .catch((error) => {
-        console.error("Hiba történt:", error);
-        setError("Hiba történt a bejelentkezés során");
+        console.error("Hiba történt a bejelentkezés során:", error.response?.data || error.message);
+        setError(error.response?.data?.message || "Hiba történt a bejelentkezés során");
       });
   };
 

@@ -105,7 +105,7 @@ button:disabled {
 
 /* Üzenetek színei */
 .success-message {
-  color: green;
+  color: lightgreen;
   margin-bottom: 15px;
 }
 
