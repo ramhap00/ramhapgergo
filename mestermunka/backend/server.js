@@ -11,7 +11,7 @@ const path = require("path");
 const fs = require("fs");
 
 const saltRounds = 10;
-const JWT_SECRET = 'YOUR_SECRET_KEY'; // Ezt érdemes .env fájlba tenni
+const JWT_SECRET = 'YOUR_SECRET_KEY';
 
 const db = mysql.createConnection({
   host: 'localhost',
@@ -25,25 +25,25 @@ app.use(cors({ origin: 'http://localhost:5173', credentials: true, methods: ['GE
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// AuthenticateToken middleware javítása
+// AuthenticateToken middleware
 const authenticateToken = (req, res, next) => {
-  console.log("Middleware elindult"); // Debug
+  console.log("Middleware elindult");
   const token = req.cookies.authToken;
-  console.log("Token:", token); // Debug
+  console.log("Token:", token);
   
   if (!token) {
-    console.log("Nincs token"); // Debug
+    console.log("Nincs token");
     return res.status(401).json({ success: false, message: 'Nincs bejelentkezve' });
   }
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {
-      console.log("Token ellenőrzési hiba:", err); // Debug
+      console.log("Token ellenőrzési hiba:", err);
       return res.status(403).json({ success: false, message: 'Érvénytelen token' });
     }
-    console.log("Dekódolt user:", user); // Debug
-    req.user = { id: user.userID, ...user }; // Explicit módon állítjuk be az id-t
-    console.log("Beállított req.user:", req.user); // Debug
+    console.log("Dekódolt user:", user);
+    req.user = { id: user.userID, ...user };
+    console.log("Beállított req.user:", req.user);
     next();
   });
 };
@@ -100,21 +100,33 @@ app.post('/register', (req, res) => {
   });
 });
 
-// Bejelentkezés végpont
 app.post('/login', (req, res) => {
   const { felhasznalonev, jelszo } = req.body;
 
+  console.log("Bejövő kérés:", { felhasznalonev, jelszo }); // Debug log
+
+  if (!felhasznalonev || !jelszo) {
+    return res.status(400).json({ success: false, message: "Felhasználónév és jelszó megadása kötelező!" });
+  }
+
   db.query(
-    "SELECT userID, felhasznalonev, emailcim, telefonszam, munkasreg, jelszo FROM felhasznaloi_adatok WHERE felhasznalonev = ?;",
+    "SELECT userID, felhasznalonev, emailcim, telefonszam, munkasreg, jelszo FROM felhasznaloi_adatok WHERE felhasznalonev = ?",
     [felhasznalonev],
     (err, result) => {
       if (err) {
-        console.error("Hiba a lekérdezés során:", err);
-        return res.status(500).json({ success: false, message: "Szerverhiba!" });
+        console.error("Adatbázis lekérdezési hiba:", err); // Részletes hibaüzenet
+        return res.status(500).json({ success: false, message: "Szerverhiba az adatbázis lekérdezésekor!", error: err.message });
       }
+
+      console.log("Lekérdezés eredménye:", result); // Debug log
 
       if (result.length > 0) {
         bcrypt.compare(jelszo, result[0].jelszo, (error, response) => {
+          if (error) {
+            console.error("bcrypt összehasonlítási hiba:", error); // Részletes hibaüzenet
+            return res.status(500).json({ success: false, message: "Hiba a jelszó ellenőrzésekor!", error: error.message });
+          }
+
           if (response) {
             const token = jwt.sign(
               {
@@ -169,7 +181,7 @@ app.get('/profile', authenticateToken, (req, res) => {
   const userID = req.user.id;
 
   db.query(
-    "SELECT felhasznalonev, emailcim, vezeteknev, keresztnev, profilkep FROM felhasznaloi_adatok WHERE userID = ?",
+    "SELECT felhasznalonev, emailcim, vezeteknev, keresztnev, profilkep, munkasreg FROM felhasznaloi_adatok WHERE userID = ?",
     [userID],
     (err, result) => {
       if (err) {
@@ -185,6 +197,8 @@ app.get('/profile', authenticateToken, (req, res) => {
     }
   );
 });
+
+// ... (a fájl további része változatlan) ...
 
 app.post('/check-username', (req, res) => {
   const { felhasznalonev } = req.body;
@@ -203,7 +217,6 @@ app.post('/check-username', (req, res) => {
   });
 });
 
-// Módosított PUT /update-profile végpont a multer használatával
 app.put('/update-profile', authenticateToken, upload.single("profilkep"), (req, res) => {
   const userID = req.user.id;
   const { felhasznalonev, emailcim, vezeteknev, keresztnev } = req.body;
@@ -234,7 +247,33 @@ app.put('/update-profile', authenticateToken, upload.single("profilkep"), (req, 
         return res.status(404).json({ success: false, message: "Felhasználó nem található!" });
       }
 
-      res.json({ success: true, message: "Adatok sikeresen frissítve!", profilkep: profilkep || userData.profilkep });
+      // Lekérdezzük a frissített adatokat az adatbázisból
+      db.query(
+        "SELECT felhasznalonev, emailcim, vezeteknev, keresztnev, profilkep, munkasreg FROM felhasznaloi_adatok WHERE userID = ?",
+        [userID],
+        (err, updatedResult) => {
+          if (err) {
+            console.error("Hiba a frissített adatok lekérdezésekor:", err);
+            return res.status(500).json({ success: false, message: "Hiba történt a frissített adatok lekérdezésekor." });
+          }
+
+          if (updatedResult.length > 0) {
+            const updatedUser = updatedResult[0];
+            res.json({
+              success: true,
+              message: "Adatok sikeresen frissítve!",
+              user: updatedUser, // Teljes user objektum visszaküldése
+              profilkep: updatedUser.profilkep // Biztosítjuk, hogy a profilkép helyes legyen
+            });
+          } else {
+            res.json({
+              success: true,
+              message: "Adatok sikeresen frissítve!",
+              profilkep: profilkep // Ha nincs lekérdezett adat, az új profilkép értékét küldjük
+            });
+          }
+        }
+      );
     }
   );
 });

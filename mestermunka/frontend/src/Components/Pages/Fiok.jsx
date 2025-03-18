@@ -1,3 +1,4 @@
+// Fiok.jsx (teljes kód a debug loggal)
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import "../Stilusok/Fiok.css";
@@ -33,7 +34,7 @@ const Fiok = () => {
       .then((response) => {
         if (response.data.success) {
           const updatedUserData = response.data.user;
-          console.log("Betöltött user adatok:", updatedUserData);
+          console.log("Betöltött user adatok (Fiok useEffect):", updatedUserData);
           setUserData(updatedUserData);
           setNewData(updatedUserData);
           if (setUser) {
@@ -52,12 +53,12 @@ const Fiok = () => {
 
   const handleChange = (e) => {
     setNewData({ ...newData, [e.target.name]: e.target.value });
-    setErrorMessage(""); // Töröljük a hibaüzenetet, ha változtatnak
+    setErrorMessage("");
   };
 
   const handleFileChange = (e) => {
     setNewProfileImage(e.target.files[0]);
-    setErrorMessage(""); // Töröljük a hibaüzenetet, ha fájlt választanak
+    setErrorMessage("");
   };
 
   const handleSave = () => {
@@ -83,7 +84,7 @@ const Fiok = () => {
       .then((response) => {
         console.log("Válasz a szerverről:", response.data);
         if (response.data.success) {
-          const updatedProfilkep = response.data.profilkep || userData.profilkep; // Ha nincs új profilkép, az eredetit használjuk
+          const updatedProfilkep = response.data.profilkep || userData.profilkep;
           setUserData((prev) => ({ ...prev, profilkep: updatedProfilkep, ...newData }));
           setNewData((prev) => ({ ...prev, profilkep: updatedProfilkep }));
           if (setUser) {
@@ -108,25 +109,26 @@ const Fiok = () => {
       });
   };
 
-  const profileImage = userData.profilkep
+  const profileImage = user?.profilkep
+    ? `http://localhost:5020/uploads/${user.profilkep}?t=${Date.now()}`
+    : userData.profilkep
     ? `http://localhost:5020/uploads/${userData.profilkep}?t=${Date.now()}`
     : profileBlank;
+
+  console.log("UserContext user (Fiok render):", user); // Debug log a user ellenőrzésére
+  console.log("Local userData (Fiok render):", userData); // Debug log a userData ellenőrzésére
 
   return (
     <div className="account-settings">
       <aside className="sidebar">
         <ul>
           <li className="active">
-            <img src={profileBlank} alt="icon" className="menu-icon" /> Fiók
-            beállítások
+            <img src={profileBlank} alt="icon" className="menu-icon" /> Fiók beállítások
           </li>
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
             <img src={profileBlank} alt="icon" className="menu-icon" />
-            <Link
-              to="/jelszo"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
+            <Link to="/jelszo" style={{ textDecoration: "none", color: "inherit" }}>
               Jelszó és biztonság
             </Link>
           </li>
@@ -136,15 +138,23 @@ const Fiok = () => {
             <Link
               to="/idopont-foglalasok"
               style={{ textDecoration: "none", color: "inherit" }}
-              onClick={() => console.log("Kattintás az Időpont foglalásokra!")} // Debug log
+              onClick={() => console.log("Kattintás az Időpont foglalásokra!")}
             >
               Időpont foglalások
             </Link>
           </li>
           <br />
+          
+            <li style={{ fontWeight: "700", fontSize: "16px" }}>
+              <img src={profileBlank} alt="icon" className="menu-icon" />
+              <Link to="/posztjaim" style={{ textDecoration: "none", color: "inherit" }}>
+                Posztjaim
+              </Link>
+            </li>
+          
+          <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
-            <img src={profileBlank} alt="icon" className="menu-icon" /> Fizetési
-            előzmények
+            <img src={profileBlank} alt="icon" className="menu-icon" /> Fizetési előzmények
           </li>
           <br />
         </ul>
@@ -171,7 +181,7 @@ const Fiok = () => {
                       className="rounded-image"
                     />
                   )}
-                  {!newProfileImage && userData.profilkep && (
+                  {!newProfileImage && (
                     <img
                       src={profileImage}
                       alt="Current Profile"
