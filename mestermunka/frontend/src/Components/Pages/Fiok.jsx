@@ -147,7 +147,7 @@ const Fiok = () => {
           
             <li style={{ fontWeight: "700", fontSize: "16px" }}>
               <img src={profileBlank} alt="icon" className="menu-icon" />
-              <Link to="/posztjaim" style={{ textDecoration: "none", color: "inherit" }}>
+              <Link to="/Sajatposztok" style={{ textDecoration: "none", color: "inherit" }}>
                 Posztjaim
               </Link>
             </li>
