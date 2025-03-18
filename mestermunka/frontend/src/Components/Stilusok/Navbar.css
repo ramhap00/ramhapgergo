@@ -1,4 +1,6 @@
-/* Navbar fix pozíció és átlátszó háttér */
+/* Navbar.css */
+
+/* Alapértelmezett stílus minden oldalon */
 #flex-container {
   display: flex;
   justify-content: space-around;
@@ -7,18 +9,40 @@
   width: 100%;
   top: 0;
   left: 0;
-  background-color: transparent !important; /* Teljesen átlátszó háttér */
-  z-index: 1000; /* A navbar legyen a legfelső rétegen */
-  padding: 0px 0; /* A navbar körüli kis margó */
+  background-color: transparent !important;
+  z-index: 1000;
+  padding: 0px 0;
+  /* Eltávolítjuk a height: 80px-t, hogy a tartalom határozza meg a magasságot */
+}
+.home-navbar #flex-container {
+  background-color: white !important;
+}
+/* Home oldalon fekete háttér és fehér szöveg */
+.home-navbar #flex-container {
+  background-color: white !important; /* Fekete háttér a Home oldalon */
 }
 
-/* A fő tartalom margóját úgy állítjuk be, hogy a navbar ne tolja be a tartalmat */
-body, .main-content {
-  padding-top: 80px; /* A navbar magasságának megfelelő padding (pl. 80px) */
-  margin: 0;
+/* Szövegek fehérre állítása a Home oldalon */
+.home-navbar #navbar-text,
+.home-navbar .nav-menu-left a,
+.home-navbar .nav-menu-right a {
+  color: black !important;
 }
 
-/* Menük és logók stílusai */
+/* Dropdown tartalom a Home oldalon */
+.home-navbar .dropdown-content {
+  background-color: white;
+}
+
+.home-navbar .dropdown-content li a {
+  color: white;
+}
+
+.home-navbar .dropdown-content li:hover {
+  background-color: white;
+}
+
+/* Egyéb stílusok */
 .nav-menu-left {
   list-style: none;
   text-align: left;
@@ -33,7 +57,7 @@ body, .main-content {
   font-weight: bold;
   right: auto;
   font-family: Arial, sans-serif;
-  color: black; 
+  color: white; /* Alapértelmezett fekete */
 }
 
 .logo-img1 {
@@ -48,7 +72,6 @@ body, .main-content {
   height: auto;
 }
 
-/* Dropdown menü */
 .dropdown {
   position: relative;
 }
@@ -95,7 +118,6 @@ body, .main-content {
   display: block;
 }
 
-/* Mobilnézetekhez */
 @media (max-width: 768px) {
   .dropdown-content {
     left: auto;

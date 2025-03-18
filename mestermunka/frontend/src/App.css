@@ -1,0 +1,15 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Minden oldal tartalmát a navbar alá toljuk, kivéve a Home oldalt */
+  body > div:not(.home-container) {
+    padding-top: 80px; /* A navbar becsült magassága */
+  }
+  
+  /* A Home oldal saját elrendezése miatt nem kell padding */
+  .home-container {
+    padding-top: 0; /* Az eredeti állapot */
+  }

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import Axios from "axios";
 import { UserContext } from "../UserContext";
 import "./Stilusok/Navbar.css";
@@ -19,6 +19,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const messageRef = useRef(null);
+  const location = useLocation();
 
   const fetchNewMessages = async () => {
     if (!user) {
@@ -77,8 +78,10 @@ const Navbar = () => {
     console.log("🔵 Navbarban kapott user:", user);
   }, [user]);
 
+  const navbarClass = location.pathname === "/" ? "home-navbar" : "";
+
   return (
-    <nav id="flex-container" className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav id="flex-container" className={`navbar navbar-expand-lg navbar-light bg-light ${navbarClass}`}>
       <div className="col-sm-1">
         <Link to="/">
           <img src={logo} alt="Company Logo" className="logo-img1" />
@@ -114,7 +117,7 @@ const Navbar = () => {
                 <Uzenetek
                   onClose={() => setMessageDropdown(false)}
                   setNewMessageCount={setNewMessageCount}
-                  fetchNewMessages={fetchNewMessages} // Átadjuk a fetchNewMessages függvényt
+                  fetchNewMessages={fetchNewMessages}
                 />
               )}
             </div>
@@ -123,7 +126,6 @@ const Navbar = () => {
       </div>
       <div className="col-xs-1">
         <ul className="nav-menu-right">
-          
           <li
             className="dropdown profile-item"
             ref={dropdownRef}

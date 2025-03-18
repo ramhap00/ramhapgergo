@@ -17,6 +17,7 @@ import Jelszo from "./Components/Pages/Jelszo";
 import Posztotcsinalok from "./Components/Pages/Posztotcsinalok";
 import IdopontFoglalasok from "./Components/Pages/IdopontFoglalasok";
 import Beszelgetesek from "./Components/Pages/Beszelgetesek";
+import './App.css';
 
 function App() {
   return (
