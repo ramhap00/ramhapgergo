@@ -7,15 +7,17 @@
 }
 .left-panel{
     background-color: lightblue;
-    width: 20%;
-    border: black 2px solid;
+    width: 30%;
+    border: black 3px solid;
     border-radius: 0.5vh;
     text-align: center;
+    overflow-y: auto; /* Engedélyezett függőleges görgetés */
 }
 .right-panel{
     background-color: lightblue;
-    width: 20%;
-    border: black 2px solid;
+    width: 30%;
+    border: black 3px solid;
     border-radius: 0.5vh;
     text-align: center;
+    overflow-y: auto; /* Engedélyezett függőleges görgetés */
 }

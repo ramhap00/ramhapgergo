@@ -84,7 +84,7 @@ const Navbar = () => {
           <img src={logo} alt="Company Logo" className="logo-img1" />
         </Link>
       </div>
-      <div className="col-sm-3">
+      <div className="col-sm-4">
         <ul className="nav-menu-left">
           <li>
             <NavLink className="nav-link" to="/posztok" style={{ fontWeight: '700', fontSize: '20px' }}>
@@ -93,7 +93,7 @@ const Navbar = () => {
           </li>
         </ul>
       </div>
-      <div className="col-sm-5" id="navbar-text">
+      <div className="col-sm-4" id="navbar-text">
         S.O.S. Munka
       </div>
       <div className="col-xs-1">
