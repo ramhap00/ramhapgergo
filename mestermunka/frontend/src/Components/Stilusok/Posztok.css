@@ -76,32 +76,36 @@
  
 /* Modal tartalom (fehér háttérrel) */
 .modal-content {
-  background-color: white; /* Fehér háttér a modal tartalomnak */
-  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white !important; /* Fehér háttér biztosítása */
+  padding: 20px;
   border-radius: 10px;
   max-width: 600px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   z-index: 1001;
-  text-align: left;
-  opacity: 0; /* Kezdetben átlátszó */
-  animation: slideUp 0.5s forwards, fadeInContent 0.5s forwards; /* Két animáció: emelkedés és halványulás */
+  text-align: center;
+  opacity: 1;
+  animation: slideUp 0.5s forwards, fadeInContent 0.5s forwards;
 }
  
-/* Modális overlay - teljesen fekete háttér */
+
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.9); /* Teljesen fekete háttér */
+  background: rgba(0, 0, 0, 0.818); /* Halvány fehér háttér */
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  opacity: 0; /* Kezdetben átlátszó */
-  animation: fadeIn 0.5s forwards; /* Halványuló animáció */
-  color: white;
+  opacity: 1;
+  animation: fadeIn 0.5s forwards;
+  color: black; /* Szöveg színe fekete, hogy jól látszódjon */
+ 
 }
  
 /* Halványuló animáció */
@@ -137,10 +141,11 @@
  
 /* Modal kép */
 .modal-content img {
-  width: 10px; /* A kép szélessége kitölti a modal szélességét */
-  height: 10px; /* A magasság automatikusan méretezi, hogy ne torzuljon */
+  width: 80%; /* Kép méretének csökkentése */
+  max-height: 250px; /* Magasság korlátozása */
+  object-fit: contain;
   border-radius: 8px;
-  margin-top: 15px; /* Kisebb távolság */
+  margin-top: 15px;
 }
  
 /* Bezáró gomb */

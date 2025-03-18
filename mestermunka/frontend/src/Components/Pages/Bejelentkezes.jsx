@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Axios from "axios";
 import { UserContext } from "../../UserContext";
 import "../Stilusok/Bejelentkezes.css";
-import backgroundImage from "../../assets/jo.png";
+import backgroundImage from "../../assets/hatterkep1.png";
 import eyeIcon from "../../assets/password-eye.png";
 
 const Bejelentkezes = () => {

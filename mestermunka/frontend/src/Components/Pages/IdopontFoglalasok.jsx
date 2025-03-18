@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Stilusok/IdopontFoglalasok.css"; 
+import workersBg from "/src/assets/hatterkep1.png";
 
 const IdopontFoglalasok = () => {
   const [bookings, setBookings] = useState([]);
