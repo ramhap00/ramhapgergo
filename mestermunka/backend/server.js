@@ -18,7 +18,7 @@ const db = mysql.createConnection({
   user: 'root',
   password: '',
   database: 'sos_munka',
-  port: '3307',
+  port: '3306',
 });
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true, methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
@@ -27,9 +27,9 @@ app.use(cookieParser());
 
 // AuthenticateToken middleware javítása
 const authenticateToken = (req, res, next) => {
-  console.log("Middleware elindult"); // Debug
+  
   const token = req.cookies.authToken;
-  console.log("Token:", token); // Debug
+  
   
   if (!token) {
     console.log("Nincs token"); // Debug
@@ -38,12 +38,12 @@ const authenticateToken = (req, res, next) => {
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {
-      console.log("Token ellenőrzési hiba:", err); // Debug
+      
       return res.status(403).json({ success: false, message: 'Érvénytelen token' });
     }
-    console.log("Dekódolt user:", user); // Debug
+    
     req.user = { id: user.userID, ...user }; // Explicit módon állítjuk be az id-t
-    console.log("Beállított req.user:", req.user); // Debug
+    
     next();
   });
 };

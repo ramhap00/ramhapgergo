@@ -99,14 +99,14 @@
   }
   
   .message-time {
-    font-size: 10px;
+    font-size: 13px;
     text-align: right;
   }
   
   .chat-input {
-    display: flex;
-    gap: 10px;
-    align-items: center; /* Középre igazítja a gombot és az inputot */
+    display:flex;
+    gap: 700px;
+    align-items:center /* Középre igazítja a gombot és az inputot */
   }
   
   .chat-input input {
@@ -114,7 +114,7 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    min-width: 0; /* Megakadályozza, hogy az input túl kicsi legyen */
+    min-width: 400px; /* Megakadályozza, hogy az input túl kicsi legyen */
   }
   
   .chat-input button {

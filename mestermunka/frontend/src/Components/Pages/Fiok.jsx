@@ -1,4 +1,3 @@
-// Fiok.jsx (teljes kód a debug loggal)
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import "../Stilusok/Fiok.css";
@@ -109,14 +108,15 @@ const Fiok = () => {
       });
   };
 
-  const profileImage = user?.profilkep
+  // Módosított logika: Ellenőrizzük, hogy a profilkép nem üres string
+  const profileImage = user?.profilkep && user.profilkep !== ""
     ? `http://localhost:5020/uploads/${user.profilkep}?t=${Date.now()}`
-    : userData.profilkep
+    : userData.profilkep && userData.profilkep !== ""
     ? `http://localhost:5020/uploads/${userData.profilkep}?t=${Date.now()}`
     : profileBlank;
 
-  console.log("UserContext user (Fiok render):", user); // Debug log a user ellenőrzésére
-  console.log("Local userData (Fiok render):", userData); // Debug log a userData ellenőrzésére
+  console.log("UserContext user (Fiok render):", user);
+  console.log("Local userData (Fiok render):", userData);
 
   return (
     <div className="account-settings">
@@ -143,15 +143,6 @@ const Fiok = () => {
               Időpont foglalások
             </Link>
           </li>
-          <br />
-          
-            <li style={{ fontWeight: "700", fontSize: "16px" }}>
-              <img src={profileBlank} alt="icon" className="menu-icon" />
-              <Link to="/Sajatposztok" style={{ textDecoration: "none", color: "inherit" }}>
-                Posztjaim
-              </Link>
-            </li>
-          
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
             <img src={profileBlank} alt="icon" className="menu-icon" /> Fizetési előzmények
