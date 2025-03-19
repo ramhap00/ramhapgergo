@@ -130,16 +130,15 @@ const Posztok = () => {
 
     fetchPostsAndRatings();
 
-    // Időnkénti frissítés a naptárhoz, ha nyitva van
     let interval;
     if (isCalendarOpen && selectedPost) {
       interval = setInterval(() => {
         refreshBookedTimes(selectedPost.posztID);
-      }, 5000); // 5 másodpercenként
+      }, 5000);
     }
 
     return () => {
-      if (interval) clearInterval(interval); // Tisztítás
+      if (interval) clearInterval(interval);
     };
   }, [isCalendarOpen, selectedPost]);
 
@@ -258,7 +257,7 @@ const Posztok = () => {
   const handleCalendarOpen = (post) => {
     setSelectedPost(post);
     setIsCalendarOpen(true);
-    refreshBookedTimes(post.posztID); // Azonnali frissítés a naptár megnyitásakor
+    refreshBookedTimes(post.posztID);
   };
 
   const handleCalendarClose = () => {
@@ -401,55 +400,74 @@ const Posztok = () => {
         </div>
         <div className="posztok-content">
           <div className="posztok-list">
-            {filteredPosts.length === 0 ? (
-              <p>Nincs ilyen poszt!</p>
-            ) : (
-              filteredPosts.map((post) => (
-                <div key={post.posztID} className="post-item" onClick={() => handlePostClick(post)}>
-                  <h3>{post.vezeteknev} {post.keresztnev}</h3>
-                  <h4>{post.fejlec}</h4>
-                  <p>Kategória: {post.kategoria}</p>
-                  <p>Település: {post.telepules}</p>
-                  <p>Telefonszám: {post.telefonszam}</p>
-                  <p>{post.leiras}</p>
-                  <img
-                    src={`http://localhost:5020/uploads/${post.fotok}`}
-                    alt="Post Image"
-                    style={{ width: "150px", height: "auto", objectFit: "cover", borderRadius: "8px" }}
-                  />
-                  <div className="stars">{renderStars(post)}</div>
-                  {currentUserId !== post.userID && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleWriteToUser(post);
-                      }}
-                      style={{
-                        padding: "5px 10px",
-                        backgroundColor: "#007bff",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        marginTop: "10px",
-                      }}
-                    >
-                      Írj rám
-                    </button>
-                  )}
-                  <p>Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}</p>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCalendarOpen(post);
-                    }}
-                    style={{ marginTop: "10px" }}
-                  >
-                    Naptár
-                  </button>
-                </div>
-              ))
-            )}
+          {filteredPosts.length === 0 ? (
+  <p>Nincs ilyen poszt!</p>
+) : (
+  filteredPosts.map((post) => {
+    console.log("Post objektum:", post); // Ellenőrizzük az adatokat
+    const profilePicUrl = post.profilkep
+      ? `http://localhost:5020/uploads/${post.profilkep}`
+      : "/default-profile.png"; // Ha undefined, helyi fallback
+    console.log("Profilkép URL:", profilePicUrl);
+    return (
+      <div key={post.posztID} className="post-item" onClick={() => handlePostClick(post)}>
+        <div className="post-item-content">
+          <h3>{post.vezeteknev} {post.keresztnev}</h3>
+          <h4>{post.fejlec}</h4>
+          <p><span className="category-label">Kategória:</span> {post.kategoria}</p>
+          <p><span className="location-label">Település:</span> {post.telepules}</p>
+          <p><span className="phone-label">Telefonszám:</span> {post.telefonszam}</p>
+          <p>{post.leiras}</p>
+          <img
+            src={`http://localhost:5020/uploads/${post.fotok}`}
+            alt="Post Image"
+          />
+          <div className="stars">{renderStars(post)}</div>
+          <p className="creation-date">
+            Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}
+          </p>
+          {currentUserId !== post.userID && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleWriteToUser(post);
+              }}
+              style={{
+                padding: "5px 10px",
+                backgroundColor: "#007bff",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                marginTop: "10px",
+              }}
+            >
+              Írj rám
+            </button>
+          )}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCalendarOpen(post);
+            }}
+            style={{ marginTop: "10px" }}
+          >
+            Naptár
+          </button>
+        </div>
+        <img
+  className="post-item-profile-pic"
+  src={post.profilkep ? `http://localhost:5020/uploads/${post.profilkep}` : "/default-profile.png"}
+  alt="Profile Pic"
+  onError={(e) => {
+    e.target.src = "/default-profile.png";
+    console.error("Profilkép betöltési hiba, fallback használata:", post.profilkep);
+  }}
+/>
+      </div>
+    );
+  })
+)}
           </div>
         </div>
       </div>

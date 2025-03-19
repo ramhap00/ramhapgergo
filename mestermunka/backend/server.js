@@ -407,7 +407,17 @@ app.get('/api/posztok', (req, res) => {
       return res.status(500).json({ success: false, message: "Hiba történt a posztok lekérésekor!" });
     }
     
-    res.status(200).json({ success: true, posts: result });
+    // Ha a profilkep undefined vagy nem létezik fájl, alapértelmezett érték
+    const postsWithProfilePic = result.map(post => {
+      const profilePicPath = path.join(__dirname, "uploads", post.profilkep || "default-profile.png");
+      if (!fs.existsSync(profilePicPath)) {
+        post.profilkep = "default-profile.png"; // Alapértelmezett kép
+      }
+      return post;
+    });
+    
+    console.log("Posztok profilkép ellenőrzéssel:", postsWithProfilePic);
+    res.status(200).json({ success: true, posts: postsWithProfilePic });
   });
 });
 

@@ -1,22 +1,19 @@
-/* Posztok.css */
- 
 .posztok-container {
   display: flex;
   justify-content: center;
   padding: 20px;
   margin: 20px;
   height: 800px;
-  margin-left:auto;
- 
+  margin-left: auto;
 }
- 
+
 .posztok-layout {
   display: flex;
   width: 100%;
   max-width: 1200px;
   gap: 20px;
 }
- 
+
 .posztok-filter {
   width: 30%;
   background-color: #08e2c5;
@@ -25,61 +22,105 @@
   position: sticky;
   top: 0;
 }
- 
+
 .posztok-content {
   width: 70%;
   background-color: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  height: 100vh; /* Állíts be egy fix magasságot */
-  overflow-y: auto; /* Engedélyezett függőleges görgetés */
- 
+  height: 100vh;
+  overflow-y: auto;
 }
- 
+
 .posztok-list {
   margin-bottom: 20px;
- 
- 
- 
- 
 }
- 
+
 /* Posztok emelése hover hatásra */
 .post-item {
   border-bottom: 1px solid #ddd;
-  padding: 15px 0;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animációs átmenet */
+  padding: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   border-radius: 10px;
- 
+  position: relative; /* Profilkép pozícionálásához */
+  display: flex;
+  justify-content: space-between; /* Tartalom és profilkép szétválasztása */
 }
- 
-/* Hover effektus: emelés és árnyék */
+
+.post-item-content {
+  padding-left: 20px; /* Behúzás a bal oldalon */
+  text-align: left; /* Balra igazítás */
+  width: 85%; /* A tartalom ne érjen a jobb oldalhoz */
+}
+
+.post-item-profile-pic {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px; /* Kicsi profilkép mérete */
+  height: 40px;
+  border-radius: 50%; /* Kör alakú profilkép */
+  object-fit: cover;
+}
+
 .post-item:hover {
-  transform: translateY(-10px); /* Kicsit emeli a posztot */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Árnyék hozzáadása */
+  transform: translateY(-10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
- 
- 
+
+.post-item h3 {
+  font-weight: bold; /* Név vastagítása */
+  margin: 0 0 5px 0;
+}
+
+.post-item h4 {
+  margin: 0 0 5px 0; /* Fejléc */
+}
+
+.post-item .category-label {
+  font-weight: bold; /* Kategória vastagítása */
+}
+
+.post-item .location-label {
+  font-weight: bold; /* Település vastagítása */
+}
+
+.post-item .phone-label {
+  font-weight: bold; /* Telefonszám vastagítása */
+}
+
+.post-item p {
+  margin: 5px 0; /* Alapértelmezett margó */
+}
+
 .post-item img {
-  width: 100%;
-  max-height: 300px;
+  width: 150px;
+  height: auto;
   object-fit: cover;
+  border-radius: 8px;
   margin-top: 10px;
 }
-.button1{
+
+.post-item .stars {
+  margin-top: 10px;
+}
+
+.post-item .creation-date {
+  margin-top: 10px;
+}
+
+.button1 {
   width: 50px;
 }
- 
- 
-/* Modal tartalom (fehér háttérrel) */
+
 .modal-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: white !important; /* Fehér háttér biztosítása */
+  background-color: white !important;
   padding: 20px;
   border-radius: 10px;
   max-width: 600px;
@@ -89,7 +130,6 @@
   opacity: 1;
   animation: slideUp 0.5s forwards, fadeInContent 0.5s forwards;
 }
- 
 
 .modal-overlay {
   position: fixed;
@@ -97,39 +137,34 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.818); /* Halvány fehér háttér */
+  background: rgba(0, 0, 0, 0.818);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   opacity: 1;
   animation: fadeIn 0.5s forwards;
-  color: black; /* Szöveg színe fekete, hogy jól látszódjon */
- 
+  color: black;
 }
- 
-/* Halványuló animáció */
+
 @keyframes fadeIn {
   from {
-    opacity: 0; /* Kezdő átlátszóság */
+    opacity: 0;
   }
   to {
-    opacity: 1; /* Végeredmény: teljes átlátszóság */
+    opacity: 1;
   }
 }
- 
- 
-/* Modal tartalom emelkedés animáció */
+
 @keyframes slideUp {
   from {
-    transform: translateY(50px); /* Kezdetben lent */
+    transform: translateY(50px);
   }
   to {
-    transform: translateY(0); /* Végeredmény: normál pozíció */
+    transform: translateY(0);
   }
 }
- 
-/* Halványuló animáció a modal tartalomhoz */
+
 @keyframes fadeInContent {
   from {
     opacity: 0;
@@ -138,17 +173,15 @@
     opacity: 1;
   }
 }
- 
-/* Modal kép */
+
 .modal-content img {
-  width: 80%; /* Kép méretének csökkentése */
-  max-height: 250px; /* Magasság korlátozása */
+  width: 80%;
+  max-height: 250px;
   object-fit: contain;
   border-radius: 8px;
   margin-top: 15px;
 }
- 
-/* Bezáró gomb */
+
 .modal-content button {
   background-color: #f44336;
   color: white;
@@ -156,34 +189,32 @@
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 15px; /* Kisebb távolság */
+  margin-top: 15px;
 }
- 
+
 .modal-content button:hover {
   background-color: #d32f2f;
 }
+
 .stars {
   margin-top: 10px;
 }
- 
+
 .star {
   font-size: 24px;
   cursor: pointer;
   transition: color 0.2s;
 }
- 
+
 .star.filled {
   color: orange;
 }
- 
+
 .stars p {
   margin: 5px 0 0;
   font-size: 14px;
   color: #555;
 }
-/* Posztok.css */
-
-/* ... (a meglévő CSS tartalom változatlan marad a naptár részig) */
 
 .calendar-navigation {
   display: flex;
@@ -218,7 +249,7 @@
 
 .calendar-day-header {
   text-align: center;
-  width: 14.28%; /* 7 napra egyenlően elosztva */
+  width: 14.28%;
   font-weight: bold;
   font-size: 16px;
 }
@@ -226,22 +257,22 @@
 .calendar-day-buttons {
   display: flex;
   justify-content: space-between;
-  gap: 5px; /* Kis távolság a gombok között */
+  gap: 5px;
 }
 
 .calendar-day-buttons button {
-  width: 14.28%; /* Egyenlő szélesség a gomboknak */
-  height: 40px; /* Fix magasság a gomboknak */
+  width: 14.28%;
+  height: 40px;
   border: none;
   border-radius: 5px;
-  background-color: #f0f0f0; /* Alap háttérszín */
+  background-color: #f0f0f0;
   transition: background-color 0.3s ease;
-  font-size: 14px; /* Szöveg mérete a gombokban */
+  font-size: 14px;
   text-align: center;
 }
 
 .calendar-day-buttons button:hover {
-  background-color: #ddd; /* Hover effekt */
+  background-color: #ddd;
 }
 
 .calendar-hours {
@@ -262,7 +293,3 @@
   background-color: #666;
   cursor: not-allowed;
 }
-
-/* ... (a CSS többi része változatlan marad) */
-
-
