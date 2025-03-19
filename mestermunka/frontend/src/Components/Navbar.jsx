@@ -7,7 +7,6 @@ import logo from "../assets/sosmunkalogo.png";
 import fioklogo from "../assets/profile-blank.png";
 import messageIcon from "../assets/uzenetek.png";
 import "bootstrap";
-import Uzenetek from "./Pages/Uzenetek";
 import axios from "axios";
 
 const Navbar = () => {
@@ -15,6 +14,8 @@ const Navbar = () => {
   const [accountDropdown, setAccountDropdown] = useState(false);
   const [messageDropdown, setMessageDropdown] = useState(false);
   const [newMessageCount, setNewMessageCount] = useState(0);
+  const [newMessages, setNewMessages] = useState([]); // Új kérelmek tárolása
+  const [prevMessages, setPrevMessages] = useState([]); // Előző üzenetek tárolása
   const profileImage = user?.profilkep ? `http://localhost:5020/uploads/${user.profilkep}` : fioklogo;
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
@@ -24,6 +25,7 @@ const Navbar = () => {
   const fetchNewMessages = async () => {
     if (!user) {
       setNewMessageCount(0);
+      setNewMessages([]);
       return;
     }
     try {
@@ -33,7 +35,19 @@ const Navbar = () => {
           (msg) => msg.cimzettID === user.userID && msg.allapot === "pending"
         );
         console.log("Unread messages:", unreadMessages);
+
+        // Ellenőrizzük, van-e új kérelem
+        if (prevMessages.length !== unreadMessages.length) {
+          const newIncoming = unreadMessages.filter(
+            (newMsg) => !prevMessages.some((prevMsg) => prevMsg.uzenetID === newMsg.uzenetID)
+          );
+          if (newIncoming.length > 0) {
+            setNewMessages(newIncoming); // Csak az új kérelmeket tároljuk
+          }
+        }
+
         setNewMessageCount(unreadMessages.length);
+        setPrevMessages(unreadMessages); // Frissítjük az előző állapotot
       }
     } catch (error) {
       console.error("Hiba az új üzenetek lekérdezésekor:", error);
@@ -42,7 +56,9 @@ const Navbar = () => {
 
   useEffect(() => {
     fetchNewMessages();
-  }, [user]);
+    const interval = setInterval(fetchNewMessages, 5000); // 5 másodpercenként frissít
+    return () => clearInterval(interval); // Tisztítás
+  }, [user, prevMessages]);
 
   const handleLogout = () => {
     Axios.post("http://localhost:5020/logout", {}, { withCredentials: true })
@@ -50,6 +66,7 @@ const Navbar = () => {
         logoutUser();
         localStorage.removeItem("userId");
         setNewMessageCount(0);
+        setNewMessages([]);
         navigate("/Home");
       })
       .catch((error) => {
@@ -90,7 +107,7 @@ const Navbar = () => {
       <div className="col-sm-4">
         <ul className="nav-menu-left">
           <li>
-            <NavLink className="nav-link" to="/posztok" style={{ fontWeight: '700', fontSize: '20px' }}>
+            <NavLink className="nav-link" to="/posztok" style={{ fontWeight: "700", fontSize: "20px" }}>
               Posztok
             </NavLink>
           </li>
@@ -107,18 +124,29 @@ const Navbar = () => {
             onClick={() => setMessageDropdown(!messageDropdown)}
           >
             <div className="message-icon-wrapper">
-              <NavLink className="dropbtn" to="#">
+              <NavLink className="dropbtn" to="#" onClick={(e) => e.preventDefault()}>
                 <img src={messageIcon} alt="Üzenetek" className="logo-img2" />
-                {newMessageCount > 0 && (
-                  <span className="new-message-dot"></span>
-                )}
+                {newMessageCount > 0 && <span className="new-message-dot"></span>}
               </NavLink>
               {messageDropdown && (
-                <Uzenetek
-                  onClose={() => setMessageDropdown(false)}
-                  setNewMessageCount={setNewMessageCount}
-                  fetchNewMessages={fetchNewMessages}
-                />
+                <div className="dropdown-content" style={{ minWidth: "300px", padding: "10px" }}>
+                  {newMessages.length > 0 ? (
+                    newMessages.map((msg) => (
+                      <div
+                        key={msg.uzenetID}
+                        style={{
+                          padding: "5px",
+                          borderBottom: "1px solid #ddd",
+                          color: "#333",
+                        }}
+                      >
+                        Jött egy új kérelmed! <strong>{msg.feladoNev}</strong> a(z) "<strong>{msg.fejlec}</strong>" poszthoz kért időpontot: <strong>{msg.nap} {msg.ora}</strong>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ padding: "5px", color: "#666" }}>Nincs új kérelem</div>
+                  )}
+                </div>
               )}
             </div>
           </li>

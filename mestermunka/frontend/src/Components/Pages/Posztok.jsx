@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode"; // Hozzáadjuk a JWT dekódoláshoz
+import { jwtDecode } from "jwt-decode";
 import "../Stilusok/Posztok.css";
 
 const Posztok = () => {
@@ -11,12 +11,11 @@ const Posztok = () => {
     return cookies || null;
   };
 
-  // Bejelentkezett felhasználó ID-jének lekérése
   const getCurrentUserId = () => {
     const token = getTokenFromCookie();
     if (token) {
       const decoded = jwtDecode(token);
-      return decoded.userID; // Feltételezem, hogy a tokenben "userID" a kulcs
+      return decoded.userID;
     }
     return null;
   };
@@ -128,8 +127,21 @@ const Posztok = () => {
         console.error("Hiba a posztok, értékelések vagy időpontok betöltésekor:", error.message);
       }
     };
+
     fetchPostsAndRatings();
-  }, []);
+
+    // Időnkénti frissítés a naptárhoz, ha nyitva van
+    let interval;
+    if (isCalendarOpen && selectedPost) {
+      interval = setInterval(() => {
+        refreshBookedTimes(selectedPost.posztID);
+      }, 5000); // 5 másodpercenként
+    }
+
+    return () => {
+      if (interval) clearInterval(interval); // Tisztítás
+    };
+  }, [isCalendarOpen, selectedPost]);
 
   const handleSearch = () => {
     let filtered = posts;
@@ -246,12 +258,32 @@ const Posztok = () => {
   const handleCalendarOpen = (post) => {
     setSelectedPost(post);
     setIsCalendarOpen(true);
+    refreshBookedTimes(post.posztID); // Azonnali frissítés a naptár megnyitásakor
   };
 
   const handleCalendarClose = () => {
     setIsCalendarOpen(false);
     setSelectedDay("");
     setSelectedPost(null);
+  };
+
+  const refreshBookedTimes = async (postId) => {
+    const token = getTokenFromCookie();
+    try {
+      const response = await fetch(`http://localhost:5020/api/booked-times/${postId}`, {
+        headers: { "Authorization": `Bearer ${token}` },
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        setBookedTimes((prev) => ({
+          ...prev,
+          [postId]: data.times || [],
+        }));
+      }
+    } catch (error) {
+      console.error("Hiba a foglalt időpontok frissítésekor:", error);
+    }
   };
 
   const handleBookTime = async (postId, day, hour) => {
@@ -265,6 +297,7 @@ const Posztok = () => {
     const bookingTime = `${selectedDate} ${hour}`;
 
     if (bookedTimes[postId]?.includes(bookingTime)) {
+      alert("Ez az időpont már foglalt!");
       return;
     }
 
@@ -284,11 +317,7 @@ const Posztok = () => {
 
       const data = await response.json();
       if (data.success) {
-        alert("Az időpontodat sikeresen mentettük!");
-        setBookedTimes((prev) => ({
-          ...prev,
-          [postId]: [...(prev[postId] || []), bookingTime],
-        }));
+        alert(data.message);
       } else {
         alert("Hiba történt: " + (data.error?.message || data.message));
       }
@@ -325,7 +354,7 @@ const Posztok = () => {
     });
   };
 
-  const currentUserId = getCurrentUserId(); // Aktuális felhasználó ID-je
+  const currentUserId = getCurrentUserId();
 
   return (
     <div className="posztok-container">
@@ -389,7 +418,6 @@ const Posztok = () => {
                     style={{ width: "150px", height: "auto", objectFit: "cover", borderRadius: "8px" }}
                   />
                   <div className="stars">{renderStars(post)}</div>
-                  {/* Csak akkor jelenik meg az "Írj rám" gomb, ha nem a saját poszt */}
                   {currentUserId !== post.userID && (
                     <button
                       onClick={(e) => {
@@ -426,7 +454,6 @@ const Posztok = () => {
         </div>
       </div>
 
-      {/* Post Modal */}
       {isModalOpen && selectedPost && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -447,7 +474,6 @@ const Posztok = () => {
         </div>
       )}
 
-      {/* Calendar Modal */}
       {isCalendarOpen && selectedPost && (
         <div className="modal-overlay" onClick={handleCalendarClose}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>

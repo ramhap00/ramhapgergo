@@ -18,7 +18,7 @@ const db = mysql.createConnection({
   user: 'root',
   password: '',
   database: 'sos_munka',
-  port: '3306',
+  port: '3307',
 });
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true, methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
@@ -445,47 +445,42 @@ app.get('/api/booked-times/:postId', authenticateToken, (req, res) => {
         console.error('Hiba az időpontok lekérésekor:', err);
         return res.status(500).json({ success: false, message: 'Hiba az időpontok lekérésekor' });
       }
-      const times = result.map(row => `${row.nap}-${row.ora}`);
+      const times = result.map(row => `${row.nap} ${row.ora}`); // Formátum: "YYYY-MM-DD HH:mm"
       res.json({ success: true, times });
     }
   );
 });
 
-// Időpont foglalás végpont
 app.post('/api/book-time', authenticateToken, (req, res) => {
   const { postId, day, hour } = req.body;
   const userId = req.user.id;
 
-  console.log("Beérkező adatok:", { postId, day, hour, userId });
-
-  if (!userId) {
-    console.log("Hiányzó userId"); // Debug
-    return res.status(400).json({ success: false, message: 'Hiányzó userID a kérésben!' });
+  if (!postId || !day || !hour) {
+    return res.status(400).json({ success: false, message: 'Minden mezőt ki kell tölteni!' });
   }
 
-  db.query(
-    'INSERT INTO naptar (posztID, userID, nap, ora) VALUES (?, ?, ?, ?)',
-    [postId, userId, day, hour],
-    (err, result) => {
-      if (err) {
-        console.error("Hiba az időpont mentésekor:", err);
-        if (err.code === 'ER_DUP_ENTRY') {
-          return res.status(400).json({ success: false, message: 'Ez az időpont már foglalt!' });
-        }
-        return res.status(500).json({
-          success: false,
-          message: 'Hiba az időpont mentésekor',
-          error: {
-            code: err.code,
-            message: err.sqlMessage || err.message,
-            sql: err.sql
-          }
-        });
-      }
-      console.log("Időpont sikeresen mentve:", { postId, day, hour, insertId: result.insertId });
-      res.json({ success: true });
+  // Ellenőrizzük, hogy a poszt létezik-e és ki a létrehozója (munkáltató)
+  db.query('SELECT userID FROM posztok WHERE posztID = ?', [postId], (err, result) => {
+    if (err || result.length === 0) {
+      return res.status(404).json({ success: false, message: 'A poszt nem található!' });
     }
-  );
+
+    const munkaltatoID = result[0].userID;
+
+    // Üzenet küldése a munkáltatónak
+    const tartalom = `Időpont foglalási kérelem: ${day} ${hour}`;
+    db.query(
+      'INSERT INTO uzenetek (feladoID, cimzettID, posztID, nap, ora, tartalom, allapot) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [userId, munkaltatoID, postId, day, hour, tartalom, 'pending'],
+      (err, result) => {
+        if (err) {
+          console.error("Hiba az üzenet mentésekor:", err);
+          return res.status(500).json({ success: false, message: 'Hiba történt a kérelem küldésekor!' });
+        }
+        res.json({ success: true, message: 'A kérelmedet elküldtük a munkáltatónak!' });
+      }
+    );
+  });
 });
 // server.js - új végpont a meglévő app.get('/api/booked-times/:postId', ...) után
 app.get('/api/user-bookings', authenticateToken, (req, res) => {
@@ -525,6 +520,273 @@ app.delete('/api/cancel-booking/:naptarID', authenticateToken, (req, res) => {
       return res.status(404).json({ success: false, message: "A foglalás nem található vagy nem a tiéd!" });
     }
     res.status(200).json({ success: true, message: "Foglalás sikeresen törölve!" });
+  });
+});
+app.post('/api/accept-booking', authenticateToken, (req, res) => {
+  const { uzenetID, posztID, nap, ora } = req.body;
+  const userId = req.user.id;
+
+  if (!uzenetID || !posztID || !nap || !ora) {
+    return res.status(400).json({
+      success: false,
+      message: 'Minden mezőt ki kell tölteni!',
+      missingFields: { uzenetID: !uzenetID, posztID: !posztID, nap: !nap, ora: !ora }
+    });
+  }
+
+  // Ellenőrizzük, hogy az üzenet létezik-e és pending állapotú-e
+  db.query(
+    'SELECT feladoID, allapot FROM uzenetek WHERE uzenetID = ?',
+    [uzenetID],
+    (err, messageResult) => {
+      if (err || messageResult.length === 0) {
+        return res.status(404).json({ success: false, message: 'Az üzenet nem található!' });
+      }
+      if (messageResult[0].allapot !== 'pending') {
+        return res.status(400).json({ success: false, message: 'Ez az üzenet már feldolgozásra került!' });
+      }
+
+      const feladoID = messageResult[0].feladoID;
+
+      // Ellenőrizzük, hogy a poszt feladója a bejelentkezett felhasználó-e
+      db.query('SELECT userID, fejlec FROM posztok WHERE posztID = ?', [posztID], (err, result) => {
+        if (err || result.length === 0) {
+          return res.status(500).json({ success: false, message: 'Hiba a poszt ellenőrzésekor!' });
+        }
+        if (result[0].userID !== userId) {
+          return res.status(403).json({ success: false, message: 'Nincs jogosultságod az időpont rögzítésére!' });
+        }
+
+        const posztFejlec = result[0].fejlec;
+
+        // Ellenőrizzük, hogy az időpont már foglalt-e
+        db.query(
+          'SELECT * FROM naptar WHERE posztID = ? AND nap = ? AND ora = ?',
+          [posztID, nap, ora],
+          (err, existingBooking) => {
+            if (err) {
+              console.error("Hiba az időpont ellenőrzésekor:", err);
+              return res.status(500).json({ success: false, message: 'Hiba történt az időpont ellenőrzésekor!' });
+            }
+            if (existingBooking.length > 0) {
+              return res.status(400).json({ success: false, message: 'Ez az időpont már foglalt!' });
+            }
+
+            // Üzenet állapotának frissítése
+            db.query('UPDATE uzenetek SET allapot = ? WHERE uzenetID = ?', ['accepted', uzenetID], (err) => {
+              if (err) {
+                console.error("Hiba az üzenet állapotának frissítésekor:", err);
+                return res.status(500).json({ success: false, message: 'Hiba az üzenet elfogadása közben!' });
+              }
+
+              // Időpont rögzítése a naptárban
+              db.query(
+                'INSERT INTO naptar (posztID, userID, nap, ora) VALUES (?, ?, ?, ?)',
+                [posztID, feladoID, nap, ora],
+                (err, result) => {
+                  if (err) {
+                    console.error("Hiba az időpont rögzítésekor:", err);
+                    return res.status(500).json({ success: false, message: 'Hiba az időpont rögzítésekor!' });
+                  }
+
+                  // Visszajelzés küldése a feladónak
+                  const notificationContent = `Az időpont-foglalási kérelmedet elfogadták a következő poszthoz: "${posztFejlec}" - ${nap} ${ora}`;
+                  db.query(
+                    'INSERT INTO uzenetek (feladoID, cimzettID, posztID, nap, ora, tartalom, allapot) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    [userId, feladoID, posztID, nap, ora, notificationContent, 'accepted'],
+                    (err) => {
+                      if (err) {
+                        console.error("Hiba a visszajelzés küldésekor:", err);
+                        return res.status(500).json({ success: false, message: 'Hiba a visszajelzés küldésekor!' });
+                      }
+                      res.json({ success: true, message: 'Időpont elfogadva és rögzítve!' });
+                    }
+                  );
+                }
+              );
+            });
+          }
+        );
+      });
+    }
+  );
+});
+
+app.post('/api/send-message', authenticateToken, (req, res) => {
+  const { cimzettID, posztID, nap, ora, tartalom } = req.body;
+  const feladoID = req.user.id;
+
+  if (!cimzettID || !posztID || !nap || !ora || !tartalom) {
+    return res.status(400).json({ success: false, message: 'Minden mezőt ki kell tölteni!' });
+  }
+
+  const query = `
+    INSERT INTO uzenetek (feladoID, cimzettID, posztID, nap, ora, tartalom)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [feladoID, cimzettID, posztID, nap, ora, tartalom], (err, result) => {
+    if (err) {
+      console.error("Hiba az üzenet mentésekor:", err);
+      return res.status(500).json({ success: false, message: 'Hiba történt az üzenet küldésekor!' });
+    }
+    res.status(201).json({ success: true, message: 'Üzenet sikeresen elküldve!', uzenetID: result.insertId });
+  });
+}); 
+
+// Üzenetek lekérdezése (átnevezve /api/uzenetek-ről /api/messages-re a konzisztencia érdekében)
+app.get('/api/messages', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+
+  const query = `
+    SELECT u.uzenetID, u.feladoID, u.cimzettID, u.posztID, u.nap, u.ora, u.tartalom, u.allapot, u.kuldesIdopont,
+           f.vezeteknev AS feladoNev, c.vezeteknev AS cimzettNev, p.fejlec, p.kategoria, p.leiras, p.telepules, p.telefonszam, p.fotok
+    FROM uzenetek u
+    LEFT JOIN felhasznaloi_adatok f ON u.feladoID = f.userID
+    LEFT JOIN felhasznaloi_adatok c ON u.cimzettID = c.userID
+    LEFT JOIN posztok p ON u.posztID = p.posztID
+    WHERE u.cimzettID = ? OR u.feladoID = ?
+  `;
+
+  db.query(query, [userId, userId], (err, result) => {
+    if (err) {
+      console.error("Hiba az üzenetek lekérdezésekor:", err);
+      return res.status(500).json({ success: false, message: 'Hiba történt az üzenetek lekérdezésekor!' });
+    }
+    res.status(200).json({ success: true, messages: result });
+  });
+});
+
+app.put('/api/update-message-status', authenticateToken, (req, res) => {
+  const { uzenetID, allapot } = req.body;
+  const userId = req.user.id;
+
+  if (!uzenetID || !allapot || !['accepted', 'rejected'].includes(allapot)) {
+    return res.status(400).json({ success: false, message: 'Érvénytelen adatok!' });
+  }
+
+  const query = `
+    UPDATE uzenetek SET allapot = ? WHERE uzenetID = ? AND cimzettID = ?
+  `;
+
+  db.query(query, [allapot, uzenetID, userId], (err, result) => {
+    if (err) {
+      console.error("Hiba az üzenet állapotának frissítésekor:", err);
+      return res.status(500).json({ success: false, message: 'Hiba történt az üzenet állapotának frissítésekor!' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Üzenet nem található vagy nem a tiéd!' });
+    }
+
+    // Üzenet lekérdezése a feladó és a poszt azonosításához
+    db.query(
+      'SELECT feladoID, posztID, nap, ora FROM uzenetek WHERE uzenetID = ?',
+      [uzenetID],
+      (err, messageResult) => {
+        if (err || messageResult.length === 0) {
+          console.error("Hiba az üzenet lekérdezésekor:", err);
+          return res.status(500).json({ success: false, message: 'Hiba történt az üzenet lekérdezésekor!' });
+        }
+
+        const feladoID = messageResult[0].feladoID;
+        const posztID = messageResult[0].posztID;
+        const nap = messageResult[0].nap;
+        const ora = messageResult[0].ora;
+
+        // Poszt adatainak lekérdezése a fejlec miatt
+        db.query('SELECT fejlec FROM posztok WHERE posztID = ?', [posztID], (err, posztResult) => {
+          if (err || posztResult.length === 0) {
+            console.error("Hiba a poszt lekérdezésekor:", err);
+            return res.status(500).json({ success: false, message: 'Hiba történt a poszt lekérdezésekor!' });
+          }
+
+          const posztFejlec = posztResult[0].fejlec;
+
+          // Visszajelzés küldése a feladónak a poszt nevével
+          const notificationContent = allapot === 'accepted'
+            ? `Az időpont-foglalási kérelmedet elfogadták a következő poszthoz: "${posztFejlec}" - ${nap} ${ora}`
+            : `Az időpont-foglalási kérelmedet elutasították a következő poszthoz: "${posztFejlec}" - ${nap} ${ora}`;
+          db.query(
+            'INSERT INTO uzenetek (feladoID, cimzettID, posztID, nap, ora, tartalom, allapot) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [userId, feladoID, posztID, nap, ora, notificationContent, 'accepted'],
+            (err) => {
+              if (err) {
+                console.error("Hiba a visszajelzés küldésekor:", err);
+                return res.status(500).json({ success: false, message: 'Hiba a visszajelzés küldésekor!' });
+              }
+              res.json({ success: true, message: `Üzenet ${allapot === 'accepted' ? 'elfogadva' : 'elutasítva'}` });
+            }
+          );
+        });
+      }
+    );
+  });
+});
+app.get('/beszelgetesek', authenticateToken, (req, res) => {
+  const userID = req.user.id;
+
+  const query = `
+    SELECT b.beszelgetesID, b.feladoID, b.cimzettID, b.tartalom, b.kuldesIdopont, b.olvasott,
+           f.vezeteknev AS feladoVezeteknev, f.keresztnev AS feladoKeresztnev, f.profilkep AS feladoProfilkep,
+           c.vezeteknev AS cimzettVezeteknev, c.keresztnev AS cimzettKeresztnev, c.profilkep AS cimzettProfilkep
+    FROM beszelgetesek b
+    LEFT JOIN felhasznaloi_adatok f ON b.feladoID = f.userID
+    LEFT JOIN felhasznaloi_adatok c ON b.cimzettID = c.userID
+    WHERE b.feladoID = ? OR b.cimzettID = ?
+    ORDER BY b.kuldesIdopont ASC
+  `;
+
+  db.query(query, [userID, userID], (err, result) => {
+    if (err) {
+      console.error("Hiba az üzenetek lekérdezésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt az üzenetek lekérdezésekor!" });
+    }
+    res.status(200).json({ success: true, messages: result });
+  });
+});
+
+app.post('/beszelgetesek', authenticateToken, (req, res) => {
+  const feladoID = req.user.id;
+  const { cimzettID, tartalom } = req.body;
+
+  if (!cimzettID || !tartalom) {
+    return res.status(400).json({ success: false, message: "Címzett és üzenet megadása kötelező!" });
+  }
+
+  const query = `
+    INSERT INTO beszelgetesek (feladoID, cimzettID, tartalom)
+    VALUES (?, ?, ?)
+  `;
+
+  db.query(query, [feladoID, cimzettID, tartalom], (err, result) => {
+    if (err) {
+      console.error("Hiba az üzenet mentésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt az üzenet mentésekor!" });
+    }
+    res.status(201).json({ success: true, message: "Üzenet sikeresen elküldve!", beszelgetesID: result.insertId });
+  });
+});
+
+// Üzenet olvasott állapotának frissítése
+app.put('/beszelgetesek/:id/read', authenticateToken, (req, res) => {
+  const userID = req.user.id;
+  const beszelgetesID = req.params.id;
+
+  const query = `
+    UPDATE beszelgetesek 
+    SET olvasott = 1 
+    WHERE beszelgetesID = ? AND cimzettID = ?
+  `;
+
+  db.query(query, [beszelgetesID, userID], (err, result) => {
+    if (err) {
+      console.error("Hiba az olvasott állapot frissítésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt az állapot frissítésekor!" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Üzenet nem található vagy nem neked szól!" });
+    }
+    res.status(200).json({ success: true, message: "Üzenet olvasottként jelölve!" });
   });
 });
 const PORT = 5020;
