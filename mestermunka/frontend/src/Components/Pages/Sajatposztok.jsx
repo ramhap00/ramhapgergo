@@ -180,19 +180,18 @@ const Sajatposztok = () => {
               <p>Nincsenek saját posztjaid!</p>
             ) : (
               filteredPosts.map((post) => (
-                <div key={post.id} className="card col-sm-12 border-black">
+                <div key={post.id} className="post-item">
+
+                  <div className="post-item-content">
+                  <h3>{post.vezeteknev} {post.keresztnev}</h3>
+                  <h4>{post.fejlec}</h4>
+                  <p><span className="category-label">Kategória:</span> {post.kategoria}</p>
+                  <p><span className="location-label">Település:</span> {post.telepules}</p>
+                  <p><span className="phone-label">Telefonszám:</span> {post.telefonszam}</p>
+                  <p>{post.leiras}</p>
                   <img
-                    src={`http://localhost:5020/uploads/${post.fotok}`}
-                    className="card-img-top"
-                    alt="Post Image"
-                    style={{ width: '300px', height: '150px', objectFit: 'cover', borderRadius: '8px' }}
-                  />
-                  <div>
-                    <h3>{post.vezeteknev} {post.keresztnev}</h3>
-                    <h5>{post.fejlec}</h5>
-                    <p>Kategória: {post.kategoria}</p>
-                    <p>Település: {post.telepules}</p>
-                    <p>Leírás: {post.leiras}</p>
+                    src={`http://localhost:5020/uploads/${post.fotok}`} alt="Post Image"/>
+                    <p className="creation-date">Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}</p>
                   </div>
                   
                 </div>
