@@ -399,7 +399,11 @@ app.post('/api/ertekelesek', authenticateToken, (req, res) => {
 });
 
 app.get('/api/posztok', (req, res) => {
-  const query = "SELECT * FROM posztok";
+  const query = `
+    SELECT p.*, f.profilkep 
+    FROM posztok p
+    LEFT JOIN felhasznaloi_adatok f ON p.userID = f.userID
+  `;
   
   db.query(query, (err, result) => {
     if (err) {

@@ -457,7 +457,7 @@ const Posztok = () => {
         </div>
         <img
   className="post-item-profile-pic"
-  src={post.profilkep ? `http://localhost:5020/uploads/${post.profilkep}` : "/default-profile.png"}
+  src={post.profilkep ? `http://localhost:5020/uploads/${post.profilkep}?t=${Date.now()}` : "/default-profile.png"}
   alt="Profile Pic"
   onError={(e) => {
     e.target.src = "/default-profile.png";
