@@ -35,6 +35,9 @@ const Posztok = () => {
   const [selectedDay, setSelectedDay] = useState("");
   const [bookedTimes, setBookedTimes] = useState({});
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedImages, setSelectedImages] = useState([]);
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
@@ -182,6 +185,26 @@ const Posztok = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedPost(null);
+  };
+
+  const handleImageClick = (images) => {
+    setSelectedImages(images);
+    setCurrentImageIndex(0);
+    setIsImageModalOpen(true);
+  };
+
+  const handleCloseImageModal = () => {
+    setIsImageModalOpen(false);
+    setSelectedImages([]);
+    setCurrentImageIndex(0);
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % selectedImages.length);
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + selectedImages.length) % selectedImages.length);
   };
 
   const handleRating = async (postId, rating) => {
@@ -400,74 +423,73 @@ const Posztok = () => {
         </div>
         <div className="posztok-content">
           <div className="posztok-list">
-          {filteredPosts.length === 0 ? (
-  <p>Nincs ilyen poszt!</p>
-) : (
-  filteredPosts.map((post) => {
-    console.log("Post objektum:", post); // Ellenőrizzük az adatokat
-    const profilePicUrl = post.profilkep
-      ? `http://localhost:5020/uploads/${post.profilkep}`
-      : "/default-profile.png"; // Ha undefined, helyi fallback
-    console.log("Profilkép URL:", profilePicUrl);
-    return (
-      <div key={post.posztID} className="post-item" onClick={() => handlePostClick(post)}>
-        <div className="post-item-content">
-          <h3>{post.vezeteknev} {post.keresztnev}</h3>
-          <h4>{post.fejlec}</h4>
-          <p><span className="category-label">Kategória:</span> {post.kategoria}</p>
-          <p><span className="location-label">Település:</span> {post.telepules}</p>
-          <p><span className="phone-label">Telefonszám:</span> {post.telefonszam}</p>
-          <p>{post.leiras}</p>
-          <img
-            src={`http://localhost:5020/uploads/${post.fotok}`}
-            alt="Post Image"
-          />
-          <div className="stars">{renderStars(post)}</div>
-          <p className="creation-date">
-            Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}
-          </p>
-          {currentUserId !== post.userID && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleWriteToUser(post);
-              }}
-              style={{
-                padding: "5px 10px",
-                backgroundColor: "#007bff",
-                color: "#fff",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                marginTop: "10px",
-              }}
-            >
-              Írj rám
-            </button>
-          )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleCalendarOpen(post);
-            }}
-            style={{ marginTop: "10px" }}
-          >
-            Naptár
-          </button>
-        </div>
-        <img
-  className="post-item-profile-pic"
-  src={post.profilkep ? `http://localhost:5020/uploads/${post.profilkep}?t=${Date.now()}` : "/default-profile.png"}
-  alt="Profile Pic"
-  onError={(e) => {
-    e.target.src = "/default-profile.png";
-    console.error("Profilkép betöltési hiba, fallback használata:", post.profilkep);
-  }}
-/>
-      </div>
-    );
-  })
-)}
+            {filteredPosts.length === 0 ? (
+              <p>Nincs ilyen poszt!</p>
+            ) : (
+              filteredPosts.map((post) => (
+                <div key={post.posztID} className="post-item" onClick={() => handlePostClick(post)}>
+                  <div className="post-item-content">
+                    <h3>{post.vezeteknev} {post.keresztnev}</h3>
+                    <h4>{post.fejlec}</h4>
+                    <p><span className="category-label">Kategória:</span> {post.kategoria}</p>
+                    <p><span className="location-label">Település:</span> {post.telepules}</p>
+                    <p><span className="phone-label">Telefonszám:</span> {post.telefonszam}</p>
+                    <p>{post.leiras}</p>
+                    {post.fotok && post.fotok.length > 0 && (
+                      <div className="image-stack" onClick={(e) => { e.stopPropagation(); handleImageClick(post.fotok); }}>
+                        {post.fotok.map((foto, index) => (
+                          <img
+                            key={index}
+                            src={`http://localhost:5020/uploads/${foto}`}
+                            alt={`Post Image ${index}`}
+                          />
+                        ))}
+                      </div>
+                    )}
+                    <div className="stars">{renderStars(post)}</div>
+                    <p className="creation-date">
+                      Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}
+                    </p>
+                    {currentUserId !== post.userID && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleWriteToUser(post);
+                        }}
+                        style={{
+                          padding: "5px 10px",
+                          backgroundColor: "#007bff",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          marginTop: "10px",
+                        }}
+                      >
+                        Írj rám
+                      </button>
+                    )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCalendarOpen(post);
+                      }}
+                      style={{ marginTop: "10px" }}
+                    >
+                      Naptár
+                    </button>
+                  </div>
+                  <img
+                    className="post-item-profile-pic"
+                    src={post.profilkep ? `http://localhost:5020/uploads/${post.profilkep}?t=${Date.now()}` : "/default-profile.png"}
+                    alt="Profile Pic"
+                    onError={(e) => {
+                      e.target.src = "/default-profile.png";
+                    }}
+                  />
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -481,13 +503,37 @@ const Posztok = () => {
             <p><strong>Település:</strong> {selectedPost.telepules}</p>
             <p><strong>Telefonszám:</strong> {selectedPost.telefonszam}</p>
             <p>{selectedPost.leiras}</p>
-            <img
-              src={`http://localhost:5020/uploads/${selectedPost.fotok}`}
-              alt="Post Image"
-              style={{ width: "100%", height: "auto", objectFit: "cover", borderRadius: "8px" }}
-            />
+            {selectedPost.fotok && selectedPost.fotok.length > 0 && (
+              <div className="image-stack" onClick={() => handleImageClick(selectedPost.fotok)}>
+                {selectedPost.fotok.map((foto, index) => (
+                  <img
+                    key={index}
+                    src={`http://localhost:5020/uploads/${foto}`}
+                    alt={`Post Image ${index}`}
+                  />
+                ))}
+              </div>
+            )}
             <div className="stars">{renderStars(selectedPost)}</div>
             <button onClick={handleCloseModal}>Bezárás</button>
+          </div>
+        </div>
+      )}
+
+      {isImageModalOpen && selectedImages.length > 0 && (
+        <div className="image-modal" onClick={handleCloseImageModal}>
+          <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={`http://localhost:5020/uploads/${selectedImages[currentImageIndex]}`}
+              alt={`Image ${currentImageIndex}`}
+            />
+            {selectedImages.length > 1 && (
+              <>
+                <button className="nav-button left" onClick={handlePrevImage}>⬅️</button>
+                <button className="nav-button right" onClick={handleNextImage}>➡️</button>
+              </>
+            )}
+            <button className="close-button" onClick={handleCloseImageModal}>✖</button>
           </div>
         </div>
       )}
