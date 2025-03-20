@@ -7,41 +7,31 @@
   align-items: center;
   position: absolute;
   width: 100%;
-  top: 10px; /* Hely az oldal tetejétől: 0px -> 10px */
+  top: 0px; /* Hely az oldal tetejétől: 0px -> 10px */
   left: 0;
-  background-color: white !important; /* Fehér háttér minden oldalon */
+  background-color: #2F2F2F !important; /* Fehér háttér minden oldalon */
   z-index: 1000;
   padding: 5px 0; /* Csökkentett padding */
-  height: 60px; /* Fix magasság a navbar számára */
+  height: 80px; /* Fix magasság a navbar számára */
   box-sizing: border-box; /* A padding ne növelje a magasságot */
+  
 }
 
-/* Fekete csík a navbar alatt */
-#flex-container::after {
-  content: '';
-  position: absolute;
-  bottom: -10px; /* A navbar alján legyen a csík */
-  left: 0;
-  width: 100%;
-  height: 2px; /* Fekete csík vastagsága */
-  background-color: #2F2F2F; /* Fekete csík */
-}
 
-/* A Home oldalon is fehér háttér */
-.home-navbar #flex-container {
-  background-color: white !important;
-}
+
+
 
 /* Szövegek feketére állítása minden oldalon, mivel a háttér fehér */
 #navbar-text,
 .nav-menu-left a,
 .nav-menu-right a {
-  color: black !important;
+  color: white !important;
 }
 
 /* Dropdown tartalom minden oldalon */
 .dropdown-content {
   background-color: white;
+  color: BLACK;
 }
 
 .dropdown-content li a {
