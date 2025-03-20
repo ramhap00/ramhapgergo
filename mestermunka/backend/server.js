@@ -300,16 +300,20 @@ app.put('/update-password', authenticateToken, (req, res) => {
   });
 });
 
-app.post("/api/poszt", authenticateToken, upload.single("fotok"), (req, res) => {
+app.post("/api/poszt", authenticateToken, upload.array("fotok"), (req, res) => {
   console.log("Kapott adatok:", req.body);
-  console.log("Kapott fájl:", req.file);
+  console.log("Kapott fájlok:", req.files);
 
   const userID = req.user.id;
   const { vezeteknev, keresztnev, fejlec, telepules, telefonszam, kategoria, datum, leiras } = req.body;
-  const fotok = req.file ? req.file.filename : null;
+  const tempFileNames = req.files ? req.files.map((file) => file.filename) : [];
 
   if (!vezeteknev || !keresztnev || !fejlec || !telepules || !telefonszam || !kategoria || !datum || !leiras) {
     return res.status(400).json({ success: false, message: "Minden mezőt ki kell tölteni!" });
+  }
+
+  if (tempFileNames.length === 0) {
+    return res.status(400).json({ success: false, message: "Legalább egy képet fel kell tölteni!" });
   }
 
   const query = `
@@ -317,13 +321,42 @@ app.post("/api/poszt", authenticateToken, upload.single("fotok"), (req, res) => 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(query, [userID, vezeteknev, keresztnev, fejlec, telepules, telefonszam, kategoria, datum, leiras, fotok], (err, result) => {
+  db.query(query, [userID, vezeteknev, keresztnev, fejlec, telepules, telefonszam, kategoria, datum, leiras, JSON.stringify(tempFileNames)], (err, result) => {
     if (err) {
       console.error("Hiba a poszt mentésekor:", err);
       return res.status(500).json({ success: false, message: "Hiba történt a poszt mentésekor!" });
     }
 
-    res.status(201).json({ success: true, message: "Poszt sikeresen létrehozva!", posztID: result.insertId });
+    const posztID = result.insertId;
+    const newFileNames = [];
+
+    tempFileNames.forEach((tempFileName, index) => {
+      const oldPath = path.join(__dirname, "uploads", tempFileName);
+      const newFileName = `${posztID}_${index + 1}${path.extname(tempFileName)}`;
+      const newPath = path.join(__dirname, "uploads", newFileName);
+
+      fs.rename(oldPath, newPath, (renameErr) => {
+        if (renameErr) {
+          console.error(`Hiba a fájl átnevezésekor (${tempFileName} -> ${newFileName}):`, renameErr);
+        }
+      });
+
+      newFileNames.push(newFileName);
+    });
+
+    const updateQuery = `
+      UPDATE posztok
+      SET fotok = ?
+      WHERE posztID = ?
+    `;
+    db.query(updateQuery, [JSON.stringify(newFileNames), posztID], (updateErr) => {
+      if (updateErr) {
+        console.error("Hiba a fájlnevek frissítésekor:", updateErr);
+        return res.status(500).json({ success: false, message: "Hiba történt a fájlnevek frissítésekor!" });
+      }
+
+      res.status(201).json({ success: true, message: "Poszt sikeresen létrehozva!", posztID });
+    });
   });
 });
 
@@ -400,7 +433,7 @@ app.post('/api/ertekelesek', authenticateToken, (req, res) => {
 
 app.get('/api/posztok', (req, res) => {
   const query = `
-    SELECT p.*, f.profilkep 
+    SELECT p.*, COALESCE(f.profilkep, 'default-profile.png') AS profilkep 
     FROM posztok p
     LEFT JOIN felhasznaloi_adatok f ON p.userID = f.userID
   `;
@@ -411,12 +444,12 @@ app.get('/api/posztok', (req, res) => {
       return res.status(500).json({ success: false, message: "Hiba történt a posztok lekérésekor!" });
     }
     
-    // Ha a profilkep undefined vagy nem létezik fájl, alapértelmezett érték
     const postsWithProfilePic = result.map(post => {
-      const profilePicPath = path.join(__dirname, "uploads", post.profilkep || "default-profile.png");
+      const profilePicPath = path.join(__dirname, "uploads", post.profilkep);
       if (!fs.existsSync(profilePicPath)) {
-        post.profilkep = "default-profile.png"; // Alapértelmezett kép
+        post.profilkep = "default-profile.png";
       }
+      post.fotok = post.fotok ? (typeof post.fotok === "string" ? JSON.parse(post.fotok) : post.fotok) : [];
       return post;
     });
     

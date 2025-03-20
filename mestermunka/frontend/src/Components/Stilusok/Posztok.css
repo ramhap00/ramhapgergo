@@ -293,3 +293,107 @@
   background-color: #666;
   cursor: not-allowed;
 }
+
+/* Kihúzott kártya design a képekhez */
+.image-stack {
+  position: relative;
+  width: 200px;
+  height: 150px;
+  cursor: pointer;
+}
+
+.image-stack img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.image-stack img:nth-child(1) {
+  z-index: 3;
+  transform: translate(0, 0);
+}
+
+.image-stack img:nth-child(2) {
+  z-index: 2;
+  transform: translate(10px, 10px);
+}
+
+.image-stack img:nth-child(3) {
+  z-index: 1;
+  transform: translate(20px, 20px);
+}
+
+.image-stack img:nth-child(n+4) {
+  z-index: 0;
+  transform: translate(30px, 30px);
+}
+
+/* Modál ablak a képek lapozásához */
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.image-modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  flex-direction: column; /* A kép és a bezárás gomb egymás alatt legyen */
+  align-items: center; /* Középre igazítás */
+}
+
+.image-modal-content img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  max-height: 70vh; /* A kép ne legyen túl nagy */
+  object-fit: contain; /* Az egész kép látható legyen */
+}
+
+.image-modal-content .nav-button {
+  position: absolute;
+  top: 50%; /* A kép közepén legyenek a nyilak */
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.image-modal-content .nav-button.left {
+  left: -100px; /* A kép bal oldalán kívül, hogy ne lógjon bele */
+  background-color: transparent;
+  max-width: 50px;
+}
+
+.image-modal-content .nav-button.right {
+  right: -100px; /* A kép jobb oldalán kívül, hogy ne lógjon bele */
+  background-color:transparent;
+   max-width: 50px;
+}
+
+.image-modal-content .close-button {
+  margin-top: 10px; /* A kép alatt legyen */
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 4px;
+}
