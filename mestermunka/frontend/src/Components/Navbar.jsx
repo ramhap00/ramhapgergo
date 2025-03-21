@@ -5,7 +5,7 @@ import { UserContext } from "../UserContext";
 import "./Stilusok/Navbar.css";
 import logo from "../assets/sosmunkalogo.png";
 import fioklogo from "../assets/profile-blank.png";
-import messageIcon from "../assets/csengo.png";
+import messageIcon from "../assets/ringbell.png";
 import "bootstrap";
 import axios from "axios";
 
@@ -192,9 +192,7 @@ const Navbar = () => {
                     <li>
                       <NavLink to="/fiok">Fiók Beállítások</NavLink>
                     </li>
-                    <li>
-                      <NavLink to="/kedvencek">Kedvenceim</NavLink>
-                    </li>
+                    
                     <li>
                       <NavLink to="/beszelgetesek">Üzenetek</NavLink>
                     </li>

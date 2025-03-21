@@ -5,7 +5,7 @@ import Home from "./Components/Pages/Home";
 import Bejelentkezes from "./Components/Pages/Bejelentkezes";
 import Regisztracio from "./Components/Pages/Regisztracio";
 import Posztok from "./Components/Pages/Posztok";
-import Kedvencek from "./Components/Pages/Kedvencek";
+import Premium from "./Components/Pages/Premium";
 import Kategoria from "./Components/Pages/kategoria";
 import Fiok from "./Components/Pages/Fiok";
 import Navbar from './Components/Navbar';
@@ -30,7 +30,7 @@ function App() {
           <Route path="/fiok" element={<Fiok />} />
           <Route path="/home" element={<Home />} />
           <Route path="/kategoria" element={<Kategoria />} />
-          <Route path="/kedvencek" element={<Kedvencek />} />
+          <Route path="/premium" element={<Premium />} />
           <Route path="/posztok" element={<Posztok />} />
           <Route path="/regisztracio" element={<Regisztracio />} />
           <Route path="/sajatposztok" element={<Sajatposztok />} />

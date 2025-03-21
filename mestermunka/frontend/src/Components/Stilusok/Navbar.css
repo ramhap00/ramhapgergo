@@ -23,15 +23,15 @@
 
 /* Szövegek feketére állítása minden oldalon, mivel a háttér fehér */
 #navbar-text,
-.nav-menu-left a,
-.nav-menu-right a {
-  color: white !important;
+.nav-menu-left a
+ {
+  color: white !important ;
 }
 
 /* Dropdown tartalom minden oldalon */
 .dropdown-content {
   background-color: white;
-  color: BLACK;
+  color: black;
 }
 
 .dropdown-content li a {

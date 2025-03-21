@@ -143,11 +143,19 @@ const Fiok = () => {
               Időpont foglalások
             </Link>
           </li>
+
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
-            <img src={profileBlank} alt="icon" className="menu-icon" /> Fizetési előzmények
+            <img src={profileBlank} alt="icon" className="menu-icon" />
+            <Link to="/premium" style={{ textDecoration: "none", color: "inherit" }}>
+            Premium előfizetés
+            </Link> 
           </li>
           <br />
+          <li style={{ fontWeight: "700", fontSize: "16px" }}>
+            <img src={profileBlank} alt="icon" className="menu-icon" />Fizetési előzmények
+            
+          </li>
         </ul>
       </aside>
       <main className="content">
