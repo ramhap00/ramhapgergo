@@ -41,7 +41,7 @@ const Regisztracio = () => {
     }
 
     if (!validatePhoneNumber(telefonszamReg)) {
-      setErrorMessage("A telefonszám minimum 11 karakter legyen, csak számokat és '+' jelet tartalmazhat!");
+      setErrorMessage("A telefonszám érvénytelen");
       return;
     }
 
@@ -65,7 +65,7 @@ const Regisztracio = () => {
         setSuccessMessage("Sikeres regisztráció");
         setTimeout(() => {
           navigate("/bejelentkezes");
-        }, 2000);
+        }, 1000);
       })
       .catch(() => {
         setErrorMessage("Hiba történt a regisztráció során.");

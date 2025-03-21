@@ -5,7 +5,7 @@ import Axios from "axios";
 import { UserContext } from "../../UserContext";
 import "../Stilusok/Bejelentkezes.css";
 import backgroundImage from "../../assets/hatterkep1.png";
-import eyeIcon from "../../assets/password-eye.png";
+
 
 const Bejelentkezes = () => {
   const [felhasznalonev, setFelhasznalonev] = useState("");
@@ -28,7 +28,7 @@ const Bejelentkezes = () => {
           setSuccessMessage("Sikeres bejelentkezés!");
           setTimeout(() => {
             navigate("/Home");
-          }, 2000);
+          }, 1000);
         } else {
           setError(response.data.message || "Hibás felhasználónév vagy jelszó");
         }
@@ -69,12 +69,7 @@ const Bejelentkezes = () => {
                 onChange={(e) => setJelszo(e.target.value)}
                 required
               />
-              <img
-                src={eyeIcon}
-                alt="Jelszó megjelenítése"
-                className="eye-icon"
-                onClick={() => setShowPassword(!showPassword)}
-              />
+              
             </div>
           </div>
 
