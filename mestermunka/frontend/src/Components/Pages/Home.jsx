@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import "../Stilusok/Home.css"; 
-import workersBg from "/src/assets/hatterkep1.png";
+
 
 const Home = () => {
   // Animációs változatok az oldalsó tömbökhöz
@@ -27,7 +27,7 @@ const Home = () => {
     <div className="home-container">
       {/* Háttérkép */}
       <div className="image-container">
-        <img src={workersBg} alt="Munkások" className="background-image" />
+       
       </div>
 
       {/* Tartalom konténer */}
