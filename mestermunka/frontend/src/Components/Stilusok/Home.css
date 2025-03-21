@@ -4,7 +4,7 @@
   width: 100%;
   min-height: 100vh;
   overflow-y: auto;
-  background-color: #22c1c3;
+  background-color: #2F2F2F;
 }
 
 .image-container {
@@ -37,8 +37,8 @@
 /* Középen lévő szöveg stílusa */
 .center-text {
   text-align: center;
-  color: black;
-  font-weight: 900;
+  color: WHITE;
+
   font-size: 2rem;
   text-transform: uppercase;
   margin-bottom: 40px;
