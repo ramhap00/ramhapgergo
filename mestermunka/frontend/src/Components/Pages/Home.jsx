@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import "../Stilusok/Home.css"; 
+import backgroundImage from "../../assets/hatterkep1.png";
 
 
 const Home = () => {
@@ -24,23 +25,19 @@ const Home = () => {
   };
 
   return (
-    <div className="home-container">
+    <div className="home-container"style={{ backgroundImage: `url(${backgroundImage})` }}>
       {/* Háttérkép */}
-      <div className="image-container">
-       
-      </div>
 
+        <h2>Üdvözlünk az S.O.S. Munka Weboldalán! </h2>
       {/* Tartalom konténer */}
-      <div className="content-container">
+      <div className="content-container bg-gray">
         {/* Középen lévő szöveg */}
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 2 }}
-          className="center-text"
-        >
-          <h2>Üdvözlünk az S.O.S. Munka Weboldalán! </h2>
-          <h4>Miért jó az S.O.S. Munkát választani?</h4>
+          className="center-text" >
+            <h4 className="sos-munka">Miért jó az S.O.S. Munkát választani?</h4>
           <h6>Oldalunk fő lényege a minnél gyorsabb és eredményesebb munkakeresés</h6>
         </motion.div>
 
