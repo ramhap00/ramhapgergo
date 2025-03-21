@@ -14,7 +14,7 @@ const Bejelentkezes = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { loginUser } = useContext(UserContext); // loginUser használata
+  const { loginUser } = useContext(UserContext); 
 
   const handleLogin = () => {
     Axios.post(

@@ -19,7 +19,7 @@ const Navbar = () => {
   const profileImage = user?.profilkep && user.profilkep !== ""
     ? `http://localhost:5020/uploads/${user.profilkep}`
     : fioklogo;
-    console.log("🔵 ProfileImage értéke:", profileImage);
+  console.log("🔵 ProfileImage értéke:", profileImage);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const messageRef = useRef(null);
@@ -107,7 +107,11 @@ const Navbar = () => {
   const navbarClass = location.pathname === "/" ? "home-navbar" : "";
 
   return (
-    <nav id="flex-container" className={`navbar navbar-expand-lg navbar-light bg-light ${navbarClass}`}>
+    <nav
+      id="flex-container"
+      className={`navbar navbar-expand-lg navbar-light bg-light ${navbarClass}`}
+      style={{ borderBottom: "2px solid white" }} // Fehér csík hozzáadása
+    >
       <div className="col-sm-1">
         <Link to="/">
           <img src={logo} alt="Company Logo" className="logo-img1" />
