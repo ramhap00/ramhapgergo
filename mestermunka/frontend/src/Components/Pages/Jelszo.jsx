@@ -63,25 +63,43 @@ const Jelszo = () => {
     <div className="account-settings">
       <aside className="sidebar">
         <ul>
+          <li className="active">
+            <img src={profileBlank} alt="icon" className="menu-icon" /> 
+            <Link to="/fiok" style={{ textDecoration: "none", color: "inherit" }}>
+              Fiók beállitások
+            </Link>
+          </li>
+          <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
             <img src={profileBlank} alt="icon" className="menu-icon" />
-            <Link to="/fiok" style={{ textDecoration: "none", color: "inherit" }}>
-            Fiók beállítások
-          </Link>
-          </li>
-          <br />
-          <li className="active" style={{ fontWeight: "700", fontSize: "16px" }}>
-            <img src={profileBlank} alt="icon" className="menu-icon" /> Jelszó és biztonság
+            <Link to="/jelszo" style={{ textDecoration: "none", color: "inherit" }}>
+              Jelszó és biztonság
+            </Link>
           </li>
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
-            <img src={profileBlank} alt="icon" className="menu-icon" /> Időpont foglalások
+            <img src={profileBlank} alt="icon" className="menu-icon" />
+            <Link
+              to="/idopont-foglalasok"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={() => console.log("Kattintás az Időpont foglalásokra!")}
+            >
+              Időpont foglalások
+            </Link>
+          </li>
+
+          <br />
+          <li style={{ fontWeight: "700", fontSize: "16px" }}>
+            <img src={profileBlank} alt="icon" className="menu-icon" />
+            <Link to="/premium" style={{ textDecoration: "none", color: "inherit" }}>
+            Premium előfizetés
+            </Link> 
           </li>
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
-            <img src={profileBlank} alt="icon" className="menu-icon" /> Fizetési előzmények
+            <img src={profileBlank} alt="icon" className="menu-icon" />Fizetési előzmények
+            
           </li>
-          <br />
         </ul>
       </aside>
       <main className="content">
