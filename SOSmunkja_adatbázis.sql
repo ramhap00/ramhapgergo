@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`posztok` (
   `kategoria` VARCHAR(255) NULL DEFAULT NULL,
   `datum` DATE NULL DEFAULT NULL,
   `leiras` VARCHAR(255) NULL DEFAULT NULL,
-  `fotok` VARCHAR(255) NULL DEFAULT NULL,
+  `fotok` JSON NULL DEFAULT '[]', -- Eleve JSON típus, alapértelmezett üres tömb
   `fejlec` VARCHAR(255) NULL DEFAULT NULL,
   `averageRating` DECIMAL(3,1) DEFAULT 0.0,
   `ratingCount` INT(11) DEFAULT 0,
@@ -176,6 +176,9 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`naptar` (
     ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 14 DEFAULT CHARSET = utf8mb4;
 
+-- -----------------------------------------------------
+-- Table `sos_munka`.`beszelgetesek`
+-- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `sos_munka`.`beszelgetesek` (
   `beszelgetesID` INT AUTO_INCREMENT PRIMARY KEY,
   `feladoID` INT NOT NULL,
@@ -196,6 +199,7 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`beszelgetesek` (
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
