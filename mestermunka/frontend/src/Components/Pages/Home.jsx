@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import "../Stilusok/Home.css"; 
 import backgroundImage from "../../assets/hatterkep1.png";
+import logo from "../../assets/sosmunkalogo.png";
 
 
 const Home = () => {
@@ -25,10 +26,16 @@ const Home = () => {
   };
 
   return (
-    <div className="home-container"style={{ backgroundImage: `url(${backgroundImage})` }}>
+    <div className="home-container "style={{ backgroundImage: `url(${backgroundImage})` }}>
       {/* Háttérkép */}
-
-        <h2>Üdvözlünk az S.O.S. Munka Weboldalán! </h2>
+      <motion.div 
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2 }}
+          >
+            
+        <h2 className="udvozlunk">Üdvözlünk az S.O.S. Munka Weboldalán! </h2>
+          </motion.div>
       {/* Tartalom konténer */}
       <div className="content-container bg-gray">
         {/* Középen lévő szöveg */}
@@ -37,10 +44,14 @@ const Home = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 2 }}
           className="center-text" >
-            <h4 className="sos-munka">Miért jó az S.O.S. Munkát választani?</h4>
-          <h6>Oldalunk fő lényege a minnél gyorsabb és eredményesebb munkakeresés</h6>
         </motion.div>
-
+        <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2 }}>
+        <h4 className="sos">Miért jó az S.O.S. Munkát választani?</h4>
+        <p className="p">Oldalunk fő lényege a minnél gyorsabb és eredményesebb munkakeresés</p>
+          </motion.div>
         {/* Oldalsó tömbök konténere */}
         <motion.div 
           className="blocks-container"
@@ -94,8 +105,14 @@ const Home = () => {
             </p>
           </motion.div>
         </motion.div>
+
+    
+        
+        </div>
+        <div className="footer"style={{ logo: `url(${logo})` }}></div>
+       
       </div>
-    </div>
+ 
   );
 };
 
