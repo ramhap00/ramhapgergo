@@ -1,9 +1,10 @@
-h2 {
+.cim{
     font-size: 24px;
+    padding-top: 10px;
   }
   
   p {
-    font-size: 16px;
+    font-size: 20px; 
   }
   
   .idopontfoglalasok-container {
@@ -28,13 +29,13 @@ h2 {
   }
   
   .split-container {
-    width: 100%;
+    width: 84%;
     height: 80%;
     display: flex;
     justify-content: center; /* Középre igazítás */
     flex-grow: 1;
     position: relative;
-    gap: 20px; /* Kis térköz a panelek között */
+    gap: 50px; /* Kis térköz a panelek között */
   }
   
   /* Szürke csík a két panel között */
@@ -50,25 +51,27 @@ h2 {
   }
   
   .left-panel {
-    width: 40%; /* Szélesebb: 40% -> 45% */
+    width: 45%; /* Szélesebb: 40% -> 45% */
     border: 2px solid #2F2F2F; /* Keret színe: black -> #2F2F2F */
-    border-radius: 1vh;
-    text-align: center;
-    overflow-y: auto;
+    border-radius: 1vh; /*Lekerekített keret */
     box-shadow: 0 0 10px;
+    text-align: center;
+    overflow-y: auto; /*Görgethető lesz függőlegesen */
     background-color: #ECFFFF; /* Háttérszín megerősítése */
     color: black;
+    height: 630px;
   }
   
   .right-panel {
-    width: 40%; /* Szélesebb: 40% -> 45% */
+    width: 45%; /* Szélesebb: 40% -> 45% */
     border: 2px solid #2F2F2F; /* Keret színe: black -> #2F2F2F */
     border-radius: 1vh;
-    text-align: center;
-    overflow-y: auto;
     box-shadow: 0 0 10px;
+    text-align: center;
+    overflow-y: auto; /*Görgethető lesz függőlegesen */
     background-color: #ECFFFF; /* Háttérszín megerősítése */
     color: black;
+    height: 630px;
   }
   .bejovoText{
     margin-top: 15px;
@@ -106,3 +109,4 @@ h2 {
   .cancel-button:hover{
     background-color: lightcoral;
   }
+  

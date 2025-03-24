@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Stilusok/IdopontFoglalasok.css"; 
+import profileBlank from "../../assets/profile-blank.png";
+import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import workersBg from "/src/assets/hatterkep1.png";
 import { px } from "framer-motion";
 
 const IdopontFoglalasok = () => {
@@ -116,10 +117,45 @@ const IdopontFoglalasok = () => {
   };
 
   return (
-    <div className="posztok-container">
-      <div className="image-container">
-        <img src={workersBg} alt="Munkások" className="background-image"/>
-      </div>
+    <div className="account-settings">
+      <aside className="sidebar">
+        <ul>
+          <li className="active">
+            <img src={profileBlank} alt="icon" className="menu-icon" /> Fiók beállítások
+          </li>
+          <br />
+          <li style={{ fontWeight: "700", fontSize: "16px" }}>
+            <img src={profileBlank} alt="icon" className="menu-icon" />
+            <Link to="/jelszo" style={{ textDecoration: "none", color: "inherit" }}>
+              Jelszó és biztonság
+            </Link>
+          </li>
+          <br />
+          <li style={{ fontWeight: "700", fontSize: "16px" }}>
+            <img src={profileBlank} alt="icon" className="menu-icon" />
+            <Link
+              to="/idopont-foglalasok"
+              style={{ textDecoration: "none", color: "inherit" }}
+              onClick={() => console.log("Kattintás az Időpont foglalásokra!")}
+            >
+              Időpont foglalások
+            </Link>
+          </li>
+
+          <br />
+          <li style={{ fontWeight: "700", fontSize: "16px" }}>
+            <img src={profileBlank} alt="icon" className="menu-icon" />
+            <Link to="/premium" style={{ textDecoration: "none", color: "inherit" }}>
+            Premium előfizetés
+            </Link> 
+          </li>
+          <br />
+          <li style={{ fontWeight: "700", fontSize: "16px" }}>
+            <img src={profileBlank} alt="icon" className="menu-icon" />Fizetési előzmények
+            
+          </li>
+        </ul>
+      </aside>
       <div className="split-container">
         <div className="left-panel" style={{backgroundColor:"lightblue"}}>
           <h2 className="bejovoText">Bejövő foglalási kérelmek</h2>
@@ -129,7 +165,7 @@ const IdopontFoglalasok = () => {
             <div className="posztok-list">
               {incomingBookings.map((booking) => (
                 <div key={booking.uzenetID} className="poszt">
-                  <h2><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
+                  <h2 className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
                   <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
                   <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
                   <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
@@ -167,7 +203,7 @@ const IdopontFoglalasok = () => {
             <div className="posztok-list">
               {bookings.map((booking) => (
                 <div key={booking.naptarID} className="poszt">
-                  <h2>{booking.fejlec || "Nincs cím"}</h2>
+                  <h2 className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
                   <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
                   <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
                   <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
@@ -192,8 +228,8 @@ const IdopontFoglalasok = () => {
             </div>
           )}
         </div>
+        </div>
       </div>
-    </div>
   );
 };
 
