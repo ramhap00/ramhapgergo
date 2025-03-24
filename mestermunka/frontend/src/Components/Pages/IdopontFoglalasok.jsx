@@ -122,14 +122,14 @@ const IdopontFoglalasok = () => {
       </div>
       <div className="split-container">
         <div className="left-panel" style={{backgroundColor:"lightblue"}}>
-          <h2>Bejövő foglalási kérelmek</h2>
+          <h2 className="bejovoText">Bejövő foglalási kérelmek</h2>
           {incomingBookings.length === 0 ? (
             <p>Nincs bejövő foglalási kérelem.</p>
           ) : (
             <div className="posztok-list">
               {incomingBookings.map((booking) => (
                 <div key={booking.uzenetID} className="poszt">
-                  <h2>{booking.fejlec || "Nincs cím"}</h2>
+                  <h2><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
                   <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
                   <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
                   <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
@@ -160,7 +160,7 @@ const IdopontFoglalasok = () => {
           )}
         </div>
         <div className="right-panel" style={{backgroundColor:"lightblue"}}>
-          <h2>Saját foglalásaim</h2>
+          <h2 className="sajatText">Saját foglalásaim</h2>
           {bookings.length === 0 ? (
             <p>Még nem foglaltál elfogadott időpontot.</p>
           ) : (

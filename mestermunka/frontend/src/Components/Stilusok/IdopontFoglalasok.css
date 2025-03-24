@@ -70,10 +70,25 @@ h2 {
     background-color: #ECFFFF; /* Háttérszín megerősítése */
     color: black;
   }
+  .bejovoText{
+    margin-top: 15px;
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+  }
+  .sajatText{
+    margin-top: 15px;
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+  }
   
   /* A posztok szövegei is fehérek legyenek */
   .poszt {
     color: black;
+    background-color: white;
+    margin: 20px;
+    border-radius: 1vh;
   }
   
   /* Gombok szövege is fehér legyen */
@@ -81,4 +96,13 @@ h2 {
   .reject-button,
   .cancel-button {
     color: black;
+    background-color: lightblue;
+    width: 85%;
+    margin-bottom: 10px;
+  }
+  .reject-button:hover{
+    background-color: lightcoral;
+  }
+  .cancel-button:hover{
+    background-color: lightcoral;
   }
