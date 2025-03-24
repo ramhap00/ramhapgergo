@@ -41,6 +41,7 @@
 /* Posztok emelése hover hatásra */
 .post-item {
   border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
   padding: 15px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
