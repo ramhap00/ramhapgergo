@@ -995,7 +995,61 @@ app.get('/api/user-status/:userID', authenticateToken, (req, res) => {
     }
   );
 });
+// Opinions API Endpoints
+// Add these routes to your Express app
 
+// GET route to fetch opinions for a specific post
+// GET route to fetch opinions for a specific post
+app.get('/api/velemenyek/:postId', authenticateToken, (req, res) => {
+  const postId = req.params.postId;
+  
+  const query = `
+    SELECT v.*, f.vezeteknev, f.keresztnev, f.profilkep 
+    FROM velemenyek v
+    JOIN felhasznaloi_adatok f ON v.userID = f.userID
+    WHERE v.posztID = ?
+    ORDER BY v.datum DESC
+  `;
+  
+  db.query(query, [postId], (err, result) => {
+    if (err) {
+      console.error('Hiba a vélemények lekérésekor:', err);
+      return res.status(500).json({ success: false, message: 'Szerver hiba történt a vélemények lekérésekor' });
+    }
+    
+    res.json({ success: true, opinions: result });
+  });
+});
+
+// POST route to add a new opinion
+app.post('/api/velemenyek', authenticateToken, (req, res) => {
+  const { postId, text } = req.body;
+  const userId = req.user.id;
+  
+  // Ellenőrzés
+  if (!postId || !text) {
+    return res.status(400).json({ success: false, message: 'Hiányzó adatok' });
+  }
+  
+  // Beszúrás az adatbázisba
+  const query = `
+    INSERT INTO velemenyek (posztID, userID, szoveg, datum)
+    VALUES (?, ?, ?, NOW())
+  `;
+  
+  db.query(query, [postId, userId, text], (err, result) => {
+    if (err) {
+      console.error('Hiba a vélemény mentésekor:', err);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Szerver hiba történt a vélemény mentésekor',
+        error: err.message
+      });
+    }
+    
+    res.json({ success: true, message: 'Vélemény sikeresen hozzáadva' });
+  });
+});
 const PORT = 5020;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

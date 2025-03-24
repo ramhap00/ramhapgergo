@@ -40,7 +40,10 @@ const Posztok = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [showFavorites, setShowFavorites] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState([]); // Új állapot az online felhasználókhoz
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [isOpinionsModalOpen, setIsOpinionsModalOpen] = useState(false);
+  const [opinions, setOpinions] = useState([]);
+  const [newOpinion, setNewOpinion] = useState("");
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
@@ -89,6 +92,7 @@ const Posztok = () => {
   };
 
   const { weekDates, dayToDateMap, month, year } = getWeekDates();
+  
   useEffect(() => {
     const fetchPostsAndRatings = async () => {
       try {
@@ -112,7 +116,6 @@ const Posztok = () => {
               setFavorites(favoritesData.favorites.map(fav => fav.posztID));
             }
   
-            // Online státusz lekérdezése
             const onlineStatusPromises = postsData.posts.map(async (post) => {
               try {
                 const onlineResponse = await fetch(`http://localhost:5020/api/user-status/${post.userID}`, {
@@ -121,7 +124,7 @@ const Posztok = () => {
                 });
                 if (!onlineResponse.ok) {
                   console.error(`Hiba a user-status lekérdezéskor (${post.userID}): ${onlineResponse.status}`);
-                  return null; // Ha hiba van, null-t adunk vissza
+                  return null;
                 }
                 const onlineData = await onlineResponse.json();
                 return onlineData.isOnline ? post.userID : null;
@@ -461,6 +464,79 @@ const Posztok = () => {
     });
   };
 
+  const handleOpinionsOpen = async (post) => {
+    setSelectedPost(post);
+    setIsOpinionsModalOpen(true);
+    await fetchOpinions(post.posztID);
+  };
+
+  const handleOpinionsClose = () => {
+    setIsOpinionsModalOpen(false);
+    setSelectedPost(null);
+    setOpinions([]);
+    setNewOpinion("");
+  };
+
+  const fetchOpinions = async (postId) => {
+    const token = getTokenFromCookie();
+    try {
+      const response = await fetch(`http://localhost:5020/api/velemenyek/${postId}`, {
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json" 
+        },
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        setOpinions(data.opinions || []);
+      } else {
+        console.error("Hiba a vélemények betöltésekor:", data.message);
+      }
+    } catch (error) {
+      console.error("Hiba a vélemények lekérésekor:", error);
+    }
+  };
+
+  const handleAddOpinion = async () => {
+    if (!newOpinion.trim()) {
+      alert("Kérlek írj véleményt!");
+      return;
+    }
+
+    const token = getTokenFromCookie();
+    if (!token) {
+      alert("Kérlek, jelentkezz be a vélemény hozzáadásához!");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5020/api/velemenyek", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({ 
+          postId: selectedPost.posztID, 
+          text: newOpinion 
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setNewOpinion("");
+        fetchOpinions(selectedPost.posztID);
+      } else {
+        alert("Hiba történt: " + (data.error?.message || data.message));
+      }
+    } catch (error) {
+      console.error("Hiba a vélemény hozzáadásakor:", error);
+      alert("Hiba történt a vélemény hozzáadásakor: " + error.message);
+    }
+  };
+
   const currentUserId = getCurrentUserId();
 
   return (
@@ -573,6 +649,15 @@ const Posztok = () => {
               style={{ padding: "5px 10px" }}
             >
               Naptár
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpinionsOpen(post);
+              }}
+              style={{ padding: "5px 10px" }}
+            >
+              Vélemények
             </button>
             <span
               onClick={(e) => {
@@ -705,6 +790,86 @@ const Posztok = () => {
               </div>
             )}
             <button onClick={handleCalendarClose}>Bezárás</button>
+          </div>
+        </div>
+      )}
+
+      {isOpinionsModalOpen && selectedPost && (
+        <div className="modal-overlay" onClick={handleOpinionsClose}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Vélemények - {selectedPost.fejlec}</h2>
+            <h3>{selectedPost.vezeteknev} {selectedPost.keresztnev}</h3>
+            
+            <div className="opinions-list" style={{ maxHeight: "300px", overflowY: "auto", marginBottom: "20px" }}>
+              {opinions.length === 0 ? (
+                <p>Még nincsenek vélemények.</p>
+              ) : (
+                opinions.map((opinion, index) => (
+                  <div key={index} style={{ 
+                    border: "1px solid #ddd", 
+                    borderRadius: "5px", 
+                    padding: "10px", 
+                    marginBottom: "10px",
+                    backgroundColor: "#f9f9f9" 
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", marginBottom: "5px" }}>
+                      <img 
+                        src={opinion.profilkep ? `http://localhost:5020/uploads/${opinion.profilkep}` : "/default-profile.png"} 
+                        alt="Profile" 
+                        style={{ width: "30px", height: "30px", borderRadius: "50%", marginRight: "10px" }}
+                        onError={(e) => {
+                          e.target.src = "/default-profile.png";
+                        }}
+                      />
+                      <strong>{opinion.vezeteknev} {opinion.keresztnev}</strong>
+                      <span style={{ marginLeft: "auto", fontSize: "12px", color: "#666" }}>
+                        {new Date(opinion.datum).toLocaleDateString("hu-HU", { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
+                    </div>
+                    <p style={{ margin: "5px 0" }}>{opinion.szoveg}</p>
+                  </div>
+                ))
+              )}
+            </div>
+            
+            <div style={{ marginBottom: "20px" }}>
+              <h4>Új vélemény hozzáadása</h4>
+              <textarea
+                value={newOpinion}
+                onChange={(e) => setNewOpinion(e.target.value)}
+                placeholder="Írj véleményt..."
+                style={{ 
+                  width: "100%", 
+                  minHeight: "80px", 
+                  padding: "8px", 
+                  marginBottom: "10px",
+                  borderRadius: "4px",
+                  border: "1px solid #ddd"
+                }}
+              />
+              <button 
+                onClick={handleAddOpinion}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "#007bff",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  marginRight: "10px"
+                }}
+              >
+                Küldés
+              </button>
+            </div>
+            
+            <button onClick={handleOpinionsClose}>Bezárás</button>
           </div>
         </div>
       )}
