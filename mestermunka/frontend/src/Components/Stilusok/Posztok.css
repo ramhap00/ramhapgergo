@@ -30,7 +30,7 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  height: 100vh;
+  height: 129vh;
   overflow-y: auto;
 }
 
@@ -41,6 +41,7 @@
 /* Posztok emelése hover hatásra */
 .post-item {
   border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
   padding: 15px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
@@ -56,6 +57,10 @@
   width: 85%; /* A tartalom ne érjen a jobb oldalhoz */
 }
 
+.profile-pic-container {
+  position: relative; /* A zöld pötty pozícionálásához */
+}
+
 .post-item-profile-pic {
   position: absolute;
   top: 10px;
@@ -64,6 +69,30 @@
   height: 40px;
   border-radius: 50%; /* Kör alakú profilkép */
   object-fit: cover;
+}
+
+.online-indicator {
+  position: absolute;
+  top: 10px;
+  right: 45px; /* A profilkép bal oldalán */
+  width: 12px;
+  height: 12px;
+  background-color: #00ff00; /* Zöld szín */
+  border-radius: 50%;
+  border: 2px solid white; /* Fehér keret a kontraszt miatt */
+  animation: blink 1.5s infinite; /* Villogó animáció */
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .post-item:hover {
@@ -299,7 +328,7 @@
 .image-stack {
   position: relative;
   width: 200px;
-  height: 150px;
+  height: 200px;
   cursor: pointer;
 }
 
@@ -384,8 +413,8 @@
 
 .image-modal-content .nav-button.right {
   right: -100px; /* A kép jobb oldalán kívül, hogy ne lógjon bele */
-  background-color:transparent;
-   max-width: 50px;
+  background-color: transparent;
+  max-width: 50px;
 }
 
 .image-modal-content .close-button {

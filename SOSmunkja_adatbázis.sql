@@ -73,23 +73,12 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`posztok` (
 -- Table `sos_munka`.`kedvencek`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `sos_munka`.`kedvencek` (
-  `kedvencID` INT(11) NOT NULL,
-  `userID` INT(11) NOT NULL,
-  `posztID` INT(11) NOT NULL,
-  `datum` DATE NULL DEFAULT NULL,
-  PRIMARY KEY (`kedvencID`),
-  INDEX `userid_idx` (`userID` ASC),
-  INDEX `posztid_idx` (`posztID` ASC),
-  CONSTRAINT `posztid`
-    FOREIGN KEY (`posztID`)
-    REFERENCES `sos_munka`.`posztok` (`posztID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `userid`
-    FOREIGN KEY (`userID`)
-    REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `userID` INT NOT NULL,
+  `posztID` INT NOT NULL,
+  FOREIGN KEY (`userID`) REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`) ON DELETE CASCADE,
+  FOREIGN KEY (`posztID`) REFERENCES `sos_munka`.`posztok` (`posztID`) ON DELETE CASCADE,
+  UNIQUE (`userID`, `posztID`)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
 
 -- -----------------------------------------------------
