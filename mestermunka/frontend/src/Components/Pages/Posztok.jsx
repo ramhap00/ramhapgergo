@@ -38,6 +38,8 @@ const Posztok = () => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [showFavorites, setShowFavorites] = useState(false); // Új állapot a "Kedvencek" szűrőhöz
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
@@ -101,6 +103,15 @@ const Posztok = () => {
           if (token) {
             const ratingsData = {};
             const bookedTimesData = {};
+            const favoritesResponse = await fetch("http://localhost:5020/api/kedvencek", {
+              headers: { "Authorization": `Bearer ${token}` },
+              credentials: "include",
+            });
+            const favoritesData = await favoritesResponse.json();
+            if (favoritesData.success) {
+              setFavorites(favoritesData.favorites.map(fav => fav.posztID));
+            }
+
             await Promise.all(
               postsData.posts.map(async (post) => {
                 const ratingResponse = await fetch(`http://localhost:5020/api/user-rating/${post.posztID}`, {
@@ -127,7 +138,7 @@ const Posztok = () => {
           }
         }
       } catch (error) {
-        console.error("Hiba a posztok, értékelések vagy időpontok betöltésekor:", error.message);
+        console.error("Hiba a posztok, értékelések, időpontok vagy kedvencek betöltésekor:", error.message);
       }
     };
 
@@ -158,13 +169,16 @@ const Posztok = () => {
       filtered = filtered.filter(post => selectedOptions.includes(post.allapot));
     }
     if (searchTerm) {
-      filtered = filtered.filter(post => 
+      filtered = filtered.filter(post =>
         post.kategoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.fejlec.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.vezeteknev.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.keresztnev.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.leiras.toLowerCase().includes(searchTerm.toLowerCase())
       );
+    }
+    if (showFavorites) {
+      filtered = filtered.filter(post => favorites.includes(post.posztID));
     }
 
     setFilteredPosts(filtered.length > 0 ? filtered : []);
@@ -275,6 +289,56 @@ const Posztok = () => {
         <p>Átlag: {averageRating.toFixed(1)} ({ratingCount} értékelés)</p>
       </div>
     );
+  };
+
+  const handleFavorite = async (postId) => {
+    const token = getTokenFromCookie();
+    if (!token) {
+      alert("Kérlek, jelentkezz be a kedvencek kezeléséhez!");
+      return;
+    }
+  
+    const isFavorited = favorites.includes(postId);
+  
+    try {
+      if (isFavorited) {
+        const response = await fetch("http://localhost:5020/api/kedvencek/remove", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          credentials: "include",
+          body: JSON.stringify({ postId }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          setFavorites((prev) => prev.filter((id) => id !== postId));
+          handleSearch(); // Frissítjük a szűrt posztokat
+        } else {
+          console.error("Hiba a kedvenc eltávolításakor:", data.message, data.error || "");
+        }
+      } else {
+        const response = await fetch("http://localhost:5020/api/kedvencek", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          credentials: "include",
+          body: JSON.stringify({ postId }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          setFavorites((prev) => [...prev, postId]);
+          handleSearch(); // Frissítjük a szűrt posztokat
+        } else {
+          console.error("Hiba a kedvenc hozzáadásakor:", data.message, data.error || "");
+        }
+      }
+    } catch (error) {
+      console.error("Hiba a kedvencek kezelésekor:", error.message);
+    }
   };
 
   const handleCalendarOpen = (post) => {
@@ -419,6 +483,17 @@ const Posztok = () => {
                 />
               </div>
             ))}
+            <div className="status-item">
+              <span>Kedvencek</span>
+              <input
+                type="checkbox"
+                checked={showFavorites}
+                onChange={() => {
+                  setShowFavorites(!showFavorites);
+                  handleSearch();
+                }}
+              />
+            </div>
           </div>
         </div>
         <div className="posztok-content">
@@ -450,35 +525,50 @@ const Posztok = () => {
                     <p className="creation-date">
                       Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}
                     </p>
-                    {currentUserId !== post.userID && (
+                    <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                      {currentUserId !== post.userID && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleWriteToUser(post);
+                          }}
+                          style={{
+                            padding: "5px 10px",
+                            backgroundColor: "#007bff",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          Írj rám
+                        </button>
+                      )}
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleWriteToUser(post);
+                          handleCalendarOpen(post);
+                        }}
+                        style={{ padding: "5px 10px" }}
+                      >
+                        Naptár
+                      </button>
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleFavorite(post.posztID);
                         }}
                         style={{
-                          padding: "5px 10px",
-                          backgroundColor: "#007bff",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "4px",
+                          fontSize: "24px",
                           cursor: "pointer",
-                          marginTop: "10px",
+                          color: favorites.includes(post.posztID) ? "gold" : "gray",
                         }}
                       >
-                        Írj rám
-                      </button>
-                    )}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCalendarOpen(post);
-                      }}
-                      style={{ marginTop: "10px" }}
-                    >
-                      Naptár
-                    </button>
+                        {favorites.includes(post.posztID) ? "★" : "☆"}
+                      </span>
+                    </div>
                   </div>
+                  
                   <img
                     className="post-item-profile-pic"
                     src={post.profilkep ? `http://localhost:5020/uploads/${post.profilkep}?t=${Date.now()}` : "/default-profile.png"}
