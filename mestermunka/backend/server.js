@@ -836,6 +836,99 @@ app.put('/beszelgetesek/:id/read', authenticateToken, (req, res) => {
     res.status(200).json({ success: true, message: "Üzenet olvasottként jelölve!" });
   });
 });
+app.get('/api/kedvencek', authenticateToken, (req, res) => {
+  const userID = req.user.id;
+
+  const query = `
+    SELECT posztID
+    FROM kedvencek
+    WHERE userID = ?
+  `;
+
+  db.query(query, [userID], (err, result) => {
+    if (err) {
+      console.error("Hiba a kedvencek lekérdezésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt a kedvencek lekérdezésekor!" });
+    }
+
+    res.status(200).json({ success: true, favorites: result });
+  });
+});
+
+app.post('/api/kedvencek', authenticateToken, (req, res) => {
+  const userID = req.user.id;
+  const { postId } = req.body;
+
+  if (!postId) {
+    return res.status(400).json({ success: false, message: "A poszt azonosítója kötelező!" });
+  }
+
+  // Ellenőrizzük, hogy a poszt létezik-e
+  db.query('SELECT * FROM posztok WHERE posztID = ?', [postId], (err, postResult) => {
+    if (err) {
+      console.error("Hiba a poszt ellenőrzésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt a poszt ellenőrzésekor!", error: err.message });
+    }
+    if (postResult.length === 0) {
+      return res.status(404).json({ success: false, message: "A poszt nem található!" });
+    }
+
+    // Ellenőrizzük, hogy a poszt már a kedvencek között van-e
+    db.query('SELECT * FROM kedvencek WHERE userID = ? AND posztID = ?', [userID, postId], (err, favoriteResult) => {
+      if (err) {
+        console.error("Hiba a kedvenc ellenőrzésekor:", err);
+        return res.status(500).json({ success: false, message: "Hiba történt a kedvenc ellenőrzésekor!", error: err.message });
+      }
+
+      if (favoriteResult.length > 0) {
+        return res.status(400).json({ success: false, message: "Ez a poszt már a kedvenceid között van!" });
+      }
+
+      // Kedvenc hozzáadása
+      const query = `
+        INSERT INTO kedvencek (userID, posztID)
+        VALUES (?, ?)
+      `;
+
+      db.query(query, [userID, postId], (err, result) => {
+        if (err) {
+          console.error("Hiba a kedvenc mentésekor:", err);
+          return res.status(500).json({ success: false, message: "Hiba történt a kedvenc mentésekor!", error: err.message });
+        }
+
+        res.status(201).json({ success: true, message: "Poszt hozzáadva a kedvencekhez!" });
+      });
+    });
+  });
+});
+
+// Kedvenc eltávolítása (DELETE /api/kedvencek/remove)
+app.delete('/api/kedvencek/remove', authenticateToken, (req, res) => {
+  const userID = req.user.id;
+  const { postId } = req.body;
+
+  if (!postId) {
+    return res.status(400).json({ success: false, message: "A poszt azonosítója kötelező!" });
+  }
+
+  const query = `
+    DELETE FROM kedvencek
+    WHERE userID = ? AND posztID = ?
+  `;
+
+  db.query(query, [userID, postId], (err, result) => {
+    if (err) {
+      console.error("Hiba a kedvenc törlésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt a kedvenc törlésekor!" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "A poszt nem található a kedvenceid között!" });
+    }
+
+    res.status(200).json({ success: true, message: "Poszt eltávolítva a kedvencekből!" });
+  });
+});
 const PORT = 5020;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

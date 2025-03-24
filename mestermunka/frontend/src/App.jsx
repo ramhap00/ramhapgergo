@@ -17,6 +17,7 @@ import Jelszo from "./Components/Pages/Jelszo";
 import Posztotcsinalok from "./Components/Pages/Posztotcsinalok";
 import IdopontFoglalasok from "./Components/Pages/IdopontFoglalasok";
 import Beszelgetesek from "./Components/Pages/Beszelgetesek";
+import Footer from "./Components/Pages/Footer.jsx";
 import './App.css';
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Route path="/idopont-foglalasok" element={<IdopontFoglalasok />} />
           <Route path="/beszelgetesek" element={<Beszelgetesek />} />
         </Routes>
+        <Footer/>
       </Router>
     </UserProvider>
   );
