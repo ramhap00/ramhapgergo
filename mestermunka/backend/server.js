@@ -25,6 +25,27 @@ app.use(cors({ origin: 'http://localhost:5173', credentials: true, methods: ['GE
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+// Middleware a lastActive frissítésére
+app.use((req, res, next) => {
+  const token = req.cookies.authToken;
+  if (token) {
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+      if (!err && user) {
+        db.query(
+          'UPDATE felhasznaloi_adatok SET lastActive = NOW() WHERE userID = ?',
+          [user.userID],
+          (err) => {
+            if (err) {
+              console.error('Hiba a lastActive frissítésekor:', err);
+            }
+          }
+        );
+      }
+    });
+  }
+  next();
+});
+
 // AuthenticateToken middleware javítása
 const authenticateToken = (req, res, next) => {
   
@@ -162,6 +183,24 @@ app.get('/user', authenticateToken, (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
+  const token = req.cookies.authToken;
+  if (token) {
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+      if (!err && user) {
+        db.query(
+          'UPDATE felhasznaloi_adatok SET lastActive = NULL WHERE userID = ?',
+          [user.userID],
+          (err) => {
+            if (err) {
+              console.error('Hiba a lastActive nullázásakor:', err);
+            } else {
+              console.log(`User ${user.userID} lastActive set to NULL`); // Debug
+            }
+          }
+        );
+      }
+    });
+  }
   res.clearCookie('authToken');
   res.status(200).json({ success: true, message: 'Sikeres kijelentkezés!' });
 });
@@ -929,6 +968,34 @@ app.delete('/api/kedvencek/remove', authenticateToken, (req, res) => {
     res.status(200).json({ success: true, message: "Poszt eltávolítva a kedvencekből!" });
   });
 });
+app.get('/api/user-status/:userID', authenticateToken, (req, res) => {
+  const { userID } = req.params;
+
+  db.query(
+    'SELECT lastActive FROM felhasznaloi_adatok WHERE userID = ?',
+    [userID],
+    (err, result) => {
+      if (err) {
+        console.error(`Hiba a /api/user-status/${userID} lekérdezéskor:`, err);
+        return res.status(500).json({ error: 'Szerver hiba', details: err.message });
+      }
+
+      if (result.length === 0) {
+        return res.status(404).json({ error: 'Felhasználó nem található' });
+      }
+
+      const lastActive = result[0].lastActive;
+      const now = new Date();
+      const fiveMinutesAgo = new Date(now - 5 * 60 * 1000); // 5 perc
+
+      const isOnline = lastActive && new Date(lastActive) > fiveMinutesAgo;
+      console.log(`User ${userID} - lastActive: ${lastActive}, isOnline: ${isOnline}`); // Debug
+
+      res.json({ isOnline });
+    }
+  );
+});
+
 const PORT = 5020;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -39,7 +39,8 @@ const Posztok = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedImages, setSelectedImages] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [showFavorites, setShowFavorites] = useState(false); // Új állapot a "Kedvencek" szűrőhöz
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState([]); // Új állapot az online felhasználókhoz
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
@@ -88,7 +89,6 @@ const Posztok = () => {
   };
 
   const { weekDates, dayToDateMap, month, year } = getWeekDates();
-
   useEffect(() => {
     const fetchPostsAndRatings = async () => {
       try {
@@ -98,7 +98,7 @@ const Posztok = () => {
         if (postsData.success) {
           setPosts(postsData.posts);
           setFilteredPosts(postsData.posts);
-
+  
           const token = getTokenFromCookie();
           if (token) {
             const ratingsData = {};
@@ -111,7 +111,28 @@ const Posztok = () => {
             if (favoritesData.success) {
               setFavorites(favoritesData.favorites.map(fav => fav.posztID));
             }
-
+  
+            // Online státusz lekérdezése
+            const onlineStatusPromises = postsData.posts.map(async (post) => {
+              try {
+                const onlineResponse = await fetch(`http://localhost:5020/api/user-status/${post.userID}`, {
+                  headers: { "Authorization": `Bearer ${token}` },
+                  credentials: "include",
+                });
+                if (!onlineResponse.ok) {
+                  console.error(`Hiba a user-status lekérdezéskor (${post.userID}): ${onlineResponse.status}`);
+                  return null; // Ha hiba van, null-t adunk vissza
+                }
+                const onlineData = await onlineResponse.json();
+                return onlineData.isOnline ? post.userID : null;
+              } catch (err) {
+                console.error(`Hiba a user-status lekérdezéskor (${post.userID}):`, err.message);
+                return null;
+              }
+            });
+            const onlineUsersData = (await Promise.all(onlineStatusPromises)).filter(id => id !== null);
+            setOnlineUsers(onlineUsersData);
+  
             await Promise.all(
               postsData.posts.map(async (post) => {
                 const ratingResponse = await fetch(`http://localhost:5020/api/user-rating/${post.posztID}`, {
@@ -122,7 +143,7 @@ const Posztok = () => {
                 if (ratingData.success && ratingData.rating > 0) {
                   ratingsData[post.posztID] = ratingData.rating;
                 }
-
+  
                 const bookedResponse = await fetch(`http://localhost:5020/api/booked-times/${post.posztID}`, {
                   headers: { "Authorization": `Bearer ${token}` },
                   credentials: "include",
@@ -138,19 +159,19 @@ const Posztok = () => {
           }
         }
       } catch (error) {
-        console.error("Hiba a posztok, értékelések, időpontok vagy kedvencek betöltésekor:", error.message);
+        console.error("Hiba a posztok, értékelések, időpontok vagy online státusz betöltésekor:", error.message);
       }
     };
-
+  
     fetchPostsAndRatings();
-
+  
     let interval;
     if (isCalendarOpen && selectedPost) {
       interval = setInterval(() => {
         refreshBookedTimes(selectedPost.posztID);
       }, 5000);
     }
-
+  
     return () => {
       if (interval) clearInterval(interval);
     };
@@ -314,7 +335,7 @@ const Posztok = () => {
         const data = await response.json();
         if (data.success) {
           setFavorites((prev) => prev.filter((id) => id !== postId));
-          handleSearch(); // Frissítjük a szűrt posztokat
+          handleSearch();
         } else {
           console.error("Hiba a kedvenc eltávolításakor:", data.message, data.error || "");
         }
@@ -331,7 +352,7 @@ const Posztok = () => {
         const data = await response.json();
         if (data.success) {
           setFavorites((prev) => [...prev, postId]);
-          handleSearch(); // Frissítjük a szűrt posztokat
+          handleSearch();
         } else {
           console.error("Hiba a kedvenc hozzáadásakor:", data.message, data.error || "");
         }
@@ -497,90 +518,92 @@ const Posztok = () => {
           </div>
         </div>
         <div className="posztok-content">
-          <div className="posztok-list">
-            {filteredPosts.length === 0 ? (
-              <p>Nincs ilyen poszt!</p>
-            ) : (
-              filteredPosts.map((post) => (
-                <div key={post.posztID} className="post-item" onClick={() => handlePostClick(post)}>
-                  <div className="post-item-content">
-                    <h3>{post.vezeteknev} {post.keresztnev}</h3>
-                    <h4>{post.fejlec}</h4>
-                    <p><span className="category-label">Kategória:</span> {post.kategoria}</p>
-                    <p><span className="location-label">Település:</span> {post.telepules}</p>
-                    <p><span className="phone-label">Telefonszám:</span> {post.telefonszam}</p>
-                    <p>{post.leiras}</p>
-                    {post.fotok && post.fotok.length > 0 && (
-                      <div className="image-stack" onClick={(e) => { e.stopPropagation(); handleImageClick(post.fotok); }}>
-                        {post.fotok.map((foto, index) => (
-                          <img
-                            key={index}
-                            src={`http://localhost:5020/uploads/${foto}`}
-                            alt={`Post Image ${index}`}
-                          />
-                        ))}
-                      </div>
-                    )}
-                    <div className="stars">{renderStars(post)}</div>
-                    <p className="creation-date">
-                      Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}
-                    </p>
-                    <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                      {currentUserId !== post.userID && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleWriteToUser(post);
-                          }}
-                          style={{
-                            padding: "5px 10px",
-                            backgroundColor: "#007bff",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                          }}
-                        >
-                          Írj rám
-                        </button>
-                      )}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCalendarOpen(post);
-                        }}
-                        style={{ padding: "5px 10px" }}
-                      >
-                        Naptár
-                      </button>
-                      <span
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleFavorite(post.posztID);
-                        }}
-                        style={{
-                          fontSize: "24px",
-                          cursor: "pointer",
-                          color: favorites.includes(post.posztID) ? "gold" : "gray",
-                        }}
-                      >
-                        {favorites.includes(post.posztID) ? "★" : "☆"}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <img
-                    className="post-item-profile-pic"
-                    src={post.profilkep ? `http://localhost:5020/uploads/${post.profilkep}?t=${Date.now()}` : "/default-profile.png"}
-                    alt="Profile Pic"
-                    onError={(e) => {
-                      e.target.src = "/default-profile.png";
-                    }}
-                  />
-                </div>
-              ))
+        <div className="posztok-list">
+  {filteredPosts.length === 0 ? (
+    <p>Nincs ilyen poszt!</p>
+  ) : (
+    filteredPosts.map((post) => (
+      <div key={post.posztID} className="post-item" onClick={() => handlePostClick(post)}>
+        <div className="post-item-content">
+          <h3>{post.vezeteknev} {post.keresztnev}</h3>
+          <h4>{post.fejlec}</h4>
+          <p><span className="category-label">Kategória:</span> {post.kategoria}</p>
+          <p><span className="location-label">Település:</span> {post.telepules}</p>
+          <p><span className="phone-label">Telefonszám:</span> {post.telefonszam}</p>
+          <p>{post.leiras}</p>
+          {post.fotok && post.fotok.length > 0 && (
+            <div className="image-stack" onClick={(e) => { e.stopPropagation(); handleImageClick(post.fotok); }}>
+              {post.fotok.map((foto, index) => (
+                <img
+                  key={index}
+                  src={`http://localhost:5020/uploads/${foto}`}
+                  alt={`Post Image ${index}`}
+                />
+              ))}
+            </div>
+          )}
+          <div className="stars">{renderStars(post)}</div>
+          <p className="creation-date">
+            Létrehozás dátuma: {new Date(post.datum).toLocaleDateString("hu-HU")}
+          </p>
+          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+            {currentUserId !== post.userID && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleWriteToUser(post);
+                }}
+                style={{
+                  padding: "5px 10px",
+                  backgroundColor: "#007bff",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                Írj rám
+              </button>
             )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCalendarOpen(post);
+              }}
+              style={{ padding: "5px 10px" }}
+            >
+              Naptár
+            </button>
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                handleFavorite(post.posztID);
+              }}
+              style={{
+                fontSize: "24px",
+                cursor: "pointer",
+                color: favorites.includes(post.posztID) ? "gold" : "gray",
+              }}
+            >
+              {favorites.includes(post.posztID) ? "★" : "☆"}
+            </span>
           </div>
+        </div>
+        <div className="profile-pic-container">
+          <img
+            className="post-item-profile-pic"
+            src={post.profilkep ? `http://localhost:5020/uploads/${post.profilkep}?t=${Date.now()}` : "/default-profile.png"}
+            alt="Profile Pic"
+            onError={(e) => {
+              e.target.src = "/default-profile.png";
+            }}
+          />
+          {onlineUsers.includes(post.userID) && <span className="online-indicator"></span>}
+        </div>
+      </div>
+    ))
+  )}
+</div>
         </div>
       </div>
 
