@@ -1,9 +1,14 @@
 /* Fiok.css */
 .account-settings {
     display: flex;
+    justify-content: center;
     font-family: Arial, sans-serif;
+    background-color: white;
+   
+
   }
   
+
   .sidebar {
     width: 250px;
     background: #f4f4f4;
@@ -13,13 +18,16 @@
   .sidebar ul {
     list-style: none;
     padding: 0;
+    
+    
   }
   
   .sidebar ul li {
     padding: 10px;
     cursor: pointer;
     display: flex;
-    align-items: center;
+    text-align: left;
+
   }
   
   .sidebar ul .active {
@@ -34,11 +42,13 @@
   
   .content {
     padding: 20px;
-    border: 2px solid #2F2F2F; /* Keret színe: black -> #2F2F2F */
+    border: 2px solid #2F2F2F;
     border-radius: 1vh;
     box-shadow: 0 0 10px;
-    margin: 20px; /* Körülötte térköz */
-    width: 25%;
+    margin: 20px;
+    width: 30%;
+    background: white; /* Háttérszín */
+    margin-left: 100px;
   }
   
   h1, h2 {
