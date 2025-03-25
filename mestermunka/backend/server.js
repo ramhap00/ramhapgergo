@@ -18,7 +18,7 @@ const db = mysql.createConnection({
   user: 'root',
   password: '',
   database: 'sos_munka',
-  port: '3306',
+  port: '3307',
 });
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true, methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
@@ -1049,6 +1049,63 @@ app.post('/api/velemenyek', authenticateToken, (req, res) => {
     
     res.json({ success: true, message: 'Vélemény sikeresen hozzáadva' });
   });
+});
+// server.js - új végpont a poszt törlésére
+app.delete('/api/poszt/:posztID', authenticateToken, (req, res) => {
+  const { posztID } = req.params;
+  const userID = req.user.id;
+
+  // Ellenőrizzük, hogy a poszt a bejelentkezett felhasználóhoz tartozik-e
+  db.query(
+    'SELECT userID FROM posztok WHERE posztID = ?',
+    [posztID],
+    (err, result) => {
+      if (err) {
+        console.error('Hiba a poszt ellenőrzésekor:', err);
+        return res.status(500).json({ success: false, message: 'Hiba történt a poszt ellenőrzésekor!' });
+      }
+      if (result.length === 0) {
+        return res.status(404).json({ success: false, message: 'A poszt nem található!' });
+      }
+      if (result[0].userID !== userID) {
+        return res.status(403).json({ success: false, message: 'Nincs jogosultságod törölni ezt a posztot!' });
+      }
+
+      // Töröljük a posztot
+      db.query(
+        'DELETE FROM posztok WHERE posztID = ?',
+        [posztID],
+        (err, deleteResult) => {
+          if (err) {
+            console.error('Hiba a poszt törlésekor:', err);
+            return res.status(500).json({ success: false, message: 'Hiba történt a poszt törlésekor!' });
+          }
+          if (deleteResult.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'A poszt nem található!' });
+          }
+
+          // Töröljük a poszt képeit a szerverről
+          db.query(
+            'SELECT fotok FROM posztok WHERE posztID = ?',
+            [posztID],
+            (err, fotoResult) => {
+              if (!err && fotoResult.length > 0) {
+                const fotok = JSON.parse(fotoResult[0].fotok);
+                fotok.forEach((foto) => {
+                  const filePath = path.join(__dirname, 'uploads', foto);
+                  fs.unlink(filePath, (unlinkErr) => {
+                    if (unlinkErr) console.error(`Hiba a fájl törlésekor (${foto}):`, unlinkErr);
+                  });
+                });
+              }
+            }
+          );
+
+          res.status(200).json({ success: true, message: 'Poszt sikeresen törölve!' });
+        }
+      );
+    }
+  );
 });
 const PORT = 5020;
 app.listen(PORT, () => {
