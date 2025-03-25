@@ -15,6 +15,7 @@ body, html {
   justify-content: center;
   align-items: center;
   position: relative;
+  margin-bottom: -22px;
 }
 
 /* A bejelentkezési doboz formázása és elmosása */

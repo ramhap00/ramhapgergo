@@ -6,19 +6,21 @@ body, html {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  
 }
 
 /* Regisztrációs konténer háttérképének beállítása */
 .regisztracio-container {
   position: relative;
   width: 100%;
-  height: 110vh;
+  height: 115vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  margin-bottom: -22px;
 }
 
 /* Az overlay réteg beállítása */
