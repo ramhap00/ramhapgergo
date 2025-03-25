@@ -77,7 +77,7 @@ const Beszelgetesek = () => {
       );
       if (response.data.success) {
         setNewMessage("");
-        fetchMessages(); // Frissítjük az üzeneteket küldés után
+        fetchMessages();
       }
     } catch (error) {
       console.error("Hiba az üzenet küldésekor:", error);
@@ -87,16 +87,15 @@ const Beszelgetesek = () => {
   const markAsRead = async (messageId) => {
     try {
       await axios.put(`http://localhost:5020/beszelgetesek/${messageId}/read`, {}, { withCredentials: true });
-      fetchMessages(); // Frissítjük az üzeneteket olvasás után
+      fetchMessages();
     } catch (error) {
       console.error("Hiba az üzenet olvasottként jelölésekor:", error);
     }
   };
 
-  // Csak egyszer fut le az oldal betöltésekor
   useEffect(() => {
     fetchMessages();
-  }, []); // Üres függőségi tömb, így csak egyszer fut le
+  }, []);
 
   useEffect(() => {
     if (location.state?.user && !users.find(u => u.id === location.state.user.id)) {
@@ -127,7 +126,6 @@ const Beszelgetesek = () => {
         <input
           type="text"
           placeholder="Keresés üzenetek vagy felhasználók között..."
-          style={{ width: "100%", padding: "8px", marginBottom: "10px", border: "1px solid #ccc", borderRadius: "4px" }}
         />
         {users.length === 0 ? (
           <div style={{ textAlign: "center", color: "#666" }}>Még nem beszélgettél senkivel.</div>
@@ -141,7 +139,6 @@ const Beszelgetesek = () => {
               <img
                 src={`http://localhost:5020/uploads/${user.profilePic}`}
                 alt={user.name}
-                style={{ width: "40px", height: "40px", borderRadius: "50%", marginRight: "10px" }}
               />
               <div>
                 <div style={{ fontWeight: "bold" }}>{user.name}</div>
@@ -158,7 +155,6 @@ const Beszelgetesek = () => {
               <img
                 src={`http://localhost:5020/uploads/${selectedUser.profilePic}`}
                 alt={selectedUser.name}
-                style={{ width: "50px", height: "50px", borderRadius: "50%", marginRight: "10px" }}
               />
               <h2>{selectedUser.name}</h2>
             </div>
@@ -181,12 +177,11 @@ const Beszelgetesek = () => {
               )}
             </div>
             <form onSubmit={sendMessage} className="chat-input">
-              <input
-                type="text"
+              <textarea
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Írj üzenetet..."
-                style={{ flex: 1, padding: "8px", border: "1px solid #ccc", borderRadius: "4px" }}
+                className="message-textarea"
               />
               <button type="submit" disabled={loading}>
                 Küldés
