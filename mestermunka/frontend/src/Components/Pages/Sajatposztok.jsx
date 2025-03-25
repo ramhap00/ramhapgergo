@@ -145,19 +145,7 @@ const Sajatposztok = () => {
               <option key={city} value={city}>{city}</option>
             ))}
           </select>
-          <label>Állapot:</label>
-          <div className="status-container">
-            {options.map((option) => (
-              <div className="status-item" key={option}>
-                <span>{option}</span>
-                <input
-                  type="checkbox"
-                  checked={selectedOptions.includes(option)}
-                  onChange={() => handleCheckboxChange(option)}
-                />
-              </div>
-            ))}
-          </div>
+    
           <br />
           <Link to="/posztotcsinalok"><button>Új poszt</button></Link>
         </div>

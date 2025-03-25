@@ -568,18 +568,7 @@ const Posztok = () => {
               <option key={city} value={city}>{city}</option>
             ))}
           </select>
-          <label>Állapot:</label>
-          <div className="status-container">
-            {options.map((option) => (
-              <div className="status-item" key={option}>
-                <span>{option}</span>
-                <input
-                  type="checkbox"
-                  checked={selectedOptions.includes(option)}
-                  onChange={() => handleCheckboxChange(option)}
-                />
-              </div>
-            ))}
+          <br />
             <div className="status-item">
               <span>Kedvencek</span>
               <input
@@ -591,7 +580,7 @@ const Posztok = () => {
                 }}
               />
             </div>
-          </div>
+          
         </div>
         <div className="posztok-content">
         <div className="posztok-list">
