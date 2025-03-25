@@ -200,6 +200,30 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`beszelgetesek` (
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+-- -----------------------------------------------------
+-- Table `sos_munka`.`velemenyek`
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `sos_munka`.`velemenyek` (
+ `velemenyID` INT(11) NOT NULL AUTO_INCREMENT,
+ `posztID` INT(11) NOT NULL,
+ `userID` INT(11) NOT NULL,
+ `szoveg` TEXT NOT NULL,
+ `datum` DATETIME DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (`velemenyID`),
+ INDEX `fk_velemenyek_poszt_idx` (`posztID` ASC),
+ INDEX `fk_velemenyek_user_idx` (`userID` ASC),
+ CONSTRAINT `fk_velemenyek_poszt`
+   FOREIGN KEY (`posztID`)
+   REFERENCES `sos_munka`.`posztok` (`posztID`)
+   ON DELETE CASCADE
+   ON UPDATE NO ACTION,
+ CONSTRAINT `fk_velemenyek_user`
+   FOREIGN KEY (`userID`)
+   REFERENCES `sos_munka`.`felhasznaloi_adatok` (`userID`)
+   ON DELETE CASCADE
+   ON UPDATE NO ACTION
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
