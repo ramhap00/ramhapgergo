@@ -153,94 +153,96 @@ const Fiok = () => {
           </li>
         </ul>
       </aside>
-      <main className="content">
-        <h1>Fiók beállítások</h1>
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-        <section className="account-info">
-          <table>
-            <tbody>
-              <tr>
-                <td colSpan="2">
-                  <label>Profilkép</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    disabled={!editing}
-                  />
-                  {newProfileImage && (
-                    <img
-                      src={URL.createObjectURL(newProfileImage)}
-                      alt="Preview"
-                      className="rounded-image"
+      <div className="big-container">
+        <main className="content">
+          <h1>Fiók beállítások</h1>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <section className="account-info">
+            <table>
+              <tbody>
+                <tr>
+                  <td colSpan="2">
+                    <label>Profilkép</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      disabled={!editing}
                     />
-                  )}
-                  {!newProfileImage && (
-                    <img
-                      src={profileImage}
-                      alt="Current Profile"
-                      className="rounded-image"
+                    {newProfileImage && (
+                      <img
+                        src={URL.createObjectURL(newProfileImage)}
+                        alt="Preview"
+                        className="rounded-image"
+                      />
+                    )}
+                    {!newProfileImage && (
+                      <img
+                        src={profileImage}
+                        alt="Current Profile"
+                        className="rounded-image"
+                      />
+                    )}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>Felhasználónév</label>
+                    <input
+                      type="text"
+                      name="felhasznalonev"
+                      value={newData.felhasznalonev}
+                      onChange={handleChange}
+                      disabled={!editing}
                     />
-                  )}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>Felhasználónév</label>
-                  <input
-                    type="text"
-                    name="felhasznalonev"
-                    value={newData.felhasznalonev}
-                    onChange={handleChange}
-                    disabled={!editing}
-                  />
-                </td>
-                <td>
-                  <label>Email-cím</label>
-                  <input
-                    type="text"
-                    name="emailcim"
-                    value={newData.emailcim}
-                    onChange={handleChange}
-                    disabled={!editing}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>Vezetéknév</label>
-                  <input
-                    type="text"
-                    name="vezeteknev"
-                    value={newData.vezeteknev}
-                    onChange={handleChange}
-                    disabled={!editing}
-                  />
-                </td>
-                <td>
-                  <label>Keresztnév</label>
-                  <input
-                    type="text"
-                    name="keresztnev"
-                    value={newData.keresztnev}
-                    onChange={handleChange}
-                    disabled={!editing}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td colSpan="2">
-                  {!editing ? (
-                    <button onClick={() => setEditing(true)}>Szerkesztés</button>
-                  ) : (
-                    <button onClick={handleSave}>Mentés</button>
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      </main>
+                  </td>
+                  <td>
+                    <label>Email-cím</label>
+                    <input
+                      type="text"
+                      name="emailcim"
+                      value={newData.emailcim}
+                      onChange={handleChange}
+                      disabled={!editing}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>Vezetéknév</label>
+                    <input
+                      type="text"
+                      name="vezeteknev"
+                      value={newData.vezeteknev}
+                      onChange={handleChange}
+                      disabled={!editing}
+                    />
+                  </td>
+                  <td>
+                    <label>Keresztnév</label>
+                    <input
+                      type="text"
+                      name="keresztnev"
+                      value={newData.keresztnev}
+                      onChange={handleChange}
+                      disabled={!editing}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="2">
+                    {!editing ? (
+                      <button onClick={() => setEditing(true)}>Szerkesztés</button>
+                    ) : (
+                      <button onClick={handleSave}>Mentés</button>
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </main>
+      </div>
     </div>
   );
 };

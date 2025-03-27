@@ -4,42 +4,29 @@
     justify-content: center;
     font-family: Arial, sans-serif;
     background-color: white;
-   
-
   }
-  
-
   .sidebar {
     width: 250px;
-    background: #f4f4f4;
     padding: 20px;
   }
-  
   .sidebar ul {
     list-style: none;
     padding: 0;
-    
-    
   }
-  
   .sidebar ul li {
     padding: 10px;
     cursor: pointer;
     display: flex;
     text-align: left;
-
   }
-  
   .sidebar ul .active {
     font-weight: bold;
   }
-  
   .menu-icon {
     width: 20px;
     height: 20px;
     margin-right: 10px;
   }
-  
   .content {
     padding: 20px;
     border: 2px solid #2F2F2F;
@@ -48,13 +35,10 @@
     margin: 20px;
     width: 30%;
     background: white; /* Háttérszín */
-    margin-left: 100px;
   }
-  
   h1, h2 {
     margin-bottom: 10px;
   }
-  
   input, select {
     display: block;
     margin-bottom: 10px;
@@ -74,4 +58,13 @@
   pointer-events: auto; /* Engedélyezzük a kattintást */
   text-decoration: none;
   color: inherit;
+}
+.big-container {
+  background-color: white;
+  width: 84%;
+  height: 80%;
+  display: flex;
+  justify-content: left; /* Középre igazítás */
+  flex-grow: 1;
+  position: relative;
 }

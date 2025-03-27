@@ -97,53 +97,55 @@ const Jelszo = () => {
           </li>
         </ul>
       </aside>
-      <main className="content">
-        <h1>Jelszó módosítása</h1>
-        <section className="account-info">
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <label>Jelenlegi jelszó</label>
-                  <input
-                    type="password"
-                    name="currentPassword"
-                    value={passwordData.currentPassword}
-                    onChange={handlePasswordChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>Új jelszó</label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>Új jelszó megerősítése</label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <button onClick={handleSavePassword}>Jelszó módosítása</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      </main>
+      <div className="big-container">
+        <main className="content">
+          <h1>Jelszó módosítása</h1>
+          <section className="account-info">
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <label>Jelenlegi jelszó</label>
+                    <input
+                      type="password"
+                      name="currentPassword"
+                      value={passwordData.currentPassword}
+                      onChange={handlePasswordChange}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>Új jelszó</label>
+                    <input
+                      type="password"
+                      name="newPassword"
+                      value={passwordData.newPassword}
+                      onChange={handlePasswordChange}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>Új jelszó megerősítése</label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={passwordData.confirmPassword}
+                      onChange={handlePasswordChange}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <button onClick={handleSavePassword}>Jelszó módosítása</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </main>
+      </div>
     </div>
   );
 };

@@ -46,6 +46,7 @@
     background-color: #ECFFFF; /* Háttérszín megerősítése */
     color: black;
     height: 630px;
+    margin: 20px;
   }
   
   .right-panel {
@@ -58,6 +59,7 @@
     background-color: #ECFFFF; /* Háttérszín megerősítése */
     color: black;
     height: 630px;
+    margin: 20px;
   }
   .bejovoText{
     margin-top: 15px;
