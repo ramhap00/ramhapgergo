@@ -121,7 +121,10 @@ const IdopontFoglalasok = () => {
       <aside className="sidebar">
         <ul>
           <li className="active">
-            <img src={profileBlank} alt="icon" className="menu-icon" /> Fiók beállítások
+            <img src={profileBlank} alt="icon" className="menu-icon" />
+            <Link to="/fiok" style={{ textDecoration: "none", color: "inherit" }}>
+            Fiók beállítások
+            </Link>
           </li>
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
@@ -148,11 +151,6 @@ const IdopontFoglalasok = () => {
             <Link to="/premium" style={{ textDecoration: "none", color: "inherit" }}>
             Premium előfizetés
             </Link> 
-          </li>
-          <br />
-          <li style={{ fontWeight: "700", fontSize: "16px" }}>
-            <img src={profileBlank} alt="icon" className="menu-icon" />Fizetési előzmények
-            
           </li>
         </ul>
       </aside>

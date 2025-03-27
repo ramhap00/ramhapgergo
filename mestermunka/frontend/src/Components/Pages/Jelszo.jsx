@@ -95,11 +95,6 @@ const Jelszo = () => {
             Premium előfizetés
             </Link> 
           </li>
-          <br />
-          <li style={{ fontWeight: "700", fontSize: "16px" }}>
-            <img src={profileBlank} alt="icon" className="menu-icon" />Fizetési előzmények
-            
-          </li>
         </ul>
       </aside>
       <main className="content">

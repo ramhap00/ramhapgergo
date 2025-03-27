@@ -1,25 +1,19 @@
 .premium-container {
-  background-color: #2F2F2F; /* Kért háttérszín */
   color: #fff; /* Fehér szöveg a kontraszt miatt */
   padding: 40px;
   text-align: center;
   min-height: 100vh; /* Teljes magasság a láthatóság érdekében */
 }
-.account-settings{
-  background-color: #2F2F2F;
-}
-
 .premium-container h1 {
-  font-size: 2.5rem;
   margin-bottom: 10px;
+  font-size: 30px;
+  font-weight: bold;
 }
-
 .premium-container p {
-  font-size: 1rem;
   margin-bottom: 40px;
+  font-size: 20px;
   color: #ccc; /* Világosabb szürke a leíráshoz */
 }
-
 .plans-wrapper {
   display: flex;
   justify-content: center;
@@ -56,6 +50,8 @@
 
 .plan-card h2 {
   font-size: 1.5rem;
+  font-style: italic;
+  font-weight: bold;
   margin-bottom: 10px;
 }
 
@@ -104,4 +100,14 @@
       opacity: 1;
       transform: translateY(0); /* Végső pozíció */
   }
+}
+.big-container {
+  background-color: #2F2F2F; /* Kért háttérszín */
+  width: 84%;
+  height: 80%;
+  display: flex;
+  justify-content: center; /* Középre igazítás */
+  flex-grow: 1;
+  position: relative;
+  gap: 50px; /* Kis térköz a panelek között */
 }
