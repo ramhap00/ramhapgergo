@@ -160,7 +160,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
         </div>
         <div className="form-group">
           <label htmlFor="fejlec">
-            Fejléc:<span className="required">*</span>
+            Poszt címe:<span className="required">*</span>
           </label>
           <input
             type="text"
@@ -168,13 +168,13 @@ const Posztotcsinalok = ({ onPostCreated }) => {
             name="fejlec"
             value={formData.fejlec}
             onChange={handleChange}
-            placeholder="Fejléc"
+            placeholder="Cím"
           />
           {errors.fejlec && <span>{errors.fejlec}</span>}
         </div>
         <div className="form-group">
           <label htmlFor="telepules">
-            Település:<span className="required">*</span>
+            Megye:<span className="required">*</span>
           </label>
           <select
             id="telepules"
@@ -183,7 +183,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
             onChange={handleChange}
             className={errors.telepules ? "error" : ""}
           >
-            <option value="">Válassz települést</option>
+            <option value="">Válassz megyét</option>
             {locations.map((city, index) => (
               <option key={index} value={city}>
                 {city}
