@@ -1,17 +1,18 @@
 .post-container {
     background-color: #fff;
     padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 500px;
-    margin: 0 auto;
-    border: 3px solid black; 
-    border-radius: 4px;
-  
+    margin: 20px auto;
+    
+    border: 2px solid #2F2F2F;
+    border-radius: 1vh;
+    box-shadow: 0 0 10px;
+    background: white; /* Háttérszín */
+
   }
   .post-container select {
-    width: 100%;
+    width: 88%;
     padding: 10px;
     border: 1px solid #ddd; /* Explicit keret hozzáadása */
     border-radius: 4px;
@@ -48,7 +49,7 @@
   
   .post-container input,
   .post-container textarea {
-    width: 100%;
+    width: 88%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -84,7 +85,7 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    width: 100%;
+    width: 88%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
@@ -101,4 +102,3 @@
     font-size: 14px;
     margin-top: 5px;
   }
-  
