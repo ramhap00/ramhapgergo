@@ -286,7 +286,7 @@ const Posztok = () => {
     if (isFilter) {
       // Szűrő csillagok
       let stars = [];
-      for (let i = 1; i <= 1; i++) { // Csak egy csillag a szűrőnél
+      for (let i = 0; i <= 0; i++) { // Csak egy csillag a szűrőnél
         stars.push(
           <span
             key={i}
@@ -301,14 +301,14 @@ const Posztok = () => {
               handleSearch();
             }}
           >
-            ★
+            ♥
           </span>
         );
       }
       return (
-        <div>
-          <div>{stars} <p>Kedvencek szűrése</p></div>
-         
+        <div className="flex justify-content-center align-items-center">
+          <p>Kedvencek szűrése   </p>
+          <p className="mx-3">{stars} </p>
         </div>
       );
     } else {
