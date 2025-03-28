@@ -307,8 +307,8 @@ const Posztok = () => {
       }
       return (
         <div>
-          <div>{stars}</div>
-          <p>Kedvencek szűrése</p>
+          <div>{stars} <p>Kedvencek szűrése</p></div>
+         
         </div>
       );
     } else {
