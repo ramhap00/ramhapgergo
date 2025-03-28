@@ -11,9 +11,12 @@ const Sajatposztok = () => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
 
-  // Felhasználó adatainak lekérése a localStorage-ból
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user ? Number(user.userID) : null; // Biztosítjuk, hogy szám legyen
+  const userString = localStorage.getItem("user");
+  console.log("🔍 Sajatposztok - localStorage.user:", userString);
+  const user = userString ? JSON.parse(userString) : null;
+  const userId = user && user.userID ? Number(user.userID) : null;
+  console.log("🔍 Sajatposztok - parsed user:", user);
+  console.log("🔍 Sajatposztok - userId:", userId);
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
@@ -37,22 +40,22 @@ const Sajatposztok = () => {
       });
       const data = await response.json();
       if (data.success) {
-        console.log("Összes poszt:", data.posts);
-        console.log("Bejelentkezett userID:", userId);
+        console.log("🔍 Összes poszt:", data.posts);
         const userPosts = data.posts.filter((post) => {
-          const isMatch = Number(post.userID) === userId; // Biztosítjuk, hogy számként hasonlítsunk
+          const isMatch = Number(post.userID) === userId;
           console.log(`Poszt userID: ${post.userID}, Összehasonlítás: ${isMatch}`);
           return isMatch;
         });
-        console.log("Saját posztok:", userPosts);
+        console.log("🔍 Saját posztok:", userPosts);
         setPosts(data.posts);
         setFilteredPosts(userPosts);
+        if (userPosts.length === 0) {
+          setErrorMessage("Nincsenek saját posztjaid!");
+        }
       } else {
-        console.error("Hiba történt a posztok betöltésekor:", data.message);
         setErrorMessage("Hiba történt a posztok betöltésekor!");
       }
     } catch (error) {
-      console.error("Hiba a posztok fetch-elésekor:", error);
       setErrorMessage("Hiba a posztok betöltésekor!");
     }
   };
@@ -61,7 +64,6 @@ const Sajatposztok = () => {
     if (userId) {
       fetchPosts();
     } else {
-      console.log("Nincs bejelentkezett felhasználó!");
       setErrorMessage("Kérlek, jelentkezz be a saját posztok megtekintéséhez!");
     }
   }, [userId]);

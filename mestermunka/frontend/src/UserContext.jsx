@@ -6,68 +6,41 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Felhasználói adatok lekérése csak akkor, ha van érvényes munkamenet
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const storedUserID = localStorage.getItem("userID");
-        if (storedUserID) { // Ellenőrizzük, hogy van-e mentett userID
-          const response = await Axios.get("http://localhost:5020/profile", {
-            withCredentials: true,
-          });
-          if (response.data.success) {
-            setUser(response.data.user);
-            console.log("🔵 Lekért felhasználó adatok (UserContext):", response.data.user);
-          } else {
-            setUser(null);
-            localStorage.removeItem("userID"); // Ha a szerver szerint nincs munkamenet, töröljük
-            console.log("🔴 Nincs érvényes munkamenet, user nullázva");
-          }
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          console.log("🔵 Lekért felhasználó adatok induláskor:", parsedUser);
         }
       } catch (error) {
         console.error("Nem sikerült lekérni a felhasználói adatokat:", error);
         setUser(null);
-        localStorage.removeItem("userID"); // Hiba esetén is töröljük
+        localStorage.removeItem("user");
       }
     };
 
     fetchUser();
-  }, []); // Csak egyszer fut le induláskor
+  }, []);
 
-  // Bejelentkezés kezelő függvény
   const loginUser = async (userData) => {
-    try {
-      // Feltételezzük, hogy a userData-ban van egy ID vagy más azonosító
-      setUser(userData);
-      localStorage.setItem("userID", userData.id || userData.felhasznalonev); // ID vagy felhasználónév mentése
-      console.log("🟢 Bejelentkezett user:", userData);
-
-      // Ellenőrzésképpen lekérjük a teljes profilt
-      const response = await Axios.get("http://localhost:5020/profile", {
-        withCredentials: true,
-      });
-      if (response.data.success) {
-        setUser(response.data.user); // Frissítjük a teljes profillal
-        console.log("🔵 Profil frissítve bejelentkezéskor:", response.data.user);
-      }
-    } catch (error) {
-      console.error("Hiba a bejelentkezés közbeni profil lekérésekor:", error);
-      setUser(null);
-      localStorage.removeItem("userID");
-    }
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+    console.log("🟢 Bejelentkezett user (mentve localStorage-ba):", userData);
   };
 
-  // Kijelentkezés kezelő függvény
   const logoutUser = async () => {
     try {
       await Axios.post("http://localhost:5020/logout", {}, { withCredentials: true });
       setUser(null);
-      localStorage.removeItem("userID");
+      localStorage.removeItem("user");
       console.log("🟡 Sikeres kijelentkezés");
     } catch (error) {
       console.error("Hiba történt a kijelentkezés során:", error);
       setUser(null);
-      localStorage.removeItem("userID");
+      localStorage.removeItem("user");
     }
   };
 

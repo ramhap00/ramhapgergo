@@ -19,7 +19,7 @@ const Navbar = () => {
   const profileImage = user?.profilkep && user.profilkep !== ""
     ? `http://localhost:5020/uploads/${user.profilkep}`
     : fioklogo;
-  console.log("🔵 ProfileImage értéke:", profileImage);
+  
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const messageRef = useRef(null);
@@ -95,9 +95,7 @@ const Navbar = () => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("🔵 Navbarban kapott user:", user);
-  }, [user]);
+  
 
   const handleMessageClick = (msg) => {
     navigate("/idopont-foglalasok", { state: { message: msg } });

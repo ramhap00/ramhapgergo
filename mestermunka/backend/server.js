@@ -18,7 +18,7 @@ const db = mysql.createConnection({
   user: 'root',
   password: '',
   database: 'sos_munka',
-  port: '3306',
+  port: '3307',
 });
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true, methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
@@ -207,9 +207,8 @@ app.post('/logout', (req, res) => {
 
 app.get('/profile', authenticateToken, (req, res) => {
   const userID = req.user.id;
-
   db.query(
-    "SELECT felhasznalonev, emailcim, vezeteknev, keresztnev, profilkep, munkasreg FROM felhasznaloi_adatok WHERE userID = ?",
+    "SELECT userID, felhasznalonev, emailcim, vezeteknev, keresztnev, profilkep, munkasreg FROM felhasznaloi_adatok WHERE userID = ?",
     [userID],
     (err, result) => {
       if (err) {
@@ -217,7 +216,7 @@ app.get('/profile', authenticateToken, (req, res) => {
         return res.status(500).json({ success: false, message: "Hiba történt!" });
       }
       if (result.length > 0) {
-        console.log("Profil válasz:", result[0]); // Hibakeresés
+        console.log("🔍 /profile válasz:", result[0]); // Debug
         res.status(200).json({ success: true, user: result[0] });
       } else {
         res.status(404).json({ success: false, message: "Felhasználó nem található!" });
