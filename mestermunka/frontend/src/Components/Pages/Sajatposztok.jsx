@@ -16,7 +16,7 @@ const Sajatposztok = () => {
   const userId = user ? Number(user.userID) : null; // Biztosítjuk, hogy szám legyen
 
   const categories = [
-    "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
+    "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás", "Burkolás", "Asztalosmunka",
     "Parkettázás", "Autószerelés", "Gázszerelés", "Klimaszerelés", "Tv-szerelő",
     "Tetőfedés", "Állatorvos", "Műköröm"
   ];
@@ -133,14 +133,14 @@ const Sajatposztok = () => {
           {errorMessage && <p className="error-message">{errorMessage}</p>}
           <label>Kategória:</label>
           <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-            <option value="">Válassz kategóriát</option>
+            <option value="">Válassz kategóriát!</option>
             {categories.map((category) => (
               <option key={category} value={category}>{category}</option>
             ))}
           </select>
-          <label>Település:</label>
+          <label>Megye:</label>
           <select value={location} onChange={(e) => setLocation(e.target.value)}>
-            <option value="">Válassz települést</option>
+            <option value="">Válassz megyét!</option>
             {locations.map((city) => (
               <option key={city} value={city}>{city}</option>
             ))}
