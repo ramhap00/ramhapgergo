@@ -18,7 +18,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
   const [previews, setPreviews] = useState([]);
 
   const categories = [
-    "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás",
+    "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás", "Burkolás", "Asztalosmunka",
     "Parkettázás", "Autószerelés", "Gázszerelés", "Klimaszerelés", "Tv-szerelő",
     "Tetőfedés", "Állatorvos", "Műköröm"
   ];
