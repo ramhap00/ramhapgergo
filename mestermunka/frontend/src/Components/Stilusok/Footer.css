@@ -1,4 +1,42 @@
-.footer-container{
+.footer-container {
+    background-color: white;
+    color: black;
+    padding: 20px 0;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.footer-text {
     text-align: center;
-    background-color: darkslategray;
+}
+
+.footer-text p {
+    margin: 0;
+    font-size: 16px; /* Igény szerint módosítható */
+}
+
+.footer-social {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.social-icon {
+    width: 30px;
+    height: 30px;
+    transition: opacity 0.3s ease;
+}
+
+.social-icon:hover {
+    opacity: 0.7;
 }

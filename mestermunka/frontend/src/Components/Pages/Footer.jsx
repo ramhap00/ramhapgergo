@@ -1,18 +1,34 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
-import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
-import Axios from "axios";
-import "../Stilusok/Footer.css"
-import "bootstrap";
+import React from 'react';
+import "../Stilusok/Footer.css";
 
-const Navbar = () => {
+// Képek importálása az assets mappából
+import InstagramIcon from '../../assets/instagram.png';
+import FacebookIcon from '../../assets/facebook.png';
+import XIcon from '../../assets/X.png';
 
+const Footer = () => {
   return (
     <>
-        <div className="footer-container">
-            <h1>Footer</h1>
+      <div className="footer-container">
+        <div className="footer-content">
+          <div className="footer-text">
+            <p>© 2025 Minden jog fenntartva - S.O.S. Munka</p>
+          </div>
+          <div className="footer-social">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+              <img src={InstagramIcon} alt="Instagram" className="social-icon" />
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+              <img src={FacebookIcon} alt="Facebook" className="social-icon" />
+            </a>
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer">
+              <img src={XIcon} alt="X" className="social-icon" />
+            </a>
+          </div>
         </div>
+      </div>
     </>
   );
 };
 
-export default Navbar;
+export default Footer;
