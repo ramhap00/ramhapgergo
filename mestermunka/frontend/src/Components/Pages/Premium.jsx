@@ -53,10 +53,8 @@ const Premium = () => {
                 <h3>0 Ft <span>havonta</span></h3>
                 
                 <ul>
-                  <li>1db poszt</li>
+                  <li>5db poszt</li>
                   <li>elsőbbség a posztoknál❌</li>
-                  <li>Funkció 3</li>
-                  <li>Funkció 4</li>
                 </ul>
                 <button className="plan-button">Fejlesztés alatt...</button>
               </div>
@@ -68,8 +66,6 @@ const Premium = () => {
                 <ul>
                   <li>Korlátlan posztok</li>
                   <li>elsőbbség a posztoknál✅</li>
-                  <li>Funkció 3</li>
-                  <li>Funkció 4</li>
                 </ul>
                 <button className="plan-button">Fejlesztés alatt...</button>
               </div>

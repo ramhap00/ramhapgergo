@@ -8,7 +8,7 @@ import XIcon from '../../assets/X.png';
 
 const Footer = () => {
   return (
-    <>
+    <footer className="footer-wrapper">
       <div className="footer-container">
         <div className="footer-content">
           <div className="footer-text">
@@ -27,7 +27,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </>
+    </footer>
   );
 };
 

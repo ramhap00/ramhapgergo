@@ -615,7 +615,7 @@ const Posztok = () => {
                     <h3>{post.vezeteknev} {post.keresztnev}</h3>
                     <h4>{post.fejlec}</h4>
                     <p><span className="category-label">Kategória:</span> {post.kategoria}</p>
-                    <p><span className="location-label">Település:</span> {post.telepules}</p>
+                    <p><span className="location-label">Megye:</span> {post.telepules}</p>
                     <p><span className="phone-label">Telefonszám:</span> {post.telefonszam}</p>
                     <p>{post.leiras}</p>
                     {post.fotok && post.fotok.length > 0 && (
