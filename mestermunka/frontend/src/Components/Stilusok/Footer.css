@@ -1,16 +1,19 @@
+.footer-wrapper {
+    margin-top: auto; /* Ez biztosítja, hogy a footer mindig alul legyen */
+}
+
 .footer-container {
-    background-color: white;
+    background-color: yellow;
     color: black;
     padding: 20px 0;
     width: 100%;
-    position: relative;
-    bottom: 0;
 }
 
 .footer-content {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
+    flex-wrap: wrap; /* Reszponzív viselkedés biztosítása */
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
@@ -18,17 +21,19 @@
 
 .footer-text {
     text-align: center;
+    margin: 10px 0; /* Reszponzív margó */
 }
 
 .footer-text p {
     margin: 0;
-    font-size: 16px; /* Igény szerint módosítható */
+    font-size: 16px;
 }
 
 .footer-social {
     display: flex;
     justify-content: flex-end;
     gap: 15px;
+    margin: 10px 0; /* Reszponzív margó */
 }
 
 .social-icon {
@@ -39,4 +44,17 @@
 
 .social-icon:hover {
     opacity: 0.7;
+}
+
+/* Reszponzív stílusok */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-social {
+        justify-content: center;
+        margin-top: 15px;
+    }
 }
