@@ -159,13 +159,13 @@ const Regisztracio = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="telepules">Település:<span className="required">*</span></label>
+          <label htmlFor="telepules">Megye:<span className="required">*</span></label>
           <select
             id="telepules"
             value={telepulesReg}
             onChange={(e) => setTelepulesReg(e.target.value)}
           >
-            <option value="">Válassz települést</option>
+            <option value="">Válassz megyét</option>
             {megyek.map((telepules, index) => (
               <option key={index} value={telepules}>{telepules}</option>
             ))}
