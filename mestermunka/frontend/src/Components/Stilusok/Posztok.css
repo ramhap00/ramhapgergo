@@ -3,10 +3,11 @@
   justify-content: center;
   padding: 20px;
   margin: 0px;
-  height: 1000px;
   margin-left: auto;
   background-color: #2F2F2F;
   margin-bottom: -22px;
+  height: auto; /* Változtasd meg a fix 1000px-ról */
+  overflow: hidden; /* Megakadályozza a dupla görgetést */
 }
 
 .posztok-layout {
@@ -21,8 +22,8 @@
   background-color: #00c4cc;
   padding: 20px;
   border-radius: 8px;
-  position: sticky;
-  top: 0;
+  margin-bottom: 120%;
+  
 }
 
 .posztok-content {
@@ -31,8 +32,8 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  height: 129vh;
-  overflow-y: auto;
+  height: auto; /* Változtasd meg a fix 99.6vh-ról */
+  overflow-y: visible; /* Vagy töröld ki ezt a sort */
 }
 
 .posztok-list {
@@ -152,11 +153,14 @@
 .modal-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* Tartalom középre igazítása (vízszintesen) */
+  justify-content: center; /* Tartalom középre igazítása (függőlegesen) */
   background-color: white !important;
   padding: 20px;
   border-radius: 10px;
   max-width: 600px;
+  width: 90%; /* Biztosítja, hogy ne legyen túl széles */
+  margin: auto; /* Középre igazítás a képernyőn */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   z-index: 1001;
   text-align: center;
@@ -215,14 +219,13 @@
   margin-top: 15px;
 }
 
-.modal-content button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 15px;
+.modal-content img {
+  width: 80%;
+  max-height: 70vh; /* Korlátozza a kép magasságát */
+  object-fit: contain; /* Az egész kép látható legyen (nem vágódik le) */
+  border-radius: 8px;
+  margin: 15px auto; /* Középre igazítás és térköz a szövegtől */
+  display: block; /* Eltávolítja a flex alapértelmezett igazítását */
 }
 
 .modal-content button:hover {

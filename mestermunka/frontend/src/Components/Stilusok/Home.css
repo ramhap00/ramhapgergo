@@ -49,6 +49,11 @@
   margin-top: 35px;
   font-weight: 900;
   
+  
+}
+
+.sos{
+  margin-top: -20%;
 }
 
 .center-text {
@@ -109,19 +114,19 @@
 .block:nth-child(2) {
   position: absolute;
   right: 5%; /* Jobb oldalon, kis margóval a széltől */
-  top: 80px; /* Eltolás, hogy ne fedje az első tömböt */
+  top: 170px; /* Eltolás, hogy ne fedje az első tömböt */
 }
 
 .block:nth-child(3) {
   position: absolute;
   left: 5%;
-  top: 280px; /* További eltolás */
+  top: 360px; /* További eltolás */
 }
 
 .block:nth-child(4) {
   position: absolute;
   right: 5%;
-  top: 380px; /* További eltolás */
+  top: 530px; /* További eltolás */
 }
 
 /* A szöveg éles marad */

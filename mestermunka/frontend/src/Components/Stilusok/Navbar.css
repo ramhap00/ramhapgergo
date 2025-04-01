@@ -63,6 +63,15 @@
   width: 100%;
   max-width: 60px; /* Csökkentett méret: 80px -> 60px */
   height: auto;
+  animation: float 3s infinite ease-in-out;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+
+
 }
 
 .logo-img2 {
