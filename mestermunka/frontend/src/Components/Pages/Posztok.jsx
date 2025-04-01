@@ -301,7 +301,7 @@ const Posztok = () => {
               handleSearch();
             }}
           >
-            ♥
+            ★
           </span>
         );
       }
