@@ -3,43 +3,50 @@
 }
 
 .footer-container {
-    background-color: yellow;
+    background-color: #00c4cc;
     color: black;
-    padding: 20px 0;
+    padding: 10px 0;
     width: 100%;
+    margin-top: 1%;
 }
 
 .footer-content {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap; /* Reszponzív viselkedés biztosítása */
-    justify-content: space-between;
+    justify-content: center; /* Szöveg középre */
     align-items: center;
     padding: 0 20px;
+    position: relative; /* Pozíció beállítása */
 }
 
 .footer-text {
     text-align: center;
-    margin: 10px 0; /* Reszponzív margó */
+    flex: 1; /* A szöveg szépen középen marad */
+    
 }
+
 
 .footer-text p {
     margin: 0;
-    font-size: 16px;
+    font-size: 20px;
+   
 }
 
 .footer-social {
     display: flex;
-    justify-content: flex-end;
     gap: 15px;
-    margin: 10px 0; /* Reszponzív margó */
+    position: absolute;
+    right: -25%; /* Jobb szélre igazítás */
 }
 
+/* Közösségi ikonok */
 .social-icon {
     width: 30px;
     height: 30px;
     transition: opacity 0.3s ease;
+    border-radius: 5px;
 }
 
 .social-icon:hover {
@@ -51,10 +58,12 @@
     .footer-content {
         flex-direction: column;
         text-align: center;
+        position: static; /* Mobilon ne legyen absolute a social div */
     }
     
     .footer-social {
         justify-content: center;
         margin-top: 15px;
+        position: static; /* Mobilon középre helyezi az ikonokat */
     }
 }

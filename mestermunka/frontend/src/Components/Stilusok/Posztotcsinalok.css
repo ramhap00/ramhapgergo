@@ -1,14 +1,14 @@
+
 .post-container {
-    background-color: #fff;
+    
     padding: 30px;
     width: 100%;
     max-width: 500px;
     margin: 20px auto;
-    
-    border: 2px solid #2F2F2F;
+    border: 2px solid lightgray;
     border-radius: 1vh;
     box-shadow: 0 0 10px;
-    background: white; /* Háttérszín */
+    background-color: lightgray; /* Háttérszín */
 
   }
   .post-container select {
@@ -72,7 +72,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #888;
+    color: black;
     font-size: 14px;
     background-color: #f9f9f9;
   }
@@ -101,4 +101,7 @@
     color: red;
     font-size: 14px;
     margin-top: 5px;
+  }
+  .form-group input, .form-group select{
+    background-color: white;
   }

@@ -123,15 +123,6 @@ const Sajatposztok = () => {
       <div className="posztok-layout">
         <div className="posztok-filter">
           <h2>Szűrők</h2>
-          <div className="search-container">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Keresés..."
-            />
-            <button className="button1" onClick={handleSearch}>🔎</button>
-          </div>
           {errorMessage && <p className="error-message">{errorMessage}</p>}
           <label>Kategória:</label>
           <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
@@ -147,7 +138,16 @@ const Sajatposztok = () => {
               <option key={city} value={city}>{city}</option>
             ))}
           </select>
-    
+          <br />
+          <div className="search-container">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Keresés..."
+            />
+            <button className="button1" onClick={handleSearch}>🔎</button>
+          </div>
           <br />
           <Link to="/posztotcsinalok"><button>Új poszt</button></Link>
         </div>
