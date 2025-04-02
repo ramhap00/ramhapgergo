@@ -82,28 +82,6 @@ const Home = () => {
               Nincs bonyolult folyamat, csak gyors megoldások!
             </p>
           </motion.div>
-          <motion.div 
-            className="block"
-            variants={blockVariants}
-          >
-            <p>
-              Weboldalunkon a munkáltatók és vendégek egyaránt gyorsan megtalálják egymást. 
-              A posztok világosak, így egy pillantás alatt eldöntheted, mi érdekel. 
-              Az egyszerű felületünkkel időt takarítasz meg a keresgélés helyett. 
-              Próbáld ki, és tapasztald meg a hatékonyságot!
-            </p>
-          </motion.div>
-          <motion.div 
-            className="block"
-            variants={blockVariants}
-          >
-            <p>
-              Az S.O.S. Munka célja, hogy a munkaközvetítés gyors és átlátható legyen. 
-              Munkáltatóként pár lépésben posztolhatod a feladataidat, vendégként pedig választhatsz. 
-              Az oldalunk intuitív dizájnja biztosítja, hogy bárki könnyen eligazodjon. 
-              Csatlakozz hozzánk, és egyszerűsítsd a munkakeresést!
-            </p>
-          </motion.div>
         </motion.div>
 
     

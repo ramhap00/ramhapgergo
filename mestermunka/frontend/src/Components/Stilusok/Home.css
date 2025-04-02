@@ -6,8 +6,8 @@
   background-position: center;
   background-repeat: no-repeat;
   width: 100%;
-  margin-top: -35px;
-  margin-bottom: -22px;
+  margin-top: -40px;
+
   
 }
 
@@ -36,7 +36,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  min-height: 100vh;
+  min-height:100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -114,20 +114,9 @@
 .block:nth-child(2) {
   position: absolute;
   right: 5%; /* Jobb oldalon, kis margóval a széltől */
-  top: 170px; /* Eltolás, hogy ne fedje az első tömböt */
+  top: 500px; /* Eltolás, hogy ne fedje az első tömböt */
 }
 
-.block:nth-child(3) {
-  position: absolute;
-  left: 5%;
-  top: 360px; /* További eltolás */
-}
-
-.block:nth-child(4) {
-  position: absolute;
-  right: 5%;
-  top: 530px; /* További eltolás */
-}
 
 /* A szöveg éles marad */
 .block p {
@@ -135,4 +124,79 @@
   position: relative;
   z-index: 2;
   font-weight: 700;
+}
+/* Reszponzív breakpointok */
+@media (min-width: 768px) {
+  /* Tablet stílusok */
+  .udvozlunk {
+    font-size: 2.5rem;
+  }
+  
+  .center-text {
+    font-size: 2rem;
+  }
+  
+  .blocks-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .block {
+    width: 45%;
+    margin: 10px;
+  }
+}
+
+@media (min-width: 992px) {
+  /* Laptop stílusok */
+  .content-container {
+    margin-top: 8rem;
+  }
+  
+  .blocks-container {
+    position: relative;
+    height: 600px;
+  }
+  
+  .block {
+    position: absolute;
+    width: 40%;
+    margin: 0;
+  }
+  
+  .block:nth-child(1) {
+    left: 5%;
+    top: 10px;
+  }
+  
+  .block:nth-child(2) {
+    right: 5%;
+    top: 170px;
+  }
+  
+  .block:nth-child(3) {
+    left: 5%;
+    top: 360px;
+  }
+  
+  .block:nth-child(4) {
+    right: 5%;
+    top: 530px;
+  }
+}
+
+@media (min-width: 1200px) {
+  /* Asztali gép stílusok */
+  .udvozlunk {
+    font-size: 3rem;
+  }
+  
+  .center-text {
+    font-size: 2.5rem;
+  }
+  
+  .block {
+    width: 43%;
+  }
 }

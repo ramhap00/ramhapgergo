@@ -3,11 +3,10 @@
   justify-content: center;
   padding: 20px;
   margin: 0px;
+  height: 1000px;
   margin-left: auto;
   background-color: #2F2F2F;
   margin-bottom: -22px;
-  height: auto; /* Változtasd meg a fix 1000px-ról */
-  overflow: hidden; /* Megakadályozza a dupla görgetést */
 }
 
 .posztok-layout {
@@ -22,8 +21,8 @@
   background-color: #00c4cc;
   padding: 20px;
   border-radius: 8px;
-  margin-bottom: 120%;
-  
+  margin-bottom: 45%;
+  top: 0;
 }
 
 .posztok-content {
@@ -32,9 +31,11 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  height: auto; /* Változtasd meg a fix 99.6vh-ról */
-  overflow-y: visible; /* Vagy töröld ki ezt a sort */
+  height: 125.6vh;
+  overflow-y:auto;
+ 
 }
+
 
 .posztok-list {
   margin-bottom: 20px;
