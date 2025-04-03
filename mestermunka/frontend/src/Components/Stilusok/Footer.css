@@ -1,13 +1,8 @@
-.footer-wrapper {
-    margin-top: auto; /* Ez biztosítja, hogy a footer mindig alul legyen */
-}
-
 .footer-container {
     background-color: #00c4cc;
     color: black;
     padding: 10px 0;
     width: 100%;
-    margin-top: 1%;
 }
 
 .footer-content {

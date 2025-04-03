@@ -15,7 +15,6 @@ html, body {
   width: 100vw;
   max-width: 100%;
   overflow: hidden;
-  margin-top: -40px;
 }
 
 .image-container {

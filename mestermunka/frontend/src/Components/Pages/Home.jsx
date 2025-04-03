@@ -29,8 +29,8 @@ const Home = () => {
     <div className="home-container "style={{ backgroundImage: `url(${backgroundImage})` }}>
       {/* Háttérkép */}
       <motion.div 
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: 1, y: 50 }}
           transition={{ duration: 2 }}
           >
             
