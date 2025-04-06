@@ -6,11 +6,11 @@
 }
 
 .footer-content {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap; /* Reszponzív viselkedés biztosítása */
-    justify-content: center; /* Szöveg középre */
+    justify-content: space-between; /* Szöveg középre */
     align-items: center;
     padding: 0 20px;
     position: relative; /* Pozíció beállítása */
@@ -22,7 +22,6 @@
     
 }
 
-
 .footer-text p {
     margin: 0;
     font-size: 20px;
@@ -32,8 +31,8 @@
 .footer-social {
     display: flex;
     gap: 15px;
-    position: absolute;
-    right: -25%; /* Jobb szélre igazítás */
+    position: flex-end;
+    right: 1 /* Jobb szélre igazítás */
 }
 
 /* Közösségi ikonok */
@@ -53,7 +52,10 @@
     .footer-content {
         flex-direction: column;
         text-align: center;
-        position: static; /* Mobilon ne legyen absolute a social div */
+        
+    }
+    .footer-text{
+        flex: 1 1 100%;
     }
     
     .footer-social {
