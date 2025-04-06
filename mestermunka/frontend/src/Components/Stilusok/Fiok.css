@@ -1,81 +1,124 @@
 /* Fiok.css */
 .account-settings {
   display: flex;
+  flex-direction: column; /* Alapértelmezett egymás alá rendezés kisebb képernyőkön */
   justify-content: center;
   font-family: Arial, sans-serif;
   background-color: white;
-  min-height: 84.5vh; /* Teljes képernyőmagasság */
-  align-items: stretch; /* Gyermek elemek magasságát kiegyenlíti */
+  min-height: 100vh; /* Teljes képernyőmagasság */
 }
+
 .sidebar {
-  width: 250px;
+  width: 100%; /* Teljes szélesség kisebb képernyőkön */
   padding: 20px;
   background-color: lightgray;
-  box-sizing: border-box; /* A padding ne növelje a méretet */
+  box-sizing: border-box;
 }
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  .sidebar ul li {
-    padding: 10px;
-    cursor: pointer;
-    display: flex;
-    text-align: left;
-  }
-  .sidebar ul .active {
-    font-weight: bold;
-  }
-  .menu-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-  }
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center; /* Ikon és szöveg függőleges középre igazítása */
+  text-align: left;
+}
+
+.sidebar ul .active {
+  font-weight: bold;
+}
+
+.menu-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
 .content {
-    padding: 20px;
-    border: 2px solid #2F2F2F;
-    border-radius: 1vh;
-    box-shadow: 0 0 10px;
-    background: white;
-    width: 30%;             /* Szélesség megtartása */
-    max-width: 600px;       /* Opcionális: maximális szélesség */
-    margin: 30px auto;      /* Automargó középre igazításhoz */
-    margin-left: 30%;
-    margin-top: 8%;
-    display: flex;
-    flex-direction: column; /* Tartalom egymás alatt */
-    align-items: center;    /* Tartalom középre a content-en belül */
+  padding: 20px;
+  border: 2px solid #2F2F2F;
+  border-radius: 1vh;
+  box-shadow: 0 0 10px;
+  background: white;
+  width: 90%; /* Rugalmas szélesség */
+  max-width: 600px; /* Maximális szélesség megtartása */
+  margin: 20px auto; /* Középre igazítás */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-  h1, h2 {
-    margin-bottom: 10px;
-  }
-  input, select {
-    display: block;
-    margin-bottom: 10px;
-    padding: 8px;
-    width: 100%;
-    max-width: 400px;
-    border-radius: 7px;
-  }
-  /* Fiok.css vagy egy új stílusfájl */
+
+h1, h2 {
+  margin-bottom: 10px;
+  font-size: clamp(1.5rem, 5vw, 2rem); /* Rugalmas betűméret */
+}
+
+input, select {
+  display: block;
+  margin-bottom: 10px;
+  padding: 8px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 7px;
+  box-sizing: border-box; /* Padding ne növelje a méretet */
+}
+
 .rounded-image {
-  border-radius: 50%; /* Teljes kör alak */
-  width: 100px; /* Egységes méret, ha szükséges */
-  height: 100px; /* Egységes méret, ha szükséges */
-  object-fit: cover; /* Biztosítja, hogy a kép kitöltse a kört */
+  border-radius: 50%;
+  width: clamp(80px, 20vw, 100px); /* Rugalmas méret */
+  height: clamp(80px, 20vw, 100px);
+  object-fit: cover;
 }
+
 .sidebar a {
-  pointer-events: auto; /* Engedélyezzük a kattintást */
+  pointer-events: auto;
   text-decoration: none;
   color: inherit;
 }
+
 .big-container {
   background-color: white;
-  width: 84%;
-  height: 80%;
+  width: 100%; /* Teljes szélesség */
   display: flex;
-  justify-content: flex-start; /* Balra igazítás */
+  justify-content: center; /* Középre igazítás */
   flex-grow: 1;
   position: relative;
-  align-items: stretch; /* Gyermek elemek magasságának kiegyenlítése */
+}
+
+/* Media Query-k a nagyobb képernyőkhöz */
+@media (min-width: 768px) {
+  .account-settings {
+    flex-direction: row; /* Oldalsáv és tartalom egymás mellett */
+  }
+
+  .sidebar {
+    width: 250px; /* Fix szélesség nagyobb képernyőkön */
+    min-height: 100vh; /* Teljes magasság */
+  }
+
+  .content {
+    width: 50%; /* Nagyobb képernyőkön szélesebb */
+    margin: 30px 0 30px 2%; /* Bal margó az oldalsáv után */
+  }
+
+  .big-container {
+    width: 80%; /* Nagyobb képernyőkön korlátozott szélesség */
+    justify-content: flex-start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content {
+    width: 40%; /* Még nagyobb képernyőkön */
+    margin-left: 30%; /* Középre igazítás az oldalsávval együtt */
+    margin-top: 8%;
+  }
+
+  .big-container {
+    width: 84%;
+  }
 }

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../Stilusok/IdopontFoglalasok.css"; 
+import "../Stilusok/IdopontFoglalasok.css";
 import profileBlank from "../../assets/profile-blank.png";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { px } from "framer-motion";
 
 const IdopontFoglalasok = () => {
   const [bookings, setBookings] = useState([]);
   const [incomingBookings, setIncomingBookings] = useState([]);
+
   const getTokenFromCookie = () => {
     const cookies = document.cookie.split("; ");
     const authCookie = cookies.find((cookie) => cookie.startsWith("authToken="));
@@ -19,17 +19,15 @@ const IdopontFoglalasok = () => {
     const fetchBookings = async () => {
       const token = getTokenFromCookie();
       if (!token) return;
-  
+
       try {
-        // Saját foglalások lekérése
         const bookingsResponse = await axios.get("http://localhost:5020/api/user-bookings", {
           withCredentials: true,
         });
         if (bookingsResponse.data.success) {
           setBookings(bookingsResponse.data.bookings || []);
         }
-  
-        // Bejövő foglalási kérelmek lekérése
+
         const messagesResponse = await axios.get("http://localhost:5020/api/messages", {
           withCredentials: true,
         });
@@ -73,7 +71,7 @@ const IdopontFoglalasok = () => {
       alert("Hiányzó vagy érvénytelen adatok a foglalás elfogadásához!");
       return;
     }
-  
+
     try {
       const response = await axios.post(
         "http://localhost:5020/api/accept-booking",
@@ -123,7 +121,7 @@ const IdopontFoglalasok = () => {
           <li className="active">
             <img src={profileBlank} alt="icon" className="menu-icon" />
             <Link to="/fiok" style={{ textDecoration: "none", color: "inherit" }}>
-            Fiók beállítások
+              Fiók beállítások
             </Link>
           </li>
           <br />
@@ -144,18 +142,17 @@ const IdopontFoglalasok = () => {
               Időpont foglalások
             </Link>
           </li>
-
           <br />
           <li style={{ fontWeight: "700", fontSize: "16px" }}>
             <img src={profileBlank} alt="icon" className="menu-icon" />
             <Link to="/premium" style={{ textDecoration: "none", color: "inherit" }}>
-            Premium előfizetés
-            </Link> 
+              Premium előfizetés
+            </Link>
           </li>
         </ul>
       </aside>
       <div className="split-container">
-        <div className="left-panel" style={{backgroundColor:"lightblue"}}>
+        <div className="left-panel">
           <h2 className="bejovoText">Bejövő foglalási kérelmek</h2>
           {incomingBookings.length === 0 ? (
             <p>Nincs bejövő foglalási kérelem.</p>
@@ -164,11 +161,6 @@ const IdopontFoglalasok = () => {
               {incomingBookings.map((booking) => (
                 <div key={booking.uzenetID} className="poszt">
                   <h2 className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
-                  <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
-                  <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
-                  <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
-                  <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
-                  <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
                   {booking.fotok && (
                     <img
                       src={`http://localhost:5020/uploads/${booking.fotok}`}
@@ -176,6 +168,11 @@ const IdopontFoglalasok = () => {
                       className="poszt-image"
                     />
                   )}
+                  <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
+                  <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
+                  <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
+                  <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
+                  <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
                   <button
                     onClick={() => handleAcceptBooking(booking.uzenetID, booking.posztID, booking.nap, booking.ora)}
                     className="accept-button"
@@ -193,7 +190,7 @@ const IdopontFoglalasok = () => {
             </div>
           )}
         </div>
-        <div className="right-panel" style={{backgroundColor:"lightblue"}}>
+        <div className="right-panel">
           <h2 className="sajatText">Saját foglalásaim</h2>
           {bookings.length === 0 ? (
             <p>Még nem foglaltál elfogadott időpontot.</p>
@@ -202,12 +199,6 @@ const IdopontFoglalasok = () => {
               {bookings.map((booking) => (
                 <div key={booking.naptarID} className="poszt">
                   <h2 className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
-                  <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
-                  <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
-                  <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
-                  <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
-                  <p><strong>Dátum:</strong> {new Date(booking.datum).toLocaleDateString("hu-HU")}</p>
-                  <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
                   {booking.fotok && (
                     <img
                       src={`http://localhost:5020/uploads/${booking.fotok}`}
@@ -215,6 +206,12 @@ const IdopontFoglalasok = () => {
                       className="poszt-image"
                     />
                   )}
+                  <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
+                  <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
+                  <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
+                  <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
+                  <p><strong>Dátum:</strong> {new Date(booking.datum).toLocaleDateString("hu-HU")}</p>
+                  <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
                   <button
                     onClick={() => handleCancelBooking(booking.naptarID, booking.posztID, booking.nap, booking.ora)}
                     className="cancel-button"
@@ -226,8 +223,8 @@ const IdopontFoglalasok = () => {
             </div>
           )}
         </div>
-        </div>
       </div>
+    </div>
   );
 };
 
