@@ -1,24 +1,27 @@
-/* Az egész oldalra vonatkozó háttérkép */
+/* Alapbeállítások */
 body, html {
-  height: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-/* Háttér beállítása az egész oldalra */
+/* Bejelentkezési oldal háttér beállítása */
 .bejelentkezes-page {
   background: url("jo.png") no-repeat center center fixed;
   background-size: cover;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
-  margin-bottom: -22px;
+  flex-grow: 1; /* Kitölti a képernyő rendelkezésre álló részét */
 }
 
-/* A bejelentkezési doboz formázása és elmosása */
+/* Bejelentkezési doboz */
 .bejelentkezes-container {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
@@ -30,7 +33,7 @@ body, html {
   position: relative;
 }
 
-/* Overlay beállítása */
+/* Overlay beállítás */
 .overlay {
   position: absolute;
   top: 0;
@@ -40,14 +43,13 @@ body, html {
   background: rgba(2, 2, 2, 0.5);
 }
 
-/* Cím formázása */
+/* Bejelentkezési formázás */
 .bejelentkezes-container h2 {
   text-align: center;
   margin-bottom: 20px;
   color: white;
 }
 
-/* Formázás az input mezőkhöz */
 .bejelentkezes-form {
   display: flex;
   flex-direction: column;
@@ -93,17 +95,6 @@ body, html {
   background-color: lightblue;
 }
 
-/* Üzenetek formázása */
-.success-message {
-  color: lightgreen;
-  margin-bottom: 10px;
-}
-
-.error-message {
-  color: red;
-  margin-bottom: 10px;
-}
-
 /* Regisztrációs link */
 .regisztracio-link {
   text-align: center;
@@ -120,6 +111,7 @@ body, html {
   text-decoration: underline;
 }
 
+/* Jelszó input és ikon */
 .password-container {
   position: relative;
   display: flex;
@@ -141,4 +133,12 @@ body, html {
 
 .eye-icon:hover {
   opacity: 1;
+}
+
+/* Footer beállítása */
+footer {
+  text-align: center;
+  background-color:  #00c4cc;
+  width: 100%;
+  position: relative;
 }
