@@ -60,7 +60,7 @@ p {
   box-shadow: 0 0 10px;
   text-align: center;
   overflow-y: auto;
-  background-color: #ECFFFF;
+  background-color:  lightblue;
   color: black;
   height: auto; /* Magasság alkalmazkodik a tartalomhoz */
   margin: 10px 0; /* Margó kisebb képernyőkön */
