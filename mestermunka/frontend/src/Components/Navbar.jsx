@@ -325,7 +325,7 @@ const Navbar = () => {
                   </li>
                 )}
                 <li>
-                  <button className="logout-btn" onClick={handleLogout}>
+                  <button style={{ backgroundColor:"transparent"}} className="logout-btn" onClick={handleLogout}>
                     Kijelentkezés
                   </button>
                 </li>

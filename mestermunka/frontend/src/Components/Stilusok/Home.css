@@ -43,7 +43,6 @@ html, body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 6rem 1.5rem 1rem; /* javított padding */
   overflow: hidden;
   margin-top: 4rem;
 }
@@ -103,7 +102,6 @@ html, body {
   width: 100%;
   gap: 1rem;
   padding: 2rem;
-  margin-top: 6rem; /* lejjebb tolja a blokkokat */
 }
 
 .block {

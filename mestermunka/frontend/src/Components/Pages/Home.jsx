@@ -50,7 +50,7 @@ const Home = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 2 }}>
         <h4 className="sos">Miért jó az S.O.S. Munkát választani?</h4>
-        <p className="p">Oldalunk fő lényege a minnél gyorsabb és eredményesebb munkakeresés</p>
+        <p className="p">Oldalunk fő lényege a minnél gyorsabb és eredményesebb munkáskeresés</p>
           </motion.div>
         {/* Oldalsó tömbök konténere */}
         <motion.div 
