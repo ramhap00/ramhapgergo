@@ -8,6 +8,8 @@ import { jwtDecode } from "jwt-decode";
 const IdopontFoglalasok = () => {
   const [bookings, setBookings] = useState([]);
   const [incomingBookings, setIncomingBookings] = useState([]);
+  const [myPostsBookings, setMyPostsBookings] = useState([]);
+  const [isEmployer, setIsEmployer] = useState(false); // Új állapot a munkáltató ellenőrzésére
 
   const getTokenFromCookie = () => {
     const cookies = document.cookie.split("; ");
@@ -16,11 +18,19 @@ const IdopontFoglalasok = () => {
   };
 
   useEffect(() => {
-    const fetchBookings = async () => {
-      const token = getTokenFromCookie();
-      if (!token) return;
+    const token = getTokenFromCookie();
+    if (!token) {
+      console.error("Nincs token a sütikben!");
+      return;
+    }
 
+    // Token dekódolása és munkasreg ellenőrzése
+    const decodedToken = jwtDecode(token);
+    setIsEmployer(decodedToken.munkasreg === 1); // Ha munkasreg 1, akkor munkáltató
+
+    const fetchBookings = async () => {
       try {
+        // Saját foglalások lekérése (mindenki számára)
         const bookingsResponse = await axios.get("http://localhost:5020/api/user-bookings", {
           withCredentials: true,
         });
@@ -28,15 +38,24 @@ const IdopontFoglalasok = () => {
           setBookings(bookingsResponse.data.bookings || []);
         }
 
-        const messagesResponse = await axios.get("http://localhost:5020/api/messages", {
-          withCredentials: true,
-        });
-        if (messagesResponse.data.success) {
-          const incoming = messagesResponse.data.messages.filter(
-            (msg) => msg.allapot === "pending" && msg.cimzettID === jwtDecode(token).userID
-          );
-          console.log("Bejövő foglalási kérelmek:", incoming);
-          setIncomingBookings(incoming);
+        // Csak munkáltatóknak: Bejövő foglalási kérelmek és posztok foglalásai
+        if (decodedToken.munkasreg === 1) {
+          const messagesResponse = await axios.get("http://localhost:5020/api/messages", {
+            withCredentials: true,
+          });
+          if (messagesResponse.data.success) {
+            const incoming = messagesResponse.data.messages.filter(
+              (msg) => msg.allapot === "pending" && msg.cimzettID === decodedToken.userID
+            );
+            setIncomingBookings(incoming);
+          }
+
+          const myPostsBookingsResponse = await axios.get("http://localhost:5020/api/my-posts-bookings", {
+            withCredentials: true,
+          });
+          if (myPostsBookingsResponse.data.success) {
+            setMyPostsBookings(myPostsBookingsResponse.data.bookings || []);
+          }
         }
       } catch (error) {
         console.error("Hiba a foglalások vagy kérelmek betöltésekor:", error);
@@ -81,6 +100,12 @@ const IdopontFoglalasok = () => {
       if (response.data.success) {
         alert(response.data.message);
         setIncomingBookings((prev) => prev.filter((msg) => msg.uzenetID !== uzenetID));
+        const updatedBookings = await axios.get("http://localhost:5020/api/my-posts-bookings", {
+          withCredentials: true,
+        });
+        if (updatedBookings.data.success) {
+          setMyPostsBookings(updatedBookings.data.bookings || []);
+        }
       } else {
         alert(response.data.message);
         if (response.data.message.includes("elutasítva")) {
@@ -152,45 +177,47 @@ const IdopontFoglalasok = () => {
         </ul>
       </aside>
       <div className="split-container">
-        <div className="left-panel">
-          <h2 className="bejovoText">Bejövő foglalási kérelmek</h2>
-          {incomingBookings.length === 0 ? (
-            <p>Nincs bejövő foglalási kérelem.</p>
-          ) : (
-            <div className="posztok-list">
-              {incomingBookings.map((booking) => (
-                <div key={booking.uzenetID} className="poszt">
-                  <h2  className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
-                  <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
-                  <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
-                  <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
-                  <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
-                  <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
-                  {booking.fotok && (
-                    <img
-                      src={`http://localhost:5020/uploads/${booking.fotok}`}
-                      alt="Poszt kép"
-                      className="poszt-image"
-                    />
-                  )}
-                  <button
-                    onClick={() => handleAcceptBooking(booking.uzenetID, booking.posztID, booking.nap, booking.ora)}
-                    className="accept-button"
-                  >
-                    Elfogad
-                  </button>
-                  <button
-                    onClick={() => handleRejectBooking(booking.uzenetID)}
-                    className="reject-button"
-                  >
-                    Elutasít
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="right-panel">
+        {isEmployer && (
+          <div className="left-panel">
+            <h2 className="bejovoText">Bejövő foglalási kérelmek</h2>
+            {incomingBookings.length === 0 ? (
+              <p>Nincs bejövő foglalási kérelem.</p>
+            ) : (
+              <div className="posztok-list">
+                {incomingBookings.map((booking) => (
+                  <div key={booking.uzenetID} className="poszt">
+                    <h2 className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
+                    <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
+                    <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
+                    <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
+                    <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
+                    <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
+                    {booking.fotok && (
+                      <img
+                        src={`http://localhost:5020/uploads/${booking.fotok}`}
+                        alt="Poszt kép"
+                        className="poszt-image"
+                      />
+                    )}
+                    <button
+                      onClick={() => handleAcceptBooking(booking.uzenetID, booking.posztID, booking.nap, booking.ora)}
+                      className="accept-button"
+                    >
+                      Elfogad
+                    </button>
+                    <button
+                      onClick={() => handleRejectBooking(booking.uzenetID)}
+                      className="reject-button"
+                    >
+                      Elutasít
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        <div className={isEmployer ? "middle-panel" : "middle-panel full-width"}>
           <h2 className="sajatText">Saját foglalásaim</h2>
           {bookings.length === 0 ? (
             <p>Még nem foglaltál elfogadott időpontot.</p>
@@ -198,7 +225,7 @@ const IdopontFoglalasok = () => {
             <div className="posztok-list">
               {bookings.map((booking) => (
                 <div key={booking.naptarID} className="poszt">
-                  <h2  className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
+                  <h2 className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
                   <p><strong>Munkáltató Neve:</strong> {`${booking.vezeteknev} ${booking.keresztnev}` || "Nincs kategória"}</p>
                   <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
                   <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
@@ -223,6 +250,35 @@ const IdopontFoglalasok = () => {
             </div>
           )}
         </div>
+        {isEmployer && (
+          <div className="right-panel">
+            <h2 className="munkaltatoText">Időpontok</h2>
+            {myPostsBookings.length === 0 ? (
+              <p>Jelenleg nincsen foglalt időpont</p>
+            ) : (
+              <div className="posztok-list">
+                {myPostsBookings.map((booking) => (
+                  <div key={booking.naptarID} className="poszt">
+                    <h2 className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
+                    <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
+                    <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
+                    <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
+                    <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
+                    <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
+                    <p><strong>Foglaló neve:</strong> {`${booking.foglaloVezeteknev} ${booking.foglaloKeresztnev}` || "Nincs név"}</p>
+                    {booking.fotok && (
+                      <img
+                        src={`http://localhost:5020/uploads/${booking.fotok}`}
+                        alt="Poszt kép"
+                        className="poszt-image"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

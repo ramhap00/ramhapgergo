@@ -4,7 +4,7 @@
   padding-top: 10px;
 }
 
-p {
+p dedicate {
   font-size: clamp(16px, 4vw, 20px); /* Rugalmas betűméret */
 }
 
@@ -40,19 +40,8 @@ p {
   padding: 10px; /* Padding a szélekhez */
 }
 
-.split-container::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 100%;
-  background-color: #2F2F2F; /* Láthatóvá tesszük a csíkot nagyobb képernyőkön */
-  display: none; /* Kis képernyőkön elrejtjük */
-}
-
 .left-panel,
+.middle-panel,
 .right-panel {
   width: 100%; /* Teljes szélesség kisebb képernyőkön */
   border: 2px solid #2F2F2F;
@@ -60,7 +49,7 @@ p {
   box-shadow: 0 0 10px;
   text-align: center;
   overflow-y: auto;
-  background-color:  lightblue;
+  background-color: lightblue;
   color: black;
   height: auto; /* Magasság alkalmazkodik a tartalomhoz */
   margin: 10px 0; /* Margó kisebb képernyőkön */
@@ -69,7 +58,8 @@ p {
 }
 
 .bejovoText,
-.sajatText {
+.sajatText,
+.munkaltatoText {
   margin-top: 15px;
   font-size: clamp(20px, 6vw, 30px); /* Rugalmas betűméret */
   font-weight: bold;
@@ -124,15 +114,14 @@ p {
   .split-container {
     flex-direction: row; /* Panelek egymás mellé */
     width: 80%; /* Korlátozott szélesség */
-    gap: 50px; /* Nagyobb térköz */
+    gap: 20px; /* Nagyobb térköz */
     padding: 0;
   }
 
-
-
   .left-panel,
+  .middle-panel,
   .right-panel {
-    width: 45%; /* Szélesebb panelek */
+    width: 30%; /* Három egyenlő szélességű panel */
     height: 630px; /* Fix magasság visszaállítása */
     margin: 20px 0;
   }
@@ -150,7 +139,8 @@ p {
   }
 
   .left-panel,
+  .middle-panel,
   .right-panel {
-    width: 45%;
+    width: 30%;
   }
 }

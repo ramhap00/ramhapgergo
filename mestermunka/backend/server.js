@@ -742,6 +742,47 @@ app.get('/api/messages', authenticateToken, (req, res) => {
   });
 });
 
+app.get('/api/my-posts-bookings', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+
+  const query = `
+    SELECT 
+      n.naptarID, 
+      n.posztID, 
+      n.nap, 
+      n.ora, 
+      p.fejlec, 
+      p.kategoria, 
+      p.telepules, 
+      p.telefonszam, 
+      p.leiras, 
+      p.fotok, 
+      f.vezeteknev AS foglaloVezeteknev, 
+      f.keresztnev AS foglaloKeresztnev
+    FROM naptar n
+    JOIN posztok p ON n.posztID = p.posztID
+    JOIN felhasznaloi_adatok f ON n.userID = f.userID
+    WHERE p.userID = ?
+  `;
+
+  db.query(query, [userId], (err, result) => {
+    if (err) {
+      console.error("Hiba a posztok foglalásainak lekérésekor:", err);
+      return res.status(500).json({ success: false, message: "Hiba történt a foglalások lekérésekor!" });
+    }
+
+    // A fotok mezőt JSON-ként kezeljük, ha szükséges
+    const bookings = result.map(booking => {
+      if (booking.fotok && typeof booking.fotok === 'string') {
+        booking.fotok = JSON.parse(booking.fotok);
+      }
+      return booking;
+    });
+
+    res.status(200).json({ success: true, bookings });
+  });
+});
+
 app.put('/api/update-message-status', authenticateToken, (req, res) => {
   const { uzenetID, allapot } = req.body;
   const userId = req.user.id;
