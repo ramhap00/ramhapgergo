@@ -160,7 +160,12 @@ const IdopontFoglalasok = () => {
             <div className="posztok-list">
               {incomingBookings.map((booking) => (
                 <div key={booking.uzenetID} className="poszt">
-                  <h2 className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
+                  <h2  className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
+                  <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
+                  <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
+                  <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
+                  <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
+                  <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
                   {booking.fotok && (
                     <img
                       src={`http://localhost:5020/uploads/${booking.fotok}`}
@@ -168,11 +173,6 @@ const IdopontFoglalasok = () => {
                       className="poszt-image"
                     />
                   )}
-                  <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
-                  <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
-                  <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
-                  <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
-                  <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
                   <button
                     onClick={() => handleAcceptBooking(booking.uzenetID, booking.posztID, booking.nap, booking.ora)}
                     className="accept-button"
@@ -198,7 +198,13 @@ const IdopontFoglalasok = () => {
             <div className="posztok-list">
               {bookings.map((booking) => (
                 <div key={booking.naptarID} className="poszt">
-                  <h2 className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
+                  <h2  className="cim"><strong>{booking.fejlec || "Nincs cím"}</strong></h2>
+                  <p><strong>Munkáltató Neve:</strong> {`${booking.vezeteknev} ${booking.keresztnev}` || "Nincs kategória"}</p>
+                  <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
+                  <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
+                  <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
+                  <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
+                  <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
                   {booking.fotok && (
                     <img
                       src={`http://localhost:5020/uploads/${booking.fotok}`}
@@ -206,12 +212,6 @@ const IdopontFoglalasok = () => {
                       className="poszt-image"
                     />
                   )}
-                  <p><strong>Kategória:</strong> {booking.kategoria || "Nincs kategória"}</p>
-                  <p><strong>Leírás:</strong> {booking.leiras || "Nincs leírás"}</p>
-                  <p><strong>Település:</strong> {booking.telepules || "Nincs település"}</p>
-                  <p><strong>Telefonszám:</strong> {booking.telefonszam || "Nincs telefonszám"}</p>
-                  <p><strong>Dátum:</strong> {new Date(booking.datum).toLocaleDateString("hu-HU")}</p>
-                  <p><strong>Foglalt időpont:</strong> {booking.nap} {booking.ora}</p>
                   <button
                     onClick={() => handleCancelBooking(booking.naptarID, booking.posztID, booking.nap, booking.ora)}
                     className="cancel-button"

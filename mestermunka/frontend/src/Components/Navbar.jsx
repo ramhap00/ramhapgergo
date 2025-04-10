@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"; // Hozzáadjuk a useNavigate-et
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import { UserContext } from "../UserContext";
 import "./Stilusok/Navbar.css";
@@ -20,7 +20,7 @@ const Navbar = () => {
     ? `http://localhost:5020/uploads/${user.profilkep}`
     : fioklogo;
 
-  const navigate = useNavigate(); // Hozzáadjuk a useNavigate hookot
+  const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const messageRef = useRef(null);
   const hamburgerRef = useRef(null);
@@ -66,14 +66,16 @@ const Navbar = () => {
   }, [user]);
 
   const handleLogout = () => {
+    console.log("Kijelentkezés megkezdése...");
     Axios.post("http://localhost:5020/logout", {}, { withCredentials: true })
       .then(() => {
+        console.log("Sikeres kijelentkezés a szerverről");
         logoutUser();
         localStorage.removeItem("userId");
         setNewMessageCount(0);
         setNewMessages([]);
         setHamburgerOpen(false);
-        navigate("/home"); // Navigáció a kijelentkezés után
+        navigate("/home");
       })
       .catch((error) => {
         console.error("Hiba a kijelentkezés során:", error);
@@ -85,7 +87,8 @@ const Navbar = () => {
       if (
         hamburgerRef.current &&
         !hamburgerRef.current.contains(event.target) &&
-        !event.target.closest(".hamburger-menu-link")
+        !event.target.closest(".hamburger-menu-link") &&
+        !event.target.closest(".logout-btn")
       ) {
         setHamburgerOpen(false);
       }
@@ -104,7 +107,7 @@ const Navbar = () => {
   const handleMessageClick = (msg) => {
     setMessageDropdown(false);
     setHamburgerOpen(false);
-    navigate("/idopont-foglalasok", { state: { message: msg } }); // useNavigate használata
+    navigate("/idopont-foglalasok", { state: { message: msg } });
   };
 
   const handleNavClick = (path) => {
@@ -121,13 +124,13 @@ const Navbar = () => {
       className={`navbar navbar-expand-lg navbar-light bg-light ${navbarClass}`}
       style={{ borderBottom: "2px solid white" }}
     >
-      <div className="col-sm-1">
+      <div className="col-sm-2 col-2">
         <Link to="/">
           <img src={logo} alt="Company Logo" className="logo-img1" />
         </Link>
       </div>
 
-      <div className="col-sm-4 nav-menu-left-wrapper">
+      <div className="col-sm-3 col-3 nav-menu-left-wrapper">
         <ul className="nav-menu-left">
           <li>
             <NavLink className="nav-link" to="/posztok" style={{ fontWeight: "700", fontSize: "16px" }}>
@@ -137,7 +140,7 @@ const Navbar = () => {
         </ul>
       </div>
 
-      <div className="col-sm-4 navbar-text-wrapper">
+      <div className="col-sm-4 col-4 navbar-text-wrapper">
         <div id="navbar-text">S.O.S. Munka</div>
       </div>
 
@@ -178,7 +181,7 @@ const Navbar = () => {
                           handleMessageClick(msg);
                         }}
                       >
-                        Jött egy új kérelmed! <strong>{msg.feladoNev}</strong> a(z) "<strong>{msg.fejlec}</strong>" poszthoz kért időpontot: <strong>{msg.nap} {msg.ora}</strong>
+                        Jött egy új kérelmed! a(z) "<strong>{msg.fejlec}</strong>" poszthoz. A kivánt kért időpont: <strong>{msg.nap} {msg.ora}</strong>
                       </div>
                     ))
                   ) : (
@@ -207,7 +210,7 @@ const Navbar = () => {
                     <NavLink className="fiokgomb" to="/fiok">Fiók Beállítások</NavLink>
                   </li>
                   <li>
-                    <NavLink className="fiokgomb" lato="/beszelgetesek">Üzenetek</NavLink>
+                    <NavLink className="fiokgomb" to="/beszelgetesek">Üzenetek</NavLink>
                   </li>
                   {user && user.munkasreg === 1 && (
                     <li>
@@ -223,10 +226,10 @@ const Navbar = () => {
               ) : (
                 <>
                   <li>
-                    <NavLink className="fiokgomb"to="/regisztracio">Regisztrálok</NavLink>
+                    <NavLink className="fiokgomb" to="/regisztracio">Regisztrálok</NavLink>
                   </li>
                   <li>
-                    <NavLink className="fiokgomb"to="/bejelentkezes">Bejelentkezem</NavLink>
+                    <NavLink className="fiokgomb" to="/bejelentkezes">Bejelentkezem</NavLink>
                   </li>
                 </>
               )}
@@ -236,7 +239,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobil nézet: üzenetek ikon és hamburger menü */}
-      <div className="mobile-menu">
+      <div className="mobile-menu col-3">
         <div className="message-icon-wrapper mobile-message-icon">
           <div
             className="dropdown message-item"
@@ -271,7 +274,7 @@ const Navbar = () => {
                         handleMessageClick(msg);
                       }}
                     >
-                      Jött egy új kérelmed! <strong>{msg.feladoNev}</strong> a(z) "<strong>{msg.fejlec}</strong>" poszthoz kért időpontot: <strong>{msg.nap} {msg.ora}</strong>
+                      Jött egy új kérelmed! a(z) "<strong>{msg.fejlec}</strong>" poszthoz. A kivánt kért időpont: <strong>{msg.nap} {msg.ora}</strong>
                     </div>
                   ))
                 ) : (
@@ -292,7 +295,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Hamburger lenyíló menü useNavigate-tel */}
+      {/* Hamburger lenyíló menü */}
       {hamburgerOpen && (
         <div className="hamburger-menu">
           <ul className="hamburger-menu-items">
@@ -325,7 +328,14 @@ const Navbar = () => {
                   </li>
                 )}
                 <li>
-                  <button style={{ backgroundColor:"transparent"}} className="logout-btn" onClick={handleLogout}>
+                  <button
+                    style={{ backgroundColor: "transparent" }}
+                    className="logout-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLogout();
+                    }}
+                  >
                     Kijelentkezés
                   </button>
                 </li>
