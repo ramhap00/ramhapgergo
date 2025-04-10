@@ -3,16 +3,19 @@
   height: 100vh;
   background-color: #f4f4f4;
 }
-
+ 
 .user-list {
   width: 30%;
   border-right: 1px solid #ccc;
   padding: 10px;
   background-color: #fff;
 }
-
-
-
+ 
+.user-list h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+ 
 .user-list input {
   width: 100%;
   padding: 8px;
@@ -20,148 +23,187 @@
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-
+ 
 .user-item {
   display: flex;
   align-items: center;
   padding: 10px;
   cursor: pointer;
 }
-
+ 
 .user-item:hover {
   background-color: #e0e0e0;
 }
-
+ 
 .user-item img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  margin-right: 10px;
 }
-
+ 
 .user-item div {
   font-weight: bold;
 }
-
+ 
+.user-item.selected {
+  background-color: #e0e0e0;
+}
+ 
 .chat-area {
   width: 70%;
   padding: 20px;
 }
-
+ 
 .chat-header {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
-
+ 
 .chat-header img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   margin-right: 10px;
 }
-
+ 
 .chat-header h2 {
   margin: 0;
 }
-
+ 
 .chat-messages {
   height: 70vh;
-  overflow-y: auto; /* Függőleges görgetés */
-  overflow-x: hidden; /* Vízszintes túlcsordulás elrejtése */
+  overflow-y: auto;
+  overflow-x: hidden;
   border: 1px solid #ccc;
   padding: 10px;
   background-color: #fff;
   border-radius: 4px;
   margin-bottom: 10px;
-  width: 100%; /* Biztosítjuk, hogy a konténer ne lógjon ki */
-  box-sizing: border-box; /* Padding ne növelje a szélességet */
+  width: 100%;
+  box-sizing: border-box;
 }
-
+ 
 .message {
   margin: 10px 0;
   padding: 10px;
   border-radius: 8px;
-  max-width: 60%; /* Maximum szélesség */
-  word-wrap: break-word; /* Szöveg tördelése szavak végén */
-  overflow-wrap: break-word; /* Bármely karakteren tördelhet */
-  white-space: normal; /* Természetes sortörés */
-  box-sizing: border-box; /* Padding ne növelje a szélességet */
-  overflow: hidden; /* Túlcsordulás elrejtése */
+  max-width: 60%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  box-sizing: border-box;
 }
-
+ 
 .message.me {
   background-color: #007bff;
   color: #fff;
   align-self: flex-end;
   margin-left: auto;
 }
-
+ 
 .message.other {
   background-color: #e9ecef;
   color: #000;
   align-self: flex-start;
 }
-
+ 
 .message-time {
   font-size: 13px;
   text-align: right;
 }
-
+ 
 .chat-input {
   display: flex;
-  align-items: flex-start; /* Felső igazítás a textarea miatt */
-  gap: 10px; /* Kis távolság az input és a gomb között */
+  align-items: flex-start;
+  gap: 10px;
   width: 100%;
-  max-width: 100%; /* Nem lóg ki a konténerből */
+  max-width: 100%;
 }
-
+ 
 .message-textarea {
-  flex: 1; /* Az input kitölti a rendelkezésre álló helyet */
+  flex: 1;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  resize: vertical; /* Csak függőlegesen méretezhető */
-  min-height: 40px; /* Minimum magasság */
-  max-height: 150px; /* Maximum magasság */
-  width: 85%; /* Az input a szélesség 85%-át foglalja el */
-  max-width: 85%; /* Biztosítjuk, hogy ne lógjon ki */
+  resize: vertical;
+  min-height: 40px;
+  max-height: 150px;
+  width: 85%;
+  max-width: 85%;
   box-sizing: border-box;
-  word-wrap: break-word; /* Szöveg tördelése */
-  overflow-wrap: break-word; /* Bármely karakteren tördelhet */
-  white-space: normal; /* Természetes sortörés */
-  overflow-x: hidden; /* Vízszintes túlcsordulás elrejtése */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  overflow-x: hidden;
 }
-
+ 
 .chat-input button {
-  padding: 8px 12px; /* Kisebb gomb */
+  padding: 8px 12px;
   background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  width: 60px; /* Fix szélesség a gombnak, hogy kisebb legyen */
-  flex-shrink: 0; /* A gomb nem zsugorodik */
+  width: 60px;
+  flex-shrink: 0;
 }
-
+ 
 .chat-input button:hover {
   background-color: #0056b3;
 }
-
-.user-item.selected {
-  background-color: #e0e0e0;
+ 
+/* === Reszponzív dizájn === */
+@media (max-width: 1024px) {
+  .beszelgetesek-container {
+    flex-direction: column;
+    height: auto;
+  }
+ 
+  .user-list {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+  }
+ 
+  .chat-area {
+    width: 100%;
+    padding: 15px;
+  }
+ 
+  .chat-messages {
+    height: 50vh;
+  }
 }
-@media (max-width: 425px) {
-  .cucc{
-    font-size: 12px;
-}
-.felhasznalo{
-  font-size: 12px;
-}
-}
-@media (min-width: 426px) {
+ 
+@media (max-width: 768px) {
   .user-list h1 {
     font-size: 20px;
-    margin-bottom: 20px;
+  }
+ 
+  .user-item img {
+    width: 35px;
+    height: 35px;
+  }
+ 
+  .chat-header img {
+    width: 40px;
+    height: 40px;
+  }
+ 
+  .message {
+    max-width: 80%;
+  }
+ 
+  .message-textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+ 
+  .chat-input button {
+    width: auto;
   }
 }
