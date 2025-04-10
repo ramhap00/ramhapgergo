@@ -18,7 +18,7 @@ const db = mysql.createConnection({
   user: 'root',
   password: '',
   database: 'sos_munka',
-  port: '3306',
+  port: '3307',
 });
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true, methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
@@ -338,20 +338,20 @@ app.put('/update-password', authenticateToken, (req, res) => {
   });
 });
 
-app.post("/api/poszt", authenticateToken, upload.array("fotok"), (req, res) => {
+app.post("/api/poszt", authenticateToken, upload.single("fotok"), (req, res) => {
   console.log("Kapott adatok:", req.body);
-  console.log("Kapott fájlok:", req.files);
+  console.log("Kapott fájl:", req.file);
 
   const userID = req.user.id;
   const { vezeteknev, keresztnev, fejlec, telepules, telefonszam, kategoria, datum, leiras } = req.body;
-  const tempFileNames = req.files ? req.files.map((file) => file.filename) : [];
+  const tempFileName = req.file ? req.file.filename : null;
 
   if (!vezeteknev || !keresztnev || !fejlec || !telepules || !telefonszam || !kategoria || !datum || !leiras) {
     return res.status(400).json({ success: false, message: "Minden mezőt ki kell tölteni!" });
   }
 
-  if (tempFileNames.length === 0) {
-    return res.status(400).json({ success: false, message: "Legalább egy képet fel kell tölteni!" });
+  if (!tempFileName) {
+    return res.status(400).json({ success: false, message: "Egy képet fel kell tölteni!" });
   }
 
   const query = `
@@ -359,42 +359,42 @@ app.post("/api/poszt", authenticateToken, upload.array("fotok"), (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(query, [userID, vezeteknev, keresztnev, fejlec, telepules, telefonszam, kategoria, datum, leiras, JSON.stringify(tempFileNames)], (err, result) => {
-    if (err) {
-      console.error("Hiba a poszt mentésekor:", err);
-      return res.status(500).json({ success: false, message: "Hiba történt a poszt mentésekor!" });
-    }
-
-    const posztID = result.insertId;
-    const newFileNames = [];
-
-    tempFileNames.forEach((tempFileName, index) => {
-      const oldPath = path.join(__dirname, "uploads", tempFileName);
-      const newFileName = `${posztID}_${index + 1}${path.extname(tempFileName)}`;
-      const newPath = path.join(__dirname, "uploads", newFileName);
-
-      fs.rename(oldPath, newPath, (renameErr) => {
-        if (renameErr) {
-          console.error(`Hiba a fájl átnevezésekor (${tempFileName} -> ${newFileName}):`, renameErr);
-        }
-      });
-
-      newFileNames.push(newFileName);
+  const posztIDPromise = new Promise((resolve, reject) => {
+    db.query(query, [userID, vezeteknev, keresztnev, fejlec, telepules, telefonszam, kategoria, datum, leiras, JSON.stringify([tempFileName])], (err, result) => {
+      if (err) {
+        console.error("Hiba a poszt mentésekor:", err);
+        reject(err);
+      } else {
+        resolve(result.insertId);
+      }
     });
+  });
 
-    const updateQuery = `
-      UPDATE posztok
-      SET fotok = ?
-      WHERE posztID = ?
-    `;
-    db.query(updateQuery, [JSON.stringify(newFileNames), posztID], (updateErr) => {
-      if (updateErr) {
-        console.error("Hiba a fájlnevek frissítésekor:", updateErr);
-        return res.status(500).json({ success: false, message: "Hiba történt a fájlnevek frissítésekor!" });
+  posztIDPromise.then((posztID) => {
+    const oldPath = path.join(__dirname, "uploads", tempFileName);
+    const newFileName = `${posztID}_1${path.extname(tempFileName)}`;
+    const newPath = path.join(__dirname, "uploads", newFileName);
+
+    fs.rename(oldPath, newPath, (renameErr) => {
+      if (renameErr) {
+        console.error(`Hiba a fájl átnevezésekor (${tempFileName} -> ${newFileName}):`, renameErr);
       }
 
-      res.status(201).json({ success: true, message: "Poszt sikeresen létrehozva!", posztID });
+      const updateQuery = `
+        UPDATE posztok
+        SET fotok = ?
+        WHERE posztID = ?
+      `;
+      db.query(updateQuery, [JSON.stringify([newFileName]), posztID], (updateErr) => {
+        if (updateErr) {
+          console.error("Hiba a fájlnév frissítésekor:", updateErr);
+          return res.status(500).json({ success: false, message: "Hiba történt a fájlnév frissítésekor!" });
+        }
+        res.status(201).json({ success: true, message: "Poszt sikeresen létrehozva!", post: { posztID } });
+      });
     });
+  }).catch((err) => {
+    res.status(500).json({ success: false, message: "Hiba történt a poszt mentésekor!" });
   });
 });
 
