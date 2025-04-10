@@ -55,6 +55,7 @@ const Premium = () => {
                 <ul>
                   <li>5db poszt</li>
                   <li>elsőbbség a posztoknál❌</li>
+                  <li>1db kép/poszt</li>
                 </ul>
                 <button className="plan-button">Fejlesztés alatt...</button>
               </div>
@@ -66,6 +67,7 @@ const Premium = () => {
                 <ul>
                   <li>Korlátlan posztok</li>
                   <li>elsőbbség a posztoknál✅</li>
+                  <li>10db kép/poszt</li>
                 </ul>
                 <button className="plan-button">Fejlesztés alatt...</button>
               </div>

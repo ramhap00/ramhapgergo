@@ -181,7 +181,7 @@ const Navbar = () => {
                           handleMessageClick(msg);
                         }}
                       >
-                        Jött egy új kérelmed! <strong>{msg.feladoNev}</strong> a(z) "<strong>{msg.fejlec}</strong>" poszthoz kért időpontot: <strong>{msg.nap} {msg.ora}</strong>
+                        Jött egy új kérelmed! a(z) "<strong>{msg.fejlec}</strong>" poszthoz. A kivánt kért időpont: <strong>{msg.nap} {msg.ora}</strong>
                       </div>
                     ))
                   ) : (
@@ -274,7 +274,7 @@ const Navbar = () => {
                         handleMessageClick(msg);
                       }}
                     >
-                      Jött egy új kérelmed! <strong>{msg.feladoNev}</strong> a(z) "<strong>{msg.fejlec}</strong>" poszthoz kért időpontot: <strong>{msg.nap} {msg.ora}</strong>
+                      Jött egy új kérelmed! a(z) "<strong>{msg.fejlec}</strong>" poszthoz. A kivánt kért időpont: <strong>{msg.nap} {msg.ora}</strong>
                     </div>
                   ))
                 ) : (
