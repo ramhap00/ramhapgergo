@@ -11,10 +11,7 @@
   background-color: #fff;
 }
 
-.user-list h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
+
 
 .user-list input {
   width: 100%;
@@ -39,7 +36,6 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  margin-right: 10px;
 }
 
 .user-item div {
@@ -154,4 +150,18 @@
 
 .user-item.selected {
   background-color: #e0e0e0;
+}
+@media (max-width: 425px) {
+  .cucc{
+    font-size: 12px;
+}
+.felhasznalo{
+  font-size: 12px;
+}
+}
+@media (min-width: 426px) {
+  .user-list h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
 }

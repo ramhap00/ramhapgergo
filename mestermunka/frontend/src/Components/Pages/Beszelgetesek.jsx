@@ -122,7 +122,7 @@ const Beszelgetesek = () => {
   return (
     <div className="beszelgetesek-container">
       <div className="user-list">
-        <h1>Beszélgetések</h1>
+        <h1 className="cucc">Beszélgetések</h1>
         <input
           type="text"
           placeholder="Keresés üzenetek vagy felhasználók között..."
@@ -141,7 +141,7 @@ const Beszelgetesek = () => {
                 alt={user.name}
               />
               <div>
-                <div style={{ fontWeight: "bold" }}>{user.name}</div>
+                <div className="felhasznalo" style={{ fontWeight: "bold" }}>{user.name}</div>
               </div>
             </div>
           ))
