@@ -204,14 +204,14 @@ const Navbar = () => {
               {user ? (
                 <>
                   <li>
-                    <NavLink to="/fiok">Fiók Beállítások</NavLink>
+                    <NavLink className="fiokgomb" to="/fiok">Fiók Beállítások</NavLink>
                   </li>
                   <li>
-                    <NavLink to="/beszelgetesek">Üzenetek</NavLink>
+                    <NavLink className="fiokgomb" lato="/beszelgetesek">Üzenetek</NavLink>
                   </li>
                   {user && user.munkasreg === 1 && (
                     <li>
-                      <NavLink to="/sajatposztok">Posztjaim</NavLink>
+                      <NavLink className="fiokgomb" to="/sajatposztok">Posztjaim</NavLink>
                     </li>
                   )}
                   <li>
@@ -223,10 +223,10 @@ const Navbar = () => {
               ) : (
                 <>
                   <li>
-                    <NavLink to="/regisztracio">Regisztrálok</NavLink>
+                    <NavLink className="fiokgomb"to="/regisztracio">Regisztrálok</NavLink>
                   </li>
                   <li>
-                    <NavLink to="/bejelentkezes">Bejelentkezem</NavLink>
+                    <NavLink className="fiokgomb"to="/bejelentkezes">Bejelentkezem</NavLink>
                   </li>
                 </>
               )}
