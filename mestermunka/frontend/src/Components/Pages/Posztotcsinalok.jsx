@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../Stilusok/Posztotcsinalok.css";
 
 const Posztotcsinalok = ({ onPostCreated }) => {
@@ -11,11 +11,13 @@ const Posztotcsinalok = ({ onPostCreated }) => {
     kategoria: "",
     datum: "",
     leiras: "",
-    fotok: [],
+    fotok: null,
   });
 
   const [errors, setErrors] = useState({});
   const [previews, setPreviews] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const hasSubmitted = useRef(false);
 
   const categories = [
     "Festés", "Kertészet", "Szakács", "Programozó", "Falazás", "Vakolás", "Burkolás", "Asztalosmunka",
@@ -35,16 +37,12 @@ const Posztotcsinalok = ({ onPostCreated }) => {
   };
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length > 5) {
-      alert("Maximum 5 képet tölthetsz fel!");
-      return;
-    }
-    if (files.length > 0) {
-      setFormData({ ...formData, fotok: files });
-      const previewUrls = files.map((file) => URL.createObjectURL(file));
-      setPreviews(previewUrls);
-    }
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setFormData({ ...formData, fotok: file });
+    const previewUrl = URL.createObjectURL(file);
+    setPreviews([previewUrl]);
   };
 
   const getToken = () => {
@@ -55,12 +53,21 @@ const Posztotcsinalok = ({ onPostCreated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
+
+    if (isSubmitting || hasSubmitted.current) {
+      console.log("Már fut egy kérés, vagy már sikeresen elküldve!");
+      return;
+    }
+
+    setIsSubmitting(true);
+    hasSubmitted.current = true;
 
     let newErrors = {};
     Object.keys(formData).forEach((key) => {
       if (key === "fotok") {
-        if (formData.fotok.length === 0) {
-          newErrors[key] = "Legalább egy képet fel kell tölteni!";
+        if (!formData.fotok) {
+          newErrors[key] = "Egy képet fel kell tölteni!";
         }
       } else if (!formData[key]) {
         newErrors[key] = "Kötelező mező!";
@@ -69,21 +76,23 @@ const Posztotcsinalok = ({ onPostCreated }) => {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setIsSubmitting(false);
+      hasSubmitted.current = false;
       return;
     }
 
     const token = getToken();
     if (!token) {
       alert("⚠️ Be kell jelentkezni a poszt létrehozásához!");
+      setIsSubmitting(false);
+      hasSubmitted.current = false;
       return;
     }
 
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
       if (key === "fotok") {
-        formData.fotok.forEach((file) => {
-          data.append("fotok", file);
-        });
+        data.append("fotok", formData.fotok);
       } else {
         data.append(key, formData[key]);
       }
@@ -102,7 +111,10 @@ const Posztotcsinalok = ({ onPostCreated }) => {
       const result = await response.json();
       if (result.success) {
         alert("🎉 Poszt sikeresen létrehozva!");
-        onPostCreated(result.post);
+        // Csak akkor hívjuk meg, ha onPostCreated függvény
+        if (typeof onPostCreated === "function") {
+          onPostCreated(result.post);
+        }
 
         setFormData({
           vezeteknev: "",
@@ -113,16 +125,20 @@ const Posztotcsinalok = ({ onPostCreated }) => {
           kategoria: "",
           datum: "",
           leiras: "",
-          fotok: [],
+          fotok: null,
         });
         setPreviews([]);
         setErrors({});
       } else {
         alert("❌ Hiba történt: " + result.message);
+        hasSubmitted.current = false;
       }
     } catch (error) {
       console.error("Hiba a poszt létrehozásakor:", error);
       alert("❌ Hiba történt a poszt létrehozásakor!");
+      hasSubmitted.current = false;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -258,7 +274,7 @@ const Posztotcsinalok = ({ onPostCreated }) => {
         </div>
         <div className="form-group">
           <label htmlFor="fotok">
-            Fotók:<span className="required">*</span>
+            Fotó:<span className="required">*</span>
           </label>
           <input
             type="file"
@@ -266,19 +282,18 @@ const Posztotcsinalok = ({ onPostCreated }) => {
             name="fotok"
             accept="image/*"
             onChange={handleFileChange}
-            multiple
           />
           {previews.length > 0 && (
             <div className="preview-container">
-              {previews.map((preview, index) => (
-                <img key={index} src={preview} alt={`Preview ${index}`} style={{ width: "100px", margin: "5px" }} />
-              ))}
+              <img src={previews[0]} alt="Preview" style={{ width: "100px", margin: "5px" }} />
             </div>
           )}
           {errors.fotok && <span>{errors.fotok}</span>}
         </div>
         <div className="form-group">
-          <button type="submit">Poszt létrehozása</button>
+          <button type="submit" disabled={isSubmitting}>
+            Poszt létrehozása
+          </button>
         </div>
       </form>
     </div>
