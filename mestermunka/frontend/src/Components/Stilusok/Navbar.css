@@ -91,37 +91,6 @@
   color: #ddd;
 }
 
-/* Reszponzív stílusok */
-@media (max-width: 768px) {
-  .nav-menu-left-wrapper {
-    display: none; /* Posztok eltűnik */
-  }
-
-  .navbar-text-wrapper {
-    display: none; /* S.O.S. Munka szöveg eltűnik */
-  }
-
-  .desktop-menu {
-    display: none; /* Üzenetek és Fiók ikonok eltűnnek */
-  }
-
-  .mobile-menu {
-    display: flex; /* Üzenetek ikon és hamburger menü megjelenik */
-  }
-
-  .hamburger-icon {
-    display: flex; /* Hamburger ikon megjelenik */
-  }
-
-  .hamburger-menu {
-    display: block; /* Hamburger menü engedélyezve */
-  }
-
-  .col-sm-1 {
-    flex: 0 0 20%;
-  }
-}
-
 /* Desktop nézet lenyíló tartalom */
 .dropdown-content {
   background-color: white;
@@ -325,12 +294,93 @@
   border-radius: 50%;
 }
 
+.fiokgomb {
+  text-decoration: none;
+}
+
+/* Reszponzív stílusok */
 @media (max-width: 768px) {
-  .message-dropdown-content {
-    width: 90%;
-    right: 5%;
-    top: 60px;
-    max-height: 300px;
+  /* A "Posztok" és "S.O.S. Munka" szöveg látható marad */
+  .nav-menu-left-wrapper {
+    display: flex; /* Látható marad */
+    padding: 0;
+  }
+
+  .navbar-text-wrapper {
+    display: flex; /* Látható marad */
+    justify-content: center;
+    padding: 0;
+  }
+
+  .desktop-menu {
+    display: none; /* Üzenetek és Fiók ikonok eltűnnek */
+  }
+
+  .mobile-menu {
+    display: flex; /* Üzenetek ikon és hamburger menü megjelenik */
+    justify-content: flex-end;
+    padding: 0;
+  }
+
+  .hamburger-icon {
+    display: flex; /* Hamburger ikon megjelenik */
+    width: 25px; /* Kisebb méret mobil nézetben */
+    height: 20px;
+  }
+
+  .hamburger-bar {
+    height: 3px; /* Kisebb csíkok */
+  }
+
+  .hamburger-menu {
+    display: block; /* Hamburger menü engedélyezve */
+  }
+
+  .col-sm-2 {
+    flex: 0 0 15%; /* Logo kisebb helyet foglal */
+    max-width: 15%;
+  }
+
+  .col-sm-3 {
+    flex: 0 0 25%; /* Posztok kisebb helyet foglal */
+    max-width: 25%;
+  }
+
+  .col-sm-4 {
+    flex: 0 0 35%; /* S.O.S. Munka kisebb helyet foglal */
+    max-width: 35%;
+  }
+
+  .col-2 {
+    flex: 0 0 15%; /* Logo mobil nézetben */
+    max-width: 15%;
+  }
+
+  .col-3 {
+    flex: 0 0 25%; /* Posztok és mobil menü mobil nézetben */
+    max-width: 25%;
+  }
+
+  .col-4 {
+    flex: 0 0 35%; /* S.O.S. Munka mobil nézetben */
+    max-width: 35%;
+  }
+
+  .logo-img1 {
+    max-width: 40px; /* Kisebb logo mobil nézetben */
+  }
+
+  .logo-img2 {
+    max-width: 30px; /* Kisebb értesítések ikon mobil nézetben */
+  }
+
+  .nav-menu-left a {
+    font-size: 14px; /* Kisebb betűméret a "Posztok" linknek */
+    padding: 0 5px;
+  }
+
+  #navbar-text {
+    font-size: 16px; /* Kisebb betűméret az "S.O.S. Munka" szövegnek */
   }
 
   .dropdown-content {
@@ -340,5 +390,55 @@
 
   .message-dropdown-header .close-btn {
     right: 0;
+  }
+
+  /* Értesítések lenyíló menüjének javítása mobil nézetben */
+  .message-dropdown-content {
+    width: 95%; /* Szélesebb, hogy jobban kitöltse a képernyőt */
+    right: 2.5%; /* Középre igazítjuk a szélesség növelésével */
+    top: 70px; /* Kicsit lejjebb toljuk, hogy ne takarja a navbar-t */
+    max-height: 350px; /* Nagyobb magasság a tartalomnak */
+    background-color: lightgray; /* Háttér változatlan */
+    border-radius: 10px; /* Lekerekítés változatlan */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Árnyék változatlan */
+    color: #000; /* Fekete szöveg a jobb olvashatóságért */
+    font-size: 16px; /* Alap betűméret növelése */
+  }
+
+  .message-dropdown-header {
+    padding: 12px 16px; /* Nagyobb padding a fejlécnek */
+  }
+
+  .notifications-title {
+    font-size: 18px; /* Nagyobb betűméret a címnek */
+    font-weight: bold;
+  }
+
+  .close-btn {
+    font-size: 18px; /* Nagyobb X gomb */
+  }
+
+  .message-list {
+    padding: 12px; /* Nagyobb padding a lista körül */
+  }
+
+  .message-item-content {
+    padding: 12px; /* Nagyobb padding az üzeneten belül */
+    font-size: 16px; /* Nagyobb betűméret az üzeneteknek */
+    line-height: 1.5; /* Nagyobb sorköz a jobb olvashatóságért */
+    background-color: #f5f5f5; /* Világosabb háttér az üzeneteknek */
+    border-radius: 6px; /* Kicsit nagyobb lekerekítés */
+    word-wrap: break-word; /* Hosszú szavak tördelése */
+    margin-bottom: 8px; /* Nagyobb tér az üzenetek között */
+  }
+
+  .message-item-content:hover {
+    background-color: #fff; /* Hover hatás változatlan */
+  }
+
+  .no-messages {
+    font-size: 16px; /* Olvashatóbb "Nincs új kérelem" szöveg */
+    padding: 12px;
+    color: #333; /* Sötétebb szín a jobb olvashatóságért */
   }
 }
