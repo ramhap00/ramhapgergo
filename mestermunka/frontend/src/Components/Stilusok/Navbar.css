@@ -287,8 +287,8 @@
 
 .new-message-dot {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: 7%;
+  right: 7%;
   width: 10px;
   height: 10px;
   background-color: red;
@@ -300,6 +300,18 @@
 }
 
 /* Reszponzív stílusok */
+/*nagyképernyő*/
+@media (min-width: 768px){
+  .message-dropdown-content{
+    width: 350px;
+    right: -80px;
+  }
+  .close-btn{
+    font-size: 20px;
+    margin-left: 65%;
+  }
+}
+/*tablet*/
 @media (max-width: 768px) {
   /* A "Posztok" és "S.O.S. Munka" szöveg látható marad */
   .nav-menu-left-wrapper {
@@ -395,9 +407,9 @@
 
   /* Értesítések lenyíló menüjének javítása mobil nézetben */
   .message-dropdown-content {
-    width: 95%; /* Szélesebb, hogy jobban kitöltse a képernyőt */
-    right: 2.5%; /* Középre igazítjuk a szélesség növelésével */
-    top: 70px; /* Kicsit lejjebb toljuk, hogy ne takarja a navbar-t */
+    width: 300px;
+    right: -35px; /* Középre igazítjuk a szélesség növelésével */
+    top: 60px; /* Kicsit lejjebb toljuk, hogy ne takarja a navbar-t */
     max-height: 350px; /* Nagyobb magasság a tartalomnak */
     background-color: lightgray; /* Háttér változatlan */
     border-radius: 10px; /* Lekerekítés változatlan */
@@ -417,6 +429,7 @@
 
   .close-btn {
     font-size: 18px; /* Nagyobb X gomb */
+    margin-left: 60%;
   }
 
   .message-list {
@@ -427,7 +440,6 @@
     padding: 12px; /* Nagyobb padding az üzeneten belül */
     font-size: 16px; /* Nagyobb betűméret az üzeneteknek */
     line-height: 1.5; /* Nagyobb sorköz a jobb olvashatóságért */
-    background-color: #f5f5f5; /* Világosabb háttér az üzeneteknek */
     border-radius: 6px; /* Kicsit nagyobb lekerekítés */
     word-wrap: break-word; /* Hosszú szavak tördelése */
     margin-bottom: 8px; /* Nagyobb tér az üzenetek között */
@@ -441,5 +453,22 @@
     font-size: 16px; /* Olvashatóbb "Nincs új kérelem" szöveg */
     padding: 12px;
     color: #333; /* Sötétebb szín a jobb olvashatóságért */
+  }
+}
+@media (max-width: 425px){
+  .message-dropdown-content {
+    width: 200px;
+    right: -35px; /* Középre igazítjuk a szélesség növelésével */
+    top: 60px; /* Kicsit lejjebb toljuk, hogy ne takarja a navbar-t */
+    max-height: 350px; /* Nagyobb magasság a tartalomnak */
+    background-color: lightgray; /* Háttér változatlan */
+    border-radius: 10px; /* Lekerekítés változatlan */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Árnyék változatlan */
+    color: #000; /* Fekete szöveg a jobb olvashatóságért */
+    font-size: 16px; /* Alap betűméret növelése */
+  }
+  .close-btn {
+    font-size: 18px; /* Nagyobb X gomb */
+    margin-left: 35%;
   }
 }
