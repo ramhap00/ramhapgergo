@@ -64,26 +64,28 @@ const Home = () => {
             className="block"
             variants={blockVariants}
           >
-            <p>
-              Munkáltatóként nálunk gyorsan és egyszerűen feladhatod a munkáidat. 
-              Csak regisztrálj, írd meg a posztodat, és máris megtalálhatod a megfelelő embert. 
-              Az oldalunk átlátható felülete segít, hogy ne vessz el a részletekben. 
-              Így időt spórolhatsz, és hamar nekiállhatsz a feladatoknak!
+            <h1 style={{fontStyle:"italic"}}>Szeretnéd magad hirdetni?</h1>
+            <p className="szoveg1">Regisztrálj szakmunkásként, majd a profilon belül kattints a "Posztjaim" gombra és hozd létre a saját hírdetésed!</p>
+          </motion.div>
+          <motion.div 
+            className="block"
+            variants={blockVariants}
+          >
+            <h1 style={{ fontStyle:"italic"}}>Tudtad?</h1>
+            <p className="szoveg1">
+              Üzenni tudsz a munkavállalónak majd időpontot foglalni, valamint értékelni is tudod őket csillagokkal és szövegesen is!
             </p>
           </motion.div>
           <motion.div 
             className="block"
             variants={blockVariants}
           >
-            <p>
-              Vendégként nálunk könnyedén böngészhetsz a munkáltatók ajánlatai között. 
-              Az oldalunk egyszerű keresője segít megtalálni a hozzád illő munkát. 
-              Néhány kattintással kapcsolatba léphetsz a munkáltatóval, és már meg is egyezhettek. 
-              Nincs bonyolult folyamat, csak gyors megoldások!
+            <h1 style={{ fontStyle:"italic"}}>harmadik</h1>
+            <p className="szoveg1">
+              Üzenni tudsz a munkavállalónak majd időpontot foglalni, valamint értékelni is tudod őket csillagokkal és szövegesen is!
             </p>
           </motion.div>
         </motion.div>
-
     
         
         </div>
