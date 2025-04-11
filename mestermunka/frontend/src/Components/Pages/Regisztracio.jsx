@@ -86,7 +86,7 @@ const Regisztracio = () => {
         <h2>Regisztráció</h2>
 
         {successMessage && (
-          <div className="success-message" style={{ color: "green", marginBottom: "10px" }}>
+          <div className="success-message">
             {successMessage}
           </div>
         )}
