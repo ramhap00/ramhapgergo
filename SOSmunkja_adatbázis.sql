@@ -35,16 +35,6 @@ CREATE TABLE IF NOT EXISTS `sos_munka`.`felhasznaloi_adatok` (
 ) ENGINE = InnoDB AUTO_INCREMENT = 30 DEFAULT CHARSET = utf8mb4;
 
 -- -----------------------------------------------------
--- Table `sos_munka`.`kategoriak`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sos_munka`.`kategoriak` (
-  `kategoriID` INT(11) NOT NULL AUTO_INCREMENT,
-  `megnevezes` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`kategoriID`),
-  UNIQUE INDEX `megnevezes` (`megnevezes` ASC)
-) ENGINE = InnoDB AUTO_INCREMENT = 10 DEFAULT CHARACTER SET = utf8mb4;
-
--- -----------------------------------------------------
 -- Table `sos_munka`.`posztok`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `sos_munka`.`posztok` (

@@ -2,13 +2,13 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "../../UserContext";
 import "../Stilusok/Uzenetek.css";
-
+ 
 const Uzenetek = ({ onClose, setNewMessageCount, fetchNewMessages }) => {
   const { user } = useContext(UserContext);
   const [pendingMessages, setPendingMessages] = useState([]);
   const [notificationMessages, setNotificationMessages] = useState([]);
   const [loading, setLoading] = useState(true);
-
+ 
   const fetchMessages = async () => {
     if (!user) {
       setPendingMessages([]);
@@ -17,7 +17,7 @@ const Uzenetek = ({ onClose, setNewMessageCount, fetchNewMessages }) => {
       setLoading(false);
       return;
     }
-
+ 
     try {
       const response = await axios.get("http://localhost:5020/api/messages", { withCredentials: true });
       if (response.data.success) {
@@ -26,13 +26,13 @@ const Uzenetek = ({ onClose, setNewMessageCount, fetchNewMessages }) => {
         );
         console.log("Pending messages in Uzenetek:", userPendingMessages);
         setPendingMessages(userPendingMessages);
-
+ 
         const userNotificationMessages = response.data.messages.filter(
           (msg) => msg.cimzettID === user.userID && (msg.allapot === "accepted" || msg.allapot === "rejected")
         );
         console.log("Notification messages in Uzenetek:", userNotificationMessages);
         setNotificationMessages(userNotificationMessages);
-
+ 
         setNewMessageCount(userPendingMessages.length);
       }
     } catch (error) {
@@ -41,11 +41,11 @@ const Uzenetek = ({ onClose, setNewMessageCount, fetchNewMessages }) => {
       setLoading(false);
     }
   };
-
+ 
   useEffect(() => {
     fetchMessages();
   }, [user, setNewMessageCount]);
-
+ 
   const handleAccept = async (uzenetID, posztID, nap, ora) => {
     try {
       const response = await axios.post(
@@ -70,7 +70,7 @@ const Uzenetek = ({ onClose, setNewMessageCount, fetchNewMessages }) => {
       alert("Hiba történt az elfogadás során!");
     }
   };
-
+ 
   const handleReject = async (uzenetID) => {
     try {
       const response = await axios.put(
@@ -95,13 +95,13 @@ const Uzenetek = ({ onClose, setNewMessageCount, fetchNewMessages }) => {
       alert("Hiba történt az elutasítás során!");
     }
   };
-
+ 
   if (loading) return <div className="dropdown-content">Üzenetek betöltése...</div>;
-
+ 
   return (
     <div className="dropdown-content message-dropdown">
       <h3>Üzenetek</h3>
-      
+     
       <h4>Bejövő kérelmek</h4>
       {pendingMessages.length === 0 ? (
         <p>Nincs új kérelem.</p>
@@ -130,7 +130,7 @@ const Uzenetek = ({ onClose, setNewMessageCount, fetchNewMessages }) => {
           ))}
         </ul>
       )}
-
+ 
       <h4>Értesítések</h4>
       {notificationMessages.length === 0 ? (
         <p>Nincs új értesítés.</p>
@@ -151,10 +151,10 @@ const Uzenetek = ({ onClose, setNewMessageCount, fetchNewMessages }) => {
           ))}
         </ul>
       )}
-
+ 
       <button onClick={onClose}>Bezárás</button>
     </div>
   );
 };
-
+ 
 export default Uzenetek;
