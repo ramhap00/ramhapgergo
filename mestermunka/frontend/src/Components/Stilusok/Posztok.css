@@ -416,6 +416,10 @@
 
 /* Reszponzív módosítások */
 @media (max-width: 1024px) {
+  .search-container{
+    display: flex;
+    justify-content: space-between
+  }
   .posztok-layout {
     flex-direction: column;
   }
