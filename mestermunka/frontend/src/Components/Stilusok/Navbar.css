@@ -1,4 +1,6 @@
-/* Navbar.css */
+.nav-link{
+  margin-top: 20%;
+}
 
 /* Alapértelmezett stílus minden oldalon */
 #flex-container {
@@ -504,5 +506,6 @@
     margin-top: 20%;
   }
 }
+
 
 
