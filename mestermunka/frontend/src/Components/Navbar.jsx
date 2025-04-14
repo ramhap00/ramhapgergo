@@ -130,20 +130,16 @@ const Navbar = () => {
         </Link>
       </div>
 
-      <div className="col-sm-3 col-3 nav-menu-left-wrapper">
-        <ul className="nav-menu-left">
-          <li>
-            <NavLink className="nav-link" to="/posztok" style={{ fontWeight: "700", fontSize: "16px" }}>
-              Posztok
-            </NavLink>
-          </li>
-        </ul>
-      </div>
-
-      <div className="col-sm-4 col-4 navbar-text-wrapper">
-        <div id="navbar-text">S.O.S. Munka</div>
-      </div>
-
+      <div className="col-sm-7 col-7 nav-text-wrapper">
+      <ul className="nav-menu-left">
+    <li>
+      <NavLink className="nav-link" to="/posztok" style={{ fontWeight: "700", fontSize: "16px" }}>
+        Posztok
+      </NavLink>
+        </li>
+      </ul>
+      <div id="navbar-text">S.O.S. Munka</div>
+    </div>
       {/* Desktop nézet: üzenetek és fiók ikonok */}
       <div className="col-xs-1 desktop-menu">
         <ul className="nav-menu-right">

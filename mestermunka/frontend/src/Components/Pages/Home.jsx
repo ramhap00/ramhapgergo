@@ -77,12 +77,12 @@ const Home = () => {
             </p>
           </motion.div>
           <motion.div 
-            className="block"
+            id="szoveg2" className="block"
             variants={blockVariants}
           >
-            <h1 style={{ fontStyle:"italic"}}>harmadik</h1>
+            <h1 style={{ fontStyle:"italic"}}>Légy résen!</h1>
             <p className="szoveg1">
-              Üzenni tudsz a munkavállalónak majd időpontot foglalni, valamint értékelni is tudod őket csillagokkal és szövegesen is!
+            Figyeld fent a csengőt és az üzeneteid, ha megkeresnek minnél gyorsabban válaszolj!
             </p>
           </motion.div>
         </motion.div>
