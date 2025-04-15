@@ -660,7 +660,7 @@ const Posztok = () => {
                         }}
                         style={{ padding: "5px 10px" }}
                       >
-                        Naptár
+                        Időpont foglalás
                       </button>
                       <button
                         onClick={(e) => {
