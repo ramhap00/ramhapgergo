@@ -196,6 +196,6 @@ html, body {
 
 #szoveg2{
   
-  position: relative;
-  left: 50%;
+  margin-left: auto;
+  margin-right: auto;
 }
