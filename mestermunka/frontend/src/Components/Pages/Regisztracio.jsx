@@ -173,7 +173,7 @@ const Regisztracio = () => {
         </div>
 
         <div className="form-group checkbox-container">
-          <label htmlFor="munkaltato">Munkáltató fiókot szeretnék:</label>
+          <label htmlFor="munkaltato">Szakmunkás fiókot szeretnék:</label>
           <input
             type="checkbox"
             id="munkaltato"
