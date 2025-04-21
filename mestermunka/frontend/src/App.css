@@ -4,12 +4,12 @@ body {
     font-family: Arial, sans-serif;
   }
   
-  /* Minden oldal tartalmát a navbar alá toljuk, kivéve a Home oldalt */
+  
   body > div:not(.home-container) {
-    padding-top: 80px; /* A navbar becsült magassága */
+    padding-top: 80px; 
   }
   
-  /* A Home oldal saját elrendezése miatt nem kell padding */
+  
   .home-container {
-    padding-top: 0; /* Az eredeti állapot */
+    padding-top: 0; 
   }

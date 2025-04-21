@@ -12,7 +12,7 @@ const fs = require('fs');
 // Konstansok
 const PORT = 5020;
 const SALT_ROUNDS = 10;
-const JWT_SECRET = 'YOUR_SECRET_KEY'; // TODO: .env fájlba tenni
+const JWT_SECRET = 'YOUR_SECRET_KEY'; 
 const DEFAULT_PROFILE_PIC = 'default-profile.png';
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
 

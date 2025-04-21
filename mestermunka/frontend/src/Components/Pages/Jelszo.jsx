@@ -22,17 +22,17 @@ const Jelszo = () => {
     }
   
     axios
-      .get("http://localhost:5020/user", { withCredentials: true })  // Lekérjük a bejelentkezett felhasználót
+      .get("http://localhost:5020/user", { withCredentials: true })  
       .then((response) => {
-        const { userID } = response.data.user;  // UserID a válaszból
+        const { userID } = response.data.user;  
   
-        // Jelszó frissítése
+        
         axios
           .put(
             "http://localhost:5020/update-password",
             {
               userID,
-              oldPassword: passwordData.currentPassword,  // Régi jelszó hozzáadása
+              oldPassword: passwordData.currentPassword, 
               newPassword: passwordData.newPassword,
             },
             { withCredentials: true }
@@ -52,7 +52,7 @@ const Jelszo = () => {
       })
       .catch((error) => {
         console.error("Nincs bejelentkezve!", error);
-        alert("Nincs bejelentkezve!");  // Ha nem található bejelentkezett felhasználó
+        alert("Nincs bejelentkezve!");  
       });
   };
   

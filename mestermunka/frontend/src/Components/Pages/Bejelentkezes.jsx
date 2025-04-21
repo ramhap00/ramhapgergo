@@ -25,9 +25,9 @@ const Bejelentkezes = () => {
       .then((response) => {
         if (response.data.success) {
           const user = response.data.user;
-          console.log("🔍 /login válasz:", user); // Ellenőrizzük a backend adatait
+          console.log("🔍 /login válasz:", user); 
           loginUser(user);
-          console.log("🔍 Bejelentkezés után - localStorage.user:", localStorage.getItem("user")); // Ellenőrizzük a mentést
+          console.log("🔍 Bejelentkezés után - localStorage.user:", localStorage.getItem("user"));
           setSuccessMessage("Sikeres bejelentkezés!");
           setTimeout(() => {
             navigate("/Home");

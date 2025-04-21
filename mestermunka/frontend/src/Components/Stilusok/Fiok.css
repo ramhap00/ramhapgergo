@@ -1,15 +1,15 @@
-/* Fiok.css */
+
 .account-settings {
   display: flex;
-  flex-direction: column; /* Alapértelmezett egymás alá rendezés kisebb képernyőkön */
+  flex-direction: column; 
   justify-content: center;
   font-family: Arial, sans-serif;
   background-color: white;
-  min-height: 100vh; /* Teljes képernyőmagasság */
+  min-height: 100vh; 
 }
 
 .sidebar {
-  width: 100%; /* Teljes szélesség kisebb képernyőkön */
+  width: 100%; 
   padding: 20px;
   background-color: lightgray;
   box-sizing: border-box;
@@ -24,7 +24,7 @@
   padding: 10px;
   cursor: pointer;
   display: flex;
-  align-items: center; /* Ikon és szöveg függőleges középre igazítása */
+  align-items: center; 
   text-align: left;
 }
 
@@ -44,9 +44,9 @@
   border-radius: 1vh;
   box-shadow: 0 0 10px;
   background: white;
-  width: 90%; /* Rugalmas szélesség */
-  max-width: 600px; /* Maximális szélesség megtartása */
-  margin: 20px auto; /* Középre igazítás */
+  width: 90%; 
+  max-width: 600px; 
+  margin: 20px auto; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -54,7 +54,7 @@
 
 h1, h2 {
   margin-bottom: 10px;
-  font-size: clamp(1.5rem, 5vw, 2rem); /* Rugalmas betűméret */
+  font-size: clamp(1.5rem, 5vw, 2rem);
 }
 
 input, select {
@@ -64,12 +64,12 @@ input, select {
   width: 100%;
   max-width: 400px;
   border-radius: 7px;
-  box-sizing: border-box; /* Padding ne növelje a méretet */
+  box-sizing: border-box; 
 }
 
 .rounded-image {
   border-radius: 50%;
-  width: clamp(80px, 20vw, 100px); /* Rugalmas méret */
+  width: clamp(80px, 20vw, 100px); 
   height: clamp(80px, 20vw, 100px);
   object-fit: cover;
 }
@@ -82,39 +82,39 @@ input, select {
 
 .big-container {
   background-color: white;
-  width: 100%; /* Teljes szélesség */
+  width: 100%; 
   display: flex;
-  justify-content: center; /* Középre igazítás */
+  justify-content: center; 
   flex-grow: 1;
   position: relative;
 }
 
-/* Media Query-k a nagyobb képernyőkhöz */
+
 @media (min-width: 768px) {
   .account-settings {
-    flex-direction: row; /* Oldalsáv és tartalom egymás mellett */
+    flex-direction: row; 
   }
 
   .sidebar {
-    width: 250px; /* Fix szélesség nagyobb képernyőkön */
-    min-height: 100vh; /* Teljes magasság */
+    width: 250px; 
+    min-height: 100vh; 
   }
 
   .content {
-    width: 50%; /* Nagyobb képernyőkön szélesebb */
-    margin: 30px 0 30px 2%; /* Bal margó az oldalsáv után */
+    width: 50%; 
+    margin: 30px 0 30px 2%; 
   }
 
   .big-container {
-    width: 80%; /* Nagyobb képernyőkön korlátozott szélesség */
+    width: 80%; 
     justify-content: flex-start;
   }
 }
 
 @media (min-width: 1024px) {
   .content {
-    width: 40%; /* Még nagyobb képernyőkön */
-    margin-left: 30%; /* Középre igazítás az oldalsávval együtt */
+    width: 40%; 
+    margin-left: 30%; 
     margin-top: 8%;
   }
 

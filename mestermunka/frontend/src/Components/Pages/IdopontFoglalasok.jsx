@@ -24,13 +24,13 @@ const IdopontFoglalasok = () => {
       return;
     }
 
-    // Token dekódolása és munkasreg ellenőrzése
+    
     const decodedToken = jwtDecode(token);
-    setIsEmployer(decodedToken.munkasreg === 1); // Ha munkasreg 1, akkor munkáltató
+    setIsEmployer(decodedToken.munkasreg === 1); 
 
     const fetchBookings = async () => {
       try {
-        // Saját foglalások lekérése (mindenki számára)
+        
         const bookingsResponse = await axios.get("http://localhost:5020/api/user-bookings", {
           withCredentials: true,
         });
@@ -38,7 +38,7 @@ const IdopontFoglalasok = () => {
           setBookings(bookingsResponse.data.bookings || []);
         }
 
-        // Csak munkáltatóknak: Bejövő foglalási kérelmek és posztok foglalásai
+        
         if (decodedToken.munkasreg === 1) {
           const messagesResponse = await axios.get("http://localhost:5020/api/messages", {
             withCredentials: true,

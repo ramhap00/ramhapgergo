@@ -108,7 +108,7 @@ const Fiok = () => {
       });
   };
 
-  // Módosított logika: Ellenőrizzük, hogy a profilkép nem üres string
+  
   const profileImage = user?.profilkep && user.profilkep !== ""
     ? `http://localhost:5020/uploads/${user.profilkep}?t=${Date.now()}`
     : userData.profilkep && userData.profilkep !== ""

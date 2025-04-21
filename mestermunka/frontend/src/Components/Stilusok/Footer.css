@@ -9,16 +9,16 @@
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    flex-wrap: wrap; /* Reszponzív viselkedés biztosítása */
-    justify-content: space-between; /* Szöveg középre */
+    flex-wrap: wrap; 
+    justify-content: space-between; 
     align-items: center;
     padding: 0 20px;
-    position: relative; /* Pozíció beállítása */
+    position: relative; 
 }
 
 .footer-text {
     text-align: center;
-    flex: 1; /* A szöveg szépen középen marad */
+    flex: 1; 
     
 }
 
@@ -32,7 +32,7 @@
     display: flex;
     gap: 15px;
     position: flex-end;
-    right: 1 /* Jobb szélre igazítás */
+    right: 1 
 }
 
 /* Közösségi ikonok */
@@ -47,7 +47,7 @@
     opacity: 0.7;
 }
 
-/* Reszponzív stílusok */
+
 @media (max-width: 768px) {
     .footer-content {
         flex-direction: column;
@@ -61,6 +61,6 @@
     .footer-social {
         justify-content: center;
         margin-top: 15px;
-        position: static; /* Mobilon középre helyezi az ikonokat */
+        position: static; 
     }
 }

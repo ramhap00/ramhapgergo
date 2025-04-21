@@ -61,8 +61,8 @@ const Uzenetek = ({ onClose, setNewMessageCount, fetchNewMessages }) => {
           (msg) => msg.uzenetID !== uzenetID
         );
         setNewMessageCount(remainingPendingMessages.length);
-        await fetchMessages(); // Frissítjük az üzeneteket
-        await fetchNewMessages(); // Frissítjük a Navbar-t
+        await fetchMessages(); 
+        await fetchNewMessages(); 
         alert(response.data.message);
       }
     } catch (error) {
@@ -86,8 +86,8 @@ const Uzenetek = ({ onClose, setNewMessageCount, fetchNewMessages }) => {
           (msg) => msg.uzenetID !== uzenetID
         );
         setNewMessageCount(remainingPendingMessages.length);
-        await fetchMessages(); // Frissítjük az üzeneteket
-        await fetchNewMessages(); // Frissítjük a Navbar-t
+        await fetchMessages(); 
+        await fetchNewMessages(); 
         alert(response.data.message);
       }
     } catch (error) {

@@ -286,7 +286,7 @@ const Posztok = () => {
     if (isFilter) {
       // Szűrő csillagok
       let stars = [];
-      for (let i = 0; i <= 0; i++) { // Csak egy csillag a szűrőnél
+      for (let i = 0; i <= 0; i++) { 
         stars.push(
           <span
             key={i}

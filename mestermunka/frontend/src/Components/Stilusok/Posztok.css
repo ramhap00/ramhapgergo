@@ -3,11 +3,11 @@
   justify-content: center;
   padding: 20px;
   margin: 0;
-  height: 100vh; /* Teljes képernyő magasság */
+  height: 100vh; 
   margin-left: auto;
   background-color: #2F2F2F;
   margin-bottom: 0;
-  overflow: hidden; /* Az egész oldalon ne legyen görgetés */
+  overflow: hidden; 
 }
 
 .posztok-layout {
@@ -15,7 +15,7 @@
   width: 100%;
   max-width: 1200px;
   gap: 20px;
-  height: 100%; /* A layout kitölti a container magasságát */
+  height: 100%; 
 }
 
 .posztok-filter {
@@ -23,8 +23,8 @@
   background-color: #00c4cc;
   padding: 20px;
   border-radius: 8px;
-  height: fit-content; /* A szűrőpanel magassága igazodjon a tartalomhoz */
-  overflow-y: visible; /* Nincs görgetés a szűrőpanelen */
+  height: fit-content; 
+  overflow-y: visible; 
 }
 
 .posztok-filter label {
@@ -52,8 +52,8 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; /* Csak ez a rész legyen görgethető */
-  height: calc(100vh - 40px); /* A padding (20px + 20px) levonása a teljes magasságból */
+  overflow-y: auto; 
+  height: calc(100vh - 40px); 
 }
 
 .posztok-list {
@@ -431,11 +431,11 @@
 
   .posztok-filter {
     margin-bottom: 20px;
-    height: auto; /* A szűrőpanel magassága igazodjon a tartalomhoz */
+    height: auto; 
   }
 
   .posztok-content {
-    height: calc(100vh - 40px); /* A padding (20px + 20px) levonása */
+    height: calc(100vh - 40px); 
   }
 
   .post-item {

@@ -1,4 +1,4 @@
-/* Üzenetek legördülő lista */
+
 .message-dropdown {
     position: absolute;
     top: 100%;
@@ -48,7 +48,7 @@
     cursor: pointer;
   }
  
-  /* Piros pont az új üzenetek jelzésére */
+ 
   .message-icon-wrapper {
     position: relative;
   }

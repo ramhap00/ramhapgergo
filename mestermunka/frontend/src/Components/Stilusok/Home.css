@@ -1,4 +1,4 @@
-/* Home.css */
+
 html, body {
   overflow-x: hidden;
   width: 100%;
@@ -32,7 +32,7 @@ html, body {
   object-fit: cover;
 }
 
-/* Tartalom konténer */
+
 .content-container {
   position: relative;
   z-index: 1;
@@ -47,12 +47,12 @@ html, body {
   margin-top: 4rem;
 }
 
-/* Üdvözlő szöveg */
+
 .udvozlunk {
   text-align: center;
   font-weight: 900;
   margin-bottom: 10%;
-  font-size: 1.8rem; /* alap mobil nézethez */
+  font-size: 1.8rem;
 }
 .p{
   text-align: center;

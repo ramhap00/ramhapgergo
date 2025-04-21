@@ -5,23 +5,23 @@ import logo from "../../assets/sosmunkalogo.png";
 
 
 const Home = () => {
-  // Animációs változatok az oldalsó tömbökhöz
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.5, // 0.5 másodpercenként jelenik meg egy-egy tömb
+        staggerChildren: 0.5, 
       },
     },
   };
 
   const blockVariants = {
-    hidden: { opacity: 0, y: 20 }, // Kezdetben átlátszatlan és lentről indul
+    hidden: { opacity: 0, y: 20 }, 
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 1.5, ease: "easeOut" } // Láthatóvá válik 1.5 mp alatt
+      transition: { duration: 1.5, ease: "easeOut" } 
     }
   };
 
