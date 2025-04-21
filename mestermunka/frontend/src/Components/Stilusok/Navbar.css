@@ -2,7 +2,6 @@
   margin-top: 20%;
 }
 
-/* Alapértelmezett stílus minden oldalon */
 #flex-container {
   display: flex;
   justify-content: space-between;
@@ -34,7 +33,7 @@
   display: flex;
   align-items: center;
 }
-/* Mobil nézet: üzenetek ikon és hamburger menü */
+
 .mobile-menu {
   display: none;
   align-items: center;
@@ -44,7 +43,6 @@
   margin-right: 10px;
 }
 
-/* Hamburger ikon (három csík) */
 .hamburger-icon {
   display: none;
   flex-direction: column;
@@ -61,7 +59,6 @@
   border-radius: 2px;
 }
 
-/* Hamburger menü lenyíló tartalma */
 .hamburger-menu {
   display: none;
   position: absolute;
@@ -97,7 +94,6 @@
   color: #ddd;
 }
 
-/* Desktop nézet lenyíló tartalom */
 .dropdown-content {
   background-color: white;
   color: black;
@@ -304,8 +300,6 @@
   text-decoration: none;
 }
 
-/* Reszponzív stílusok */
-/*nagyképernyő*/
 @media (min-width: 768px) {
   .message-dropdown-content {
     width: 350px;
@@ -317,92 +311,89 @@
   }
 }
 
-/*tablet és mobil*/
 @media (max-width: 768px) {
-  /* Az "S.O.S. Munka" szöveg eltűnik */
   .navbar-text-wrapper {
-    display: none; /* Elrejtjük a szöveget */
+    display: none;
   }
 
   .nav-link{
     margin-top: 20%;
   }
 
-  /* A "Posztok" látható marad */
   .nav-menu-left-wrapper {
-    display: flex; /* Látható marad */
+    display: flex;
     padding: 0;
   }
 
   .desktop-menu {
-    display: none; /* Üzenetek és Fiók ikonok eltűnnek */
+    display: none;
   }
 
   .mobile-menu {
-    display: flex; /* Üzenetek ikon és hamburger menü megjelenik */
+    display: flex;
     justify-content: flex-end;
     padding: 0;
   }
 
   .hamburger-icon {
-    display: flex; /* Hamburger ikon megjelenik */
-    width: 25px; /* Kisebb méret mobil nézetben */
+    display: flex;
+    width: 25px;
     height: 20px;
   }
 
   .hamburger-bar {
-    height: 3px; /* Kisebb csíkok */
+    height: 3px;
   }
 
   .hamburger-menu {
-    display: block; /* Hamburger menü engedélyezve */
+    display: block;
   }
 
   .col-sm-2 {
-    flex: 0 0 15%; /* Logo kisebb helyet foglal */
+    flex: 0 0 15%;
     max-width: 15%;
   }
 
   .col-sm-3 {
-    flex: 0 0 25%; /* Posztok kisebb helyet foglal */
+    flex: 0 0 25%;
     max-width: 25%;
   }
 
   .col-sm-4 {
-    flex: 0 0 35%; /* Nem használt, mert a szöveg el van rejtve */
+    flex: 0 0 35%;
     max-width: 35%;
   }
 
   .col-2 {
-    flex: 0 0 15%; /* Logo mobil nézetben */
+    flex: 0 0 15%;
     max-width: 15%;
   }
 
   .col-3 {
-    flex: 0 0 25%; /* Posztok és mobil menü mobil nézetben */
+    flex: 0 0 25%;
     max-width: 25%;
   }
 
   .col-4 {
-    flex: 0 0 35%; /* Nem használt, mert a szöveg el van rejtve */
+    flex: 0 0 35%;
     max-width: 35%;
   }
 
   .logo-img1 {
-    max-width: 40px; /* Kisebb logo mobil nézetben */
+    max-width: 40px;
   }
 
   .logo-img2 {
-    max-width: 30px; /* Kisebb értesítések ikon mobil nézetben */
+    max-width: 30px;
   }
 
   .nav-menu-left a {
-    font-size: 14px; /* Kisebb betűméret a "Posztok" linknek */
+    font-size: 14px;
     padding: 0 5px;
   }
 
   #navbar-text {
-    font-size: 16px; /* Nem látható, de fenntartjuk a konzisztenciát */
+    font-size: 16px;
   }
 
   .dropdown-content {
@@ -414,68 +405,67 @@
     right: 0;
   }
 
-  /* Értesítések lenyíló menüjének javítása mobil nézetben */
   .message-dropdown-content {
     width: 300px;
-    right: -35px; /* Középre igazítjuk a szélesség növelésével */
-    top: 60px; /* Kicsit lejjebb toljuk, hogy ne takarja a navbar-t */
-    max-height: 350px; /* Nagyobb magasság a tartalomnak */
-    background-color: lightgray; /* Háttér változatlan */
-    border-radius: 10px; /* Lekerekítés változatlan */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Árnyék változatlan */
-    color: #000; /* Fekete szöveg a jobb olvashatóságért */
-    font-size: 16px; /* Alap betűméret növelése */
+    right: -35px;
+    top: 60px;
+    max-height: 350px;
+    background-color: lightgray;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #000;
+    font-size: 16px;
   }
 
   .message-dropdown-header {
-    padding: 12px 16px; /* Nagyobb padding a fejlécnek */
+    padding: 12px 16px;
   }
 
   .notifications-title {
-    font-size: 18px; /* Nagyobb betűméret a címnek */
+    font-size: 18px;
     font-weight: bold;
   }
 
   .close-btn {
-    font-size: 18px; /* Nagyobb X gomb */
+    font-size: 18px;
     margin-left: 60%;
   }
 
   .message-list {
-    padding: 12px; /* Nagyobb padding a lista körül */
+    padding: 12px;
   }
 
   .message-item-content {
-    padding: 12px; /* Nagyobb padding az üzeneten belül */
-    font-size: 16px; /* Nagyobb betűméret az üzeneteknek */
-    line-height: 1.5; /* Nagyobb sorköz a jobb olvashatóságért */
-    border-radius: 6px; /* Kicsit nagyobb lekerekítés */
-    word-wrap: break-word; /* Hosszú szavak tördelése */
-    margin-bottom: 8px; /* Nagyobb tér az üzenetek között */
+    padding: 12px;
+    font-size: 16px;
+    line-height: 1.5;
+    border-radius: 6px;
+    word-wrap: break-word;
+    margin-bottom: 8px;
   }
 
   .message-item-content:hover {
-    background-color: #fff; /* Hover hatás változatlan */
+    background-color: #fff;
   }
 
   .no-messages {
-    font-size: 16px; /* Olvashatóbb "Nincs új kérelem" szöveg */
+    font-size: 16px;
     padding: 12px;
-    color: #333; /* Sötétebb szín a jobb olvashatóságért */
+    color: #333;
   }
 }
 
 @media (max-width: 425px) {
   .message-dropdown-content {
     width: 200px;
-    right: -35px; /* Középre igazítjuk a szélesség növelésével */
-    top: 60px; /* Kicsit lejjebb toljuk, hogy ne takarja a navbar-t */
-    max-height: 350px; /* Nagyobb magasság a tartalomnak */
-    background-color: lightgray; /* Háttér változatlan */
-    border-radius: 10px; /* Lekerekítés változatlan */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Árnyék változatlan */
-    color: #000; /* Fekete szöveg a jobb olvashatóságért */
-    font-size: 16px; /* Alap betűméret növelése */
+    right: -35px;
+    top: 60px;
+    max-height: 350px;
+    background-color: lightgray;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #000;
+    font-size: 16px;
   }
   #navbar-text{
     position: relative;
@@ -487,7 +477,7 @@
     margin-top: 30%;
   }
   .close-btn {
-    font-size: 18px; /* Nagyobb X gomb */
+    font-size: 18px;
     margin-left: 35%;
   }
 }
@@ -499,13 +489,9 @@
   }
 }
 
-
 @media (max-width: 1440px){
   
   .nav-link{
     margin-top: 20%;
   }
 }
-
-
-
