@@ -28,7 +28,7 @@ const db = mysql.createConnection({
   user: 'root',
   password: '',
   database: 'sos_munka',
-  port: '3306',
+  port: '3307',
 });
 
 // Fájl feltöltés konfiguráció
